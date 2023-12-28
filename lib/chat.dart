@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-
+import 'package:finease/widget/list.dart';
+import 'package:finease/widget/input.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -46,61 +47,15 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        Expanded(
-          child: ListView.builder(
-            reverse: true,
-            itemCount: messages.length,
-            itemBuilder: (context, index) {
-              final message = messages[index];
-              return Align(
-                alignment: message.type == MessageType.user
-                    ? Alignment.centerRight
-                    : Alignment.centerLeft,
-                child: Container(
-                  margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                  decoration: BoxDecoration(
-                    color: message.type == MessageType.automated
-                        ? Colors.lightBlueAccent
-                        : Colors.lightGreenAccent,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    message.text,
-                    style: const TextStyle(color: Colors.black),
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                child: TextField(
-                  controller: _controller,
-                  decoration: const InputDecoration(
-                    hintText: 'Type a message',
-                  ),
-                  focusNode: _focusNode,
-                  onSubmitted: (value) {
-                    if (value.isNotEmpty) {
-                      _sendMessage();
-                    }
-                  },
-                  textInputAction: TextInputAction.send,
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null, // Allows for multiple lines
-                ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.send),
-                onPressed: _sendMessage,
-              ),
-            ],
-          ),
+        MessagesListView(messages: messages),
+        ChatInputArea(
+          controller: _controller,
+          focusNode: _focusNode,
+          onSubmitted: (value) {
+            if (value.isNotEmpty) {
+              _sendMessage();
+            }
+          },
         ),
       ],
     );
