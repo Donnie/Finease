@@ -12,6 +12,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final List<Message> messages = []; // Ensure this list holds Message objects
   final TextEditingController _controller = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
   late Timer _timer;
 
   @override
@@ -27,6 +28,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void dispose() {
     _timer.cancel();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -36,6 +38,7 @@ class _ChatScreenState extends State<ChatScreen> {
         messages.insert(0, Message(_controller.text, MessageType.user));
         _controller.clear();
       }
+      _focusNode.requestFocus();
     });
   }
 
@@ -81,6 +84,15 @@ class _ChatScreenState extends State<ChatScreen> {
                   decoration: const InputDecoration(
                     hintText: 'Type a message',
                   ),
+                  focusNode: _focusNode,
+                  onSubmitted: (value) {
+                    if (value.isNotEmpty) {
+                      _sendMessage();
+                    }
+                  },
+                  textInputAction: TextInputAction.send,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null, // Allows for multiple lines
                 ),
               ),
               IconButton(
