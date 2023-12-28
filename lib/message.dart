@@ -1,5 +1,3 @@
-
-
 enum MessageType { user, automated }
 
 class Message {
