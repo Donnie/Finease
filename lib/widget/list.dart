@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:finease/chat.dart';
+import 'package:finease/message.dart';
 
 class MessagesListView extends StatelessWidget {
   final List<Message> messages;
@@ -19,17 +19,17 @@ class MessagesListView extends StatelessWidget {
                 ? Alignment.centerRight
                 : Alignment.centerLeft,
             child: Container(
-              margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+              margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
               decoration: BoxDecoration(
                 color: message.type == MessageType.automated
                     ? Colors.lightBlueAccent
                     : Colors.lightGreenAccent,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(5),
               ),
               child: Text(
                 message.text,
-                style: const TextStyle(color: Colors.black),
+                style: const TextStyle(color: Colors.black, fontSize: 10),
               ),
             ),
           );

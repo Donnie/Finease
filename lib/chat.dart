@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:finease/widget/list.dart';
 import 'package:finease/widget/input.dart';
+import 'package:finease/db.dart';
+import 'package:finease/message.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -19,10 +21,21 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(const Duration(seconds: 10), (timer) {
+    _loadMessages();
+    _timer = Timer.periodic(const Duration(seconds: 20), (timer) {
       setState(() {
-        messages.insert(0, Message('Hello World', MessageType.automated));
+        var newMessage = Message('Hello World', MessageType.automated);
+        messages.insert(0, newMessage);
+        DatabaseHelper().saveMessage(newMessage);
       });
+    });
+  }
+
+  void _loadMessages() async {
+    var db = DatabaseHelper();
+    var loadedMessages = await db.getMessages();
+    setState(() {
+      messages.addAll(loadedMessages);
     });
   }
 
@@ -36,7 +49,9 @@ class _ChatScreenState extends State<ChatScreen> {
   void _sendMessage() {
     setState(() {
       if (_controller.text.isNotEmpty) {
-        messages.insert(0, Message(_controller.text, MessageType.user));
+        var newMessage = Message(_controller.text, MessageType.user);
+        messages.insert(0, newMessage);
+        DatabaseHelper().saveMessage(newMessage);
         _controller.clear();
       }
       _focusNode.requestFocus();
@@ -60,13 +75,4 @@ class _ChatScreenState extends State<ChatScreen> {
       ],
     );
   }
-}
-
-enum MessageType { user, automated }
-
-class Message {
-  String text;
-  MessageType type;
-
-  Message(this.text, this.type);
 }
