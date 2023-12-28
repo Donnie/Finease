@@ -52,7 +52,7 @@ class DatabaseHelper {
 
   Future<List<Message>> getMessages() async {
     var dbClient = await db;
-    List<Map> list = await dbClient.rawQuery('SELECT * FROM $_tableName');
+    List<Map> list = await dbClient.rawQuery('SELECT * FROM $_tableName ORDER BY created_at DESC');
     List<Message> messages = list.isNotEmpty
         ? list.map((item) => Message.fromMap(item.cast<String, dynamic>())).toList()
         : [];
