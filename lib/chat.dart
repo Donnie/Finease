@@ -68,7 +68,9 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const Text('Finease'),
+      ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
