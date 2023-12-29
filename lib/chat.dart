@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:finease/widget/drawer.dart';
 import 'package:finease/widget/list.dart';
 import 'package:finease/widget/input.dart';
 import 'package:finease/db.dart';
@@ -71,32 +72,8 @@ class _ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         title: const Text('Finease'),
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text(
-                'Chat Options',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.delete),
-              title: const Text('Clear DB'),
-              onTap: () {
-                Navigator.pop(context); // Close the drawer
-                _clearDatabase();
-              },
-            ),
-          ],
-        ),
+      drawer: ChatDrawer(
+        onClearDatabase: _clearDatabase,
       ),
       body: Column(
         children: <Widget>[
