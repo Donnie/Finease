@@ -1,6 +1,6 @@
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:finease/backend/message.dart';
+import 'package:fineas/backend/message.dart';
 import 'dart:io';
 import 'dart:async';
 

@@ -1,3 +1,3 @@
-# finease
+# fineas
 
 A new Flutter project.

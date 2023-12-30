@@ -1,5 +1,5 @@
-import 'package:finease/app.dart';
-import 'package:finease/core/enum/data.dart';
+import 'package:fineas/app.dart';
+import 'package:fineas/core/enum/data.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 

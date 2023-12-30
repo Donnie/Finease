@@ -1,4 +1,4 @@
-import 'package:finease/chat.dart';
+import 'package:fineas/chat.dart';
 import 'package:flutter/material.dart';
 
 class MainApp extends StatefulWidget {

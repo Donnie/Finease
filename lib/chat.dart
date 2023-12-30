@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:finease/widget/drawer.dart';
-import 'package:finease/widget/list.dart';
-import 'package:finease/widget/input.dart';
-import 'package:finease/db.dart';
-import 'package:finease/backend/message.dart';
+import 'package:fineas/widget/drawer.dart';
+import 'package:fineas/widget/list.dart';
+import 'package:fineas/widget/input.dart';
+import 'package:fineas/db.dart';
+import 'package:fineas/backend/message.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -68,7 +68,7 @@ class ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Finease'),
+        title: const Text('Fineas'),
       ),
       drawer: ChatDrawer(
         onClearDatabase: _clearDatabase,
