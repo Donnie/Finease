@@ -5,6 +5,7 @@ import 'package:finease/widget/list.dart';
 import 'package:finease/widget/input.dart';
 import 'package:finease/db.dart';
 import 'package:finease/message.dart';
+import 'package:finease/backend/message.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -18,7 +19,6 @@ class _ChatScreenState extends State<ChatScreen> {
   final List<Message> messages = []; // Ensure this list holds Message objects
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
-  late Timer _timer;
 
   void _toggleDarkMode(bool value) {
     setState(() {
@@ -30,13 +30,6 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     _loadMessages();
-    _timer = Timer.periodic(const Duration(seconds: 20), (timer) {
-      setState(() {
-        var newMessage = Message('Hello World', MessageType.automated);
-        messages.insert(0, newMessage);
-        DatabaseHelper().saveMessage(newMessage);
-      });
-    });
   }
 
   void _loadMessages() async {
@@ -49,21 +42,21 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void dispose() {
-    _timer.cancel();
     _focusNode.dispose();
     super.dispose();
   }
 
-  void _sendMessage() {
-    setState(() {
-      if (_controller.text.isNotEmpty) {
-        var newMessage = Message(_controller.text, MessageType.user);
-        messages.insert(0, newMessage);
-        DatabaseHelper().saveMessage(newMessage);
-        _controller.clear();
-      }
-      _focusNode.requestFocus();
-    });
+  void _sendMessage() async {
+    await sendMessage(
+      text: _controller.text,
+      messages: messages,
+      updateState: () {
+        setState(() {
+          _controller.clear();
+          _focusNode.requestFocus();
+        });
+      },
+    );
   }
 
   void _clearDatabase() async {

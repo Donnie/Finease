@@ -18,7 +18,7 @@ class DatabaseHelper {
     "id INTEGER PRIMARY KEY, "
     "text TEXT, "
     "type TEXT, "
-    "created_at DATETIME DEFAULT CURRENT_TIMESTAMP)";
+    "created_at INTEGER)";
 
   Future<String> get _databasePath async {
     Directory documentDirectory = await getApplicationDocumentsDirectory();
