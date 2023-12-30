@@ -1,19 +1,16 @@
-import 'package:finease/chat.dart';
+import 'package:finease/app.dart';
+import 'package:finease/core/enum/data.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+
+final getIt = GetIt.instance;
 
 void main() {
-  runApp(const MainApp());
-}
+  getIt.registerSingleton<String>('Actual Settings Value',
+      instanceName: DataType.settings.name);
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+  final String settings =
+      getIt.get<String>(instanceName: DataType.settings.name);
 
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: ChatScreen(),
-      ),
-    );
-  }
+  runApp(MainApp(settings: settings));
 }
