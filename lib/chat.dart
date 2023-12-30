@@ -14,10 +14,17 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  bool isDarkModeEnabled = false;
   final List<Message> messages = []; // Ensure this list holds Message objects
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   late Timer _timer;
+
+  void _toggleDarkMode(bool value) {
+    setState(() {
+      isDarkModeEnabled = value;
+    });
+  }
 
   @override
   void initState() {
@@ -74,6 +81,8 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
       drawer: ChatDrawer(
         onClearDatabase: _clearDatabase,
+        isDarkModeEnabled: isDarkModeEnabled,
+        onToggleDarkMode: _toggleDarkMode,
       ),
       body: Column(
         children: <Widget>[

@@ -2,8 +2,15 @@ import 'package:flutter/material.dart';
 
 class ChatDrawer extends StatelessWidget {
   final Function onClearDatabase;
+  final bool isDarkModeEnabled;
+  final Function(bool) onToggleDarkMode;
 
-  const ChatDrawer({Key? key, required this.onClearDatabase}) : super(key: key);
+  const ChatDrawer({
+    Key? key,
+    required this.onClearDatabase,
+    required this.isDarkModeEnabled,
+    required this.onToggleDarkMode,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +37,15 @@ class ChatDrawer extends StatelessWidget {
               Navigator.pop(context); // Close the drawer
               onClearDatabase();
             },
+          ),
+          SwitchListTile(
+            title: const Text('Dark Mode'),
+            value: isDarkModeEnabled,
+            onChanged: (bool value) {
+              Navigator.pop(context); // Close the drawer
+              onToggleDarkMode(value);
+            },
+            secondary: const Icon(Icons.dark_mode),
           ),
         ],
       ),
