@@ -1,6 +1,6 @@
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:finease/message.dart';
+import 'package:finease/backend/message.dart';
 import 'dart:io';
 import 'dart:async';
 
@@ -13,12 +13,11 @@ class DatabaseHelper {
 
   static const String _databaseName = "main.db";
   static const String _tableName = "Messages";
-  static const String _createTableQuery = 
-    "CREATE TABLE $_tableName("
-    "id INTEGER PRIMARY KEY, "
-    "text TEXT, "
-    "type TEXT, "
-    "created_at INTEGER)";
+  static const String _createTableQuery = "CREATE TABLE $_tableName("
+      "id INTEGER PRIMARY KEY, "
+      "text TEXT, "
+      "type TEXT, "
+      "created_at INTEGER)";
 
   Future<String> get _databasePath async {
     Directory documentDirectory = await getApplicationDocumentsDirectory();
@@ -52,9 +51,12 @@ class DatabaseHelper {
 
   Future<List<Message>> getMessages() async {
     var dbClient = await db;
-    List<Map> list = await dbClient.rawQuery('SELECT * FROM $_tableName ORDER BY created_at DESC');
+    List<Map> list = await dbClient
+        .rawQuery('SELECT * FROM $_tableName ORDER BY created_at DESC');
     List<Message> messages = list.isNotEmpty
-        ? list.map((item) => Message.fromMap(item.cast<String, dynamic>())).toList()
+        ? list
+            .map((item) => Message.fromMap(item.cast<String, dynamic>()))
+            .toList()
         : [];
     return messages;
   }

@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'package:finease/widget/drawer.dart';
 import 'package:finease/widget/list.dart';
 import 'package:finease/widget/input.dart';
 import 'package:finease/db.dart';
-import 'package:finease/message.dart';
 import 'package:finease/backend/message.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
 
   @override
-  _ChatScreenState createState() => _ChatScreenState();
+  ChatScreenState createState() => ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class ChatScreenState extends State<ChatScreen> {
   bool isDarkModeEnabled = false;
   final List<Message> messages = []; // Ensure this list holds Message objects
   final TextEditingController _controller = TextEditingController();
