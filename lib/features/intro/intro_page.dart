@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:finease/core/widgets/lava/lava_clock.dart';
 import 'package:finease/core/common.dart';
 import 'package:responsive_builder/responsive_builder.dart';
-import 'package:finease/core/widgets/fineas_widget.dart';
+import 'package:finease/core/widgets/export.dart';
 
 class IntroPage extends StatelessWidget {
   const IntroPage({super.key});

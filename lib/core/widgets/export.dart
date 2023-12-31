@@ -1,11 +1,11 @@
-export 'widgets/fineas_annotate_region_widget.dart';
-export 'widgets/fineas_button.dart';
+export 'widgets/annotate_region_widget.dart';
+export 'widgets/button.dart';
 // export 'fineas_widgets/fineas_bottom_sheet.dart';
 // export 'fineas_widgets/fineas_card.dart';
 // export 'fineas_widgets/fineas_color_picker.dart';
 // export 'fineas_widgets/fineas_empty_widget.dart';
 // export 'fineas_widgets/fineas_icon_picker.dart';
-export 'widgets/fineas_icon_title.dart';
+export 'widgets/icon_title.dart';
 // export 'fineas_widgets/fineas_pill_chip.dart';
 // export 'fineas_widgets/fineas_text_field.dart';
 // export 'fineas_widgets/fineas_date_time_picker.dart';
