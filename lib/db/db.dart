@@ -1,3 +1,4 @@
+import 'package:fineas/db/migrations/a_initial_migration.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:fineas/backend/message.dart';
@@ -13,11 +14,6 @@ class DatabaseHelper {
 
   static const String _databaseName = "main.db";
   static const String _tableName = "Messages";
-  static const String _createTableQuery = "CREATE TABLE $_tableName("
-      "id INTEGER PRIMARY KEY, "
-      "text TEXT, "
-      "type TEXT, "
-      "created_at INTEGER)";
 
   Future<String> get _databasePath async {
     Directory documentDirectory = await getApplicationDocumentsDirectory();
@@ -34,12 +30,27 @@ class DatabaseHelper {
 
   Future<Database> initDb() async {
     String path = await _databasePath;
-    var ourDb = await openDatabase(path, version: 1, onCreate: _onCreate);
+    var ourDb = await openDatabase(
+      path,
+      version: 1,
+      onCreate: _onCreate,
+      onUpgrade: _onUpgrade,
+    );
     return ourDb;
   }
 
-  void _onCreate(Database db, int version) async {
-    await db.execute(_createTableQuery);
+  Future<void> _onCreate(Database db, int version) async {
+    await aInitialMigration(db);
+  }
+
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      // await addNewColumn(db);
+    }
+    if (oldVersion < 3) {
+      // Execute next migration
+    }
+    // Add additional checks for further versions
   }
 
   // Save and get messages

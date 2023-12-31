@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fineas/widget/drawer.dart';
 import 'package:fineas/widget/list.dart';
 import 'package:fineas/widget/input.dart';
-import 'package:fineas/db.dart';
+import 'package:fineas/db/db.dart';
 import 'package:fineas/backend/message.dart';
 
 class ChatScreen extends StatefulWidget {

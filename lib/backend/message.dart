@@ -1,4 +1,4 @@
-import 'package:fineas/db.dart';
+import 'package:fineas/db/db.dart';
 
 Future<void> sendMessage({
   required String text,
