@@ -1,7 +1,7 @@
 import 'package:dynamic_color/dynamic_color.dart';
-import 'package:fineas/config/routes.dart';
-import 'package:fineas/core/constants/constants.dart';
-import 'package:fineas/core/theme/app_theme.dart';
+import 'package:finease/config/routes.dart';
+import 'package:finease/core/constants/constants.dart';
+import 'package:finease/core/theme/app_theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

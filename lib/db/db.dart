@@ -1,4 +1,4 @@
-import 'package:fineas/db/migrations/a_initial_migration.dart';
+import 'package:finease/db/migrations/a_initial_migration.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:io';

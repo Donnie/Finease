@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:fineas/core/common.dart';
+import 'package:finease/core/common.dart';
 
 class FineasBigButton extends StatelessWidget {
   const FineasBigButton({

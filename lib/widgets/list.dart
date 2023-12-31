@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fineas/db/messages.dart';
+import 'package:finease/db/messages.dart';
 
 class MessagesListView extends StatelessWidget {
   final List<Message> messages;

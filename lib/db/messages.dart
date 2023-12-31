@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fineas/db/db.dart';
+import 'package:finease/db/db.dart';
 
 class MessageService {
   final DatabaseHelper _databaseHelper;

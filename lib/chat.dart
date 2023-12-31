@@ -1,8 +1,8 @@
-import 'package:fineas/db/db.dart';
-import 'package:fineas/db/messages.dart';
-import 'package:fineas/widgets/drawer.dart';
-import 'package:fineas/widgets/input.dart';
-import 'package:fineas/widgets/list.dart';
+import 'package:finease/db/db.dart';
+import 'package:finease/db/messages.dart';
+import 'package:finease/widgets/drawer.dart';
+import 'package:finease/widgets/input.dart';
+import 'package:finease/widgets/list.dart';
 import 'package:flutter/material.dart';
 
 class ChatScreen extends StatefulWidget {
