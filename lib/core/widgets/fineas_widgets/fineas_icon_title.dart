@@ -28,32 +28,6 @@ class FineasIconTitle extends StatelessWidget {
   }
 }
 
-// class FineasTitle extends StatelessWidget {
-//   const FineasTitle({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return BlocBuilder<HomeBloc, HomeState>(
-//       buildWhen: (previous, current) => current is CurrentIndexState,
-//       builder: (context, state) {
-//         String title = PageType.home.name(context);
-//         if (state is CurrentIndexState) {
-//           title = BlocProvider.of<HomeBloc>(context)
-//               .getPageFromIndex(state.currentPage)
-//               .name(context);
-//         }
-//         return Text(
-//           title,
-//           style: context.titleLarge?.copyWith(
-//             fontWeight: FontWeight.w600,
-//             color: context.onBackground,
-//           ),
-//         );
-//       },
-//     );
-//   }
-// }
-
 class FineasIcon extends StatelessWidget {
   const FineasIcon({
     super.key,

@@ -47,7 +47,6 @@ class _MainAppState extends State<MainApp> {
       child: ValueListenableBuilder<Map<String, dynamic>>(
         valueListenable: settingsNotifier,
         builder: (context, value, _) {
-          const bool isDynamic = false;
           const ThemeMode themeMode = ThemeMode.dark;
           const int color = 0xFF795548;
           const Color primaryColor = Color(color);
@@ -67,18 +66,13 @@ class _MainAppState extends State<MainApp> {
             builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
               ColorScheme lightColorScheme;
               ColorScheme darkColorScheme;
-              if (lightDynamic != null && darkDynamic != null && isDynamic) {
-                lightColorScheme = lightDynamic.harmonized();
-                darkColorScheme = darkDynamic.harmonized();
-              } else {
-                lightColorScheme = ColorScheme.fromSeed(
-                  seedColor: primaryColor,
-                );
-                darkColorScheme = ColorScheme.fromSeed(
-                  seedColor: primaryColor,
-                  brightness: Brightness.dark,
-                );
-              }
+              lightColorScheme = ColorScheme.fromSeed(
+                seedColor: primaryColor,
+              );
+              darkColorScheme = ColorScheme.fromSeed(
+                seedColor: primaryColor,
+                brightness: Brightness.dark,
+              );
 
               return MaterialApp.router(
                 locale: locale,

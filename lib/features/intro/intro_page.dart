@@ -306,11 +306,16 @@ class IntroMobileWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    language["appTitle"],
-                    style: context.displayMedium?.copyWith(
-                      color: context.primary,
-                    ),
+                  Row(
+                    children: [
+                      const FineasIcon(size: 52),
+                      Text(
+                        language["appTitle"],
+                        style: context.displayMedium?.copyWith(
+                          color: context.primary,
+                        ),
+                      )
+                    ],
                   ),
                   Text(
                     language["intoTitle"],
