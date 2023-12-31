@@ -1,4 +1,5 @@
 import 'package:fineas/chat.dart';
+import 'package:fineas/features/intro/intro_page.dart';
 import 'package:flutter/material.dart';
 
 class MainApp extends StatefulWidget {
@@ -20,7 +21,7 @@ class _MainAppState extends State<MainApp> {
   Widget build(BuildContext context) {
     return const MaterialApp(
       home: Scaffold(
-        body: ChatScreen(),
+        body: IntroPage(),
       ),
     );
   }
