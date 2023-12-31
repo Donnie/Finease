@@ -1,4 +1,5 @@
 import 'package:finease/config/routes_name.dart';
+import 'package:finease/db/db.dart';
 import 'package:finease/db/settings.dart';
 import 'package:finease/features/intro/intro_page.dart';
 import 'package:finease/features/onboarding/onboarding_page.dart';
@@ -32,10 +33,13 @@ final GoRouter goRouter = GoRouter(
   },
   redirect: (_, GoRouterState state) async {
     final String? introDone = await SettingService().getSetting("introDone");
-    // Debug the value of introDone
-    print('introDone value: $introDone');
     if (introDone != "true") {
       return RoutesName.intro.path;
+    }
+
+    final String? userName = await SettingService().getSetting("userName");
+    if (userName == null || userName == "") {
+      return RoutesName.onboarding.path;
     }
     return null;
   }
