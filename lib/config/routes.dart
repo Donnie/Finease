@@ -1,8 +1,9 @@
-import 'package:finease/features/onboarding/user_onboarding_page.dart';
+import 'package:finease/config/routes_name.dart';
+import 'package:finease/db/settings.dart';
+import 'package:finease/features/intro/intro_page.dart';
+import 'package:finease/features/onboarding/onboarding_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:finease/config/routes_name.dart';
-import 'package:finease/features/intro/intro_page.dart';
 
 final GoRouter goRouter = GoRouter(
   initialLocation: RoutesName.intro.path,
@@ -17,10 +18,10 @@ final GoRouter goRouter = GoRouter(
       },
     ),
     GoRoute(
-      name: RoutesName.userOnboarding.name,
-      path: RoutesName.userOnboarding.path,
+      name: RoutesName.onboarding.name,
+      path: RoutesName.onboarding.path,
       builder: (BuildContext context, GoRouterState state) {
-        return const UserOnboardingPage();
+        return const OnboardingPage();
       },
     )
   ],
@@ -29,5 +30,13 @@ final GoRouter goRouter = GoRouter(
       child: Text(state.error.toString()),
     );
   },
-  redirect: (_, GoRouterState state) => RoutesName.intro.path,
+  redirect: (_, GoRouterState state) async {
+    final String? introDone = await SettingService().getSetting("introDone");
+    // Debug the value of introDone
+    print('introDone value: $introDone');
+    if (introDone != "true") {
+      return RoutesName.intro.path;
+    }
+    return null;
+  }
 );

@@ -1,8 +1,11 @@
-import 'package:finease/widgets/intro_features.dart';
-import 'package:flutter/material.dart';
-import 'package:finease/core/widgets/lava/lava_clock.dart';
+import 'package:finease/config/routes_name.dart';
 import 'package:finease/core/common.dart';
 import 'package:finease/core/widgets/export.dart';
+import 'package:finease/core/widgets/lava/lava_clock.dart';
+import 'package:finease/db/settings.dart';
+import 'package:finease/widgets/intro_features.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class IntroBigScreenWidget extends StatelessWidget {
   const IntroBigScreenWidget({
@@ -69,9 +72,12 @@ class IntroBigScreenWidget extends StatelessWidget {
                             ),
                           ),
                         ),
-                        FineaseBigButton(
+                        AppBigButton(
                           title: language["introCTA"],
-                          onPressed: () => {}
+                          onPressed: () {
+                            SettingService().setSetting("introDone", "true");
+                            context.go(RoutesName.onboarding.path);
+                          },
                         )
                       ],
                     ),

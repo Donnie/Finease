@@ -1,9 +1,9 @@
+import 'package:finease/core/common.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:finease/core/common.dart';
 
-class FineaseBigButton extends StatelessWidget {
-  const FineaseBigButton({
+class AppBigButton extends StatelessWidget {
+  const AppBigButton({
     super.key,
     required this.onPressed,
     required this.title,

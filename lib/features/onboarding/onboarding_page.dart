@@ -1,22 +1,22 @@
+import 'package:finease/core/common.dart';
+import 'package:finease/core/widgets/export.dart';
 import 'package:finease/db/settings.dart';
 import 'package:finease/widgets/intro_set_name_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:finease/core/common.dart';
-import 'package:finease/core/widgets/export.dart';
 
-class UserOnboardingPage extends StatefulWidget {
-  const UserOnboardingPage({
+class OnboardingPage extends StatefulWidget {
+  const OnboardingPage({
     super.key,
     this.forceCountrySelector = false,
   });
   final bool forceCountrySelector;
 
   @override
-  State<UserOnboardingPage> createState() => _UserOnboardingPageState();
+  State<OnboardingPage> createState() => _OnboardingPageState();
 }
 
-class _UserOnboardingPageState extends State<UserOnboardingPage> {
+class _OnboardingPageState extends State<OnboardingPage> {
   final GlobalKey<FormState> _formState = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final SettingService _settingService = SettingService();
