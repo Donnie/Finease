@@ -794,7 +794,7 @@ const Map<String, dynamic> language = {
   "appRate": "Rate the app",
   "appRateDesc":
       "Love this app? Let us know how we can make it better on the Google Play Store",
-  "appTitle": "Finease",
+  "appTitle": "Fineas",
   "authenticate": "Authenticate",
   "back": "Back",
   "backupAndRestoreJSONDesc":
@@ -981,6 +981,7 @@ const Map<String, dynamic> language = {
   "updatedCategory": "Category updated",
   "updatedTransaction": "Transaction updated",
   "updateTransaction": "Update transaction",
+  "usageWarning": '*This app still in beta, expect the unexpected behavior and UI changes',
   "validAmount": "Enter valid amount",
   "validDescription": "Enter valid description",
   "validName": "Enter valid name",
@@ -1009,7 +1010,6 @@ const Map<String, dynamic> keys = {
   "selectedHomeFilterExpenseKey": "selected_home_filter_expense_key",
   "smallSizeFabKey": 'user_small_size_fab_key',
   "themeModeKey": 'key_theme_mode',
-  "usageWarning": '*This app still in beta, expect the unexpected behavior and UI changes',
   "userAccountSelectorKey": 'user_account_selector_key',
   "userAccountsStyleKey": 'user_accounts_style_key',
   "userAuthKey": 'user_auth_key',
