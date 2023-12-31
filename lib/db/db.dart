@@ -13,7 +13,6 @@ class DatabaseHelper {
   static Database? _db;
 
   static const String _databaseName = "main.db";
-  static const String _tableName = "Messages";
 
   Future<String> get _databasePath async {
     Directory documentDirectory = await getApplicationDocumentsDirectory();
@@ -56,14 +55,14 @@ class DatabaseHelper {
   // Save and get messages
   Future<int> saveMessage(Message message) async {
     var dbClient = await db;
-    int res = await dbClient.insert(_tableName, message.toMap());
+    int res = await dbClient.insert("Messages", message.toMap());
     return res;
   }
 
   Future<List<Message>> getMessages() async {
     var dbClient = await db;
     List<Map> list = await dbClient
-        .rawQuery('SELECT * FROM $_tableName ORDER BY created_at DESC');
+        .rawQuery('SELECT * FROM Messages ORDER BY created_at DESC');
     List<Message> messages = list.isNotEmpty
         ? list
             .map((item) => Message.fromMap(item.cast<String, dynamic>()))
