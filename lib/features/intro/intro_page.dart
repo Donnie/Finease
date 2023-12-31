@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:fineas/core/widgets/lava/lava_clock.dart';
-import 'package:fineas/core/common.dart';
+import 'package:finease/core/widgets/lava/lava_clock.dart';
+import 'package:finease/core/common.dart';
 import 'package:responsive_builder/responsive_builder.dart';
-import 'package:fineas/core/widgets/fineas_widget.dart';
+import 'package:finease/core/widgets/export.dart';
 
 class IntroPage extends StatelessWidget {
   const IntroPage({super.key});
@@ -24,7 +24,7 @@ class IntroTabletWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FineasAnnotatedRegionWidget(
+    return FineaseAnnotatedRegionWidget(
       color: Colors.transparent,
       child: ColoredBox(
         color: context.surface,
@@ -46,7 +46,7 @@ class IntroTabletWidget extends StatelessWidget {
                     const SizedBox(height: 24),
                     Row(
                       children: [
-                        const FineasIcon(size: 52),
+                        const FineaseIcon(size: 52),
                         Text(
                           language["appTitle"],
                           textAlign: TextAlign.center,
@@ -57,7 +57,7 @@ class IntroTabletWidget extends StatelessWidget {
                       ],
                     ),
                     Text(
-                      language["intoTitle"],
+                      language["introTitle"],
                       textAlign: TextAlign.center,
                       style: context.headlineMedium?.copyWith(
                         color: context.secondary,
@@ -74,7 +74,7 @@ class IntroTabletWidget extends StatelessWidget {
                           ),
                           dense: true,
                           title: Text(
-                            language["intoSummary1"],
+                            language["introSummary1"],
                             style: context.titleMedium,
                           ),
                         ),
@@ -86,7 +86,7 @@ class IntroTabletWidget extends StatelessWidget {
                           ),
                           dense: true,
                           title: Text(
-                            language["intoSummary2"],
+                            language["introSummary2"],
                             style: context.titleMedium,
                           ),
                         ),
@@ -98,7 +98,7 @@ class IntroTabletWidget extends StatelessWidget {
                           ),
                           dense: true,
                           title: Text(
-                            language["intoSummary3"],
+                            language["introSummary3"],
                             style: context.titleMedium,
                           ),
                         )
@@ -123,7 +123,7 @@ class IntroTabletWidget extends StatelessWidget {
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 28.0, vertical: 24),
-                child: FineasBigButton(
+                child: FineaseBigButton(
                   onPressed: () {},
                   title: language["introCTA"],
                 ),
@@ -143,7 +143,7 @@ class IntroBigScreenWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FineasAnnotatedRegionWidget(
+    return FineaseAnnotatedRegionWidget(
       color: context.background,
       child: Material(
         child: Row(
@@ -177,7 +177,7 @@ class IntroBigScreenWidget extends StatelessWidget {
                       ],
                     ),
                     Text(
-                      language["intoTitle"],
+                      language["introTitle"],
                       style: Theme.of(context)
                           .textTheme
                           .headlineMedium
@@ -195,7 +195,7 @@ class IntroBigScreenWidget extends StatelessWidget {
                           ),
                           dense: true,
                           title: Text(
-                            language["intoSummary1"],
+                            language["introSummary1"],
                             style: Theme.of(context)
                                 .textTheme
                                 .titleMedium
@@ -213,7 +213,7 @@ class IntroBigScreenWidget extends StatelessWidget {
                           ),
                           dense: true,
                           title: Text(
-                            language["intoSummary2"],
+                            language["introSummary2"],
                             style: Theme.of(context)
                                 .textTheme
                                 .titleMedium
@@ -231,7 +231,7 @@ class IntroBigScreenWidget extends StatelessWidget {
                           ),
                           dense: true,
                           title: Text(
-                            language["intoSummary3"],
+                            language["introSummary3"],
                             style: Theme.of(context)
                                 .textTheme
                                 .titleMedium
@@ -252,7 +252,7 @@ class IntroBigScreenWidget extends StatelessWidget {
                             ),
                           ),
                         ),
-                        FineasBigButton(
+                        FineaseBigButton(
                           title: language["introCTA"],
                           onPressed: () => {}
                         )
@@ -289,7 +289,7 @@ class IntroMobileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FineasAnnotatedRegionWidget(
+    return FineaseAnnotatedRegionWidget(
       color: context.background,
       child: Scaffold(
         appBar: AppBar(
@@ -306,14 +306,19 @@ class IntroMobileWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    language["appTitle"],
-                    style: context.displayMedium?.copyWith(
-                      color: context.primary,
-                    ),
+                  Row(
+                    children: [
+                      const FineaseIcon(size: 52),
+                      Text(
+                        language["appTitle"],
+                        style: context.displayMedium?.copyWith(
+                          color: context.primary,
+                        ),
+                      )
+                    ],
                   ),
                   Text(
-                    language["intoTitle"],
+                    language["introTitle"],
                     style: context.headlineSmall?.copyWith(
                       color: context.secondary,
                     ),
@@ -321,9 +326,9 @@ class IntroMobileWidget extends StatelessWidget {
                   const SizedBox(height: 24),
                   Column(
                     children: [
-                      IntroTextWidget(title: language["intoSummary1"]),
-                      IntroTextWidget(title: language["intoSummary2"]),
-                      IntroTextWidget(title: language["intoSummary3"]),
+                      IntroTextWidget(title: language["introSummary1"]),
+                      IntroTextWidget(title: language["introSummary2"]),
+                      IntroTextWidget(title: language["introSummary3"]),
                     ],
                   ),
                   const Spacer(),
@@ -345,7 +350,7 @@ class IntroMobileWidget extends StatelessWidget {
         bottomNavigationBar: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 24),
-            child: FineasBigButton(
+            child: FineaseBigButton(
               onPressed: () {},
               title: language["introCTA"],
             ),

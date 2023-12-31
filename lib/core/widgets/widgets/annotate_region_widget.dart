@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fineas/core/common.dart';
+import 'package:finease/core/common.dart';
 
-class FineasAnnotatedRegionWidget extends StatelessWidget {
-  const FineasAnnotatedRegionWidget({
+class FineaseAnnotatedRegionWidget extends StatelessWidget {
+  const FineaseAnnotatedRegionWidget({
     super.key,
     required this.child,
     this.color,

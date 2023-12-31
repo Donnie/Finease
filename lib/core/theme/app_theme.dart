@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'fineas_theme.dart';
+import 'theme.dart';
 
 ThemeData appTheme(
   BuildContext context,

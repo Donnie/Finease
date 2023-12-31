@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:fineas/config/routes_name.dart';
-import 'package:fineas/features/intro/intro_page.dart';
+import 'package:finease/config/routes_name.dart';
+import 'package:finease/features/intro/intro_page.dart';
 
 final GoRouter goRouter = GoRouter(
   initialLocation: RoutesName.intro.path,
