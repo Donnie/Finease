@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:finease/core/common.dart';
 
-class FineasBigButton extends StatelessWidget {
-  const FineasBigButton({
+class FineaseBigButton extends StatelessWidget {
+  const FineaseBigButton({
     super.key,
     required this.onPressed,
     required this.title,
@@ -35,8 +35,8 @@ class FineasBigButton extends StatelessWidget {
   }
 }
 
-class FineasButton extends StatelessWidget {
-  const FineasButton({
+class FineaseButton extends StatelessWidget {
+  const FineaseButton({
     super.key,
     required this.onPressed,
     required this.title,
@@ -59,8 +59,8 @@ class FineasButton extends StatelessWidget {
   }
 }
 
-class FineasIconButton extends StatelessWidget {
-  const FineasIconButton({
+class FineaseIconButton extends StatelessWidget {
+  const FineaseIconButton({
     super.key,
     required this.onPressed,
     required this.title,
@@ -86,8 +86,8 @@ class FineasIconButton extends StatelessWidget {
   }
 }
 
-class FineasTextButton extends StatelessWidget {
-  const FineasTextButton({
+class FineaseTextButton extends StatelessWidget {
+  const FineaseTextButton({
     super.key,
     required this.onPressed,
     required this.title,
@@ -109,8 +109,8 @@ class FineasTextButton extends StatelessWidget {
   }
 }
 
-class FineasOutlineButton extends StatelessWidget {
-  const FineasOutlineButton({
+class FineaseOutlineButton extends StatelessWidget {
+  const FineaseOutlineButton({
     super.key,
     required this.onPressed,
     required this.title,
@@ -132,8 +132,8 @@ class FineasOutlineButton extends StatelessWidget {
   }
 }
 
-class FineasOutlineIconButton extends StatelessWidget {
-  const FineasOutlineIconButton({
+class FineaseOutlineIconButton extends StatelessWidget {
+  const FineaseOutlineIconButton({
     super.key,
     required this.onPressed,
     required this.title,

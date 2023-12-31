@@ -1,3 +1,4 @@
+import 'package:finease/core/constants/constants.dart';
 import 'package:finease/db/db.dart';
 import 'package:finease/db/messages.dart';
 import 'package:finease/widgets/drawer.dart';
@@ -68,7 +69,7 @@ class ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Fineas'),
+        title: Text(language["appTitle"]),
       ),
       drawer: ChatDrawer(
         onClearDatabase: _clearDatabase,

@@ -1,4 +1,4 @@
-package com.example.fineas
+package com.example.finease
 
 import io.flutter.embedding.android.FlutterActivity
 

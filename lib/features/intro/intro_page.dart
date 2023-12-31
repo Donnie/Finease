@@ -24,7 +24,7 @@ class IntroTabletWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FineasAnnotatedRegionWidget(
+    return FineaseAnnotatedRegionWidget(
       color: Colors.transparent,
       child: ColoredBox(
         color: context.surface,
@@ -46,7 +46,7 @@ class IntroTabletWidget extends StatelessWidget {
                     const SizedBox(height: 24),
                     Row(
                       children: [
-                        const FineasIcon(size: 52),
+                        const FineaseIcon(size: 52),
                         Text(
                           language["appTitle"],
                           textAlign: TextAlign.center,
@@ -123,7 +123,7 @@ class IntroTabletWidget extends StatelessWidget {
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 28.0, vertical: 24),
-                child: FineasBigButton(
+                child: FineaseBigButton(
                   onPressed: () {},
                   title: language["introCTA"],
                 ),
@@ -143,7 +143,7 @@ class IntroBigScreenWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FineasAnnotatedRegionWidget(
+    return FineaseAnnotatedRegionWidget(
       color: context.background,
       child: Material(
         child: Row(
@@ -252,7 +252,7 @@ class IntroBigScreenWidget extends StatelessWidget {
                             ),
                           ),
                         ),
-                        FineasBigButton(
+                        FineaseBigButton(
                           title: language["introCTA"],
                           onPressed: () => {}
                         )
@@ -289,7 +289,7 @@ class IntroMobileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FineasAnnotatedRegionWidget(
+    return FineaseAnnotatedRegionWidget(
       color: context.background,
       child: Scaffold(
         appBar: AppBar(
@@ -308,7 +308,7 @@ class IntroMobileWidget extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      const FineasIcon(size: 52),
+                      const FineaseIcon(size: 52),
                       Text(
                         language["appTitle"],
                         style: context.displayMedium?.copyWith(
@@ -350,7 +350,7 @@ class IntroMobileWidget extends StatelessWidget {
         bottomNavigationBar: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 24),
-            child: FineasBigButton(
+            child: FineaseBigButton(
               onPressed: () {},
               title: language["introCTA"],
             ),

@@ -794,11 +794,11 @@ const Map<String, dynamic> language = {
   "appRate": "Rate the app",
   "appRateDesc":
       "Love this app? Let us know how we can make it better on the Google Play Store",
-  "appTitle": "Fineas",
+  "appTitle": "Finease",
   "authenticate": "Authenticate",
   "back": "Back",
   "backupAndRestoreJSONDesc":
-      "The file will be a plain JSON file created and exported to save. Please note that if in case anything changes happen in the future in Finease then this file will be invalid to import",
+      "The file will be a plain JSON ready to be saved. Please note that if in case any changes happen in the future in this App then the export could be invalid for import",
   "backupAndRestoreJSONTitle": "Export data as JSON file",
   "backupAndRestoreSubTitle":
       "Backup and restore your expenses, accounts & categories",
