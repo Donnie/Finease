@@ -429,19 +429,19 @@ const Map<String, dynamic> language = {
     "type": "text"
   },
   "@initialAmount": {"description": "Text shown on the input hint name"},
-  "@intoSummary1": {
+  "@introSummary1": {
     "description": "Hint message 1 shown on the intro page",
     "type": "text"
   },
-  "@intoSummary2": {
+  "@introSummary2": {
     "description": "Hint message 2 shown on the intro page",
     "type": "text"
   },
-  "@intoSummary3": {
+  "@introSummary3": {
     "description": "Hint message 3 shown on the intro page",
     "type": "text"
   },
-  "@intoTitle": {
+  "@introTitle": {
     "description": "Title text shown on the intro page",
     "type": "text"
   },
@@ -897,10 +897,10 @@ const Map<String, dynamic> language = {
   "income": "Income",
   "incomeName": "Income name",
   "initialAmount": "Initial amount",
-  "intoSummary1": "Manage your money with our app",
-  "intoSummary2": "Easy expense tracking for a better budget",
-  "intoSummary3": "Stay on top of your expenses, anytime, anywhere",
-  "intoTitle": "Simple way to help control your savings",
+  "introSummary1": "Double Entry Accounting",
+  "introSummary2": "Easy export to Google Drive or WhatsApp/Telegram",
+  "introSummary3": "Totally offline! 100% privacy guaranteed.",
+  "introTitle": "Gain insights from your finances",
   "introCTA": "Get started",
   "lastFourDigit": "Last four digit number",
   "leftSymbol": "Symbol on left",
@@ -981,7 +981,8 @@ const Map<String, dynamic> language = {
   "updatedCategory": "Category updated",
   "updatedTransaction": "Transaction updated",
   "updateTransaction": "Update transaction",
-  "usageWarning": '*This app still in beta, expect the unexpected behavior and UI changes',
+  "usageWarning":
+      '*This app still in beta, expect the unexpected behavior and UI changes',
   "validAmount": "Enter valid amount",
   "validDescription": "Enter valid description",
   "validName": "Enter valid name",

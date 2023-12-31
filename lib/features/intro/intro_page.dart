@@ -57,7 +57,7 @@ class IntroTabletWidget extends StatelessWidget {
                       ],
                     ),
                     Text(
-                      language["intoTitle"],
+                      language["introTitle"],
                       textAlign: TextAlign.center,
                       style: context.headlineMedium?.copyWith(
                         color: context.secondary,
@@ -74,7 +74,7 @@ class IntroTabletWidget extends StatelessWidget {
                           ),
                           dense: true,
                           title: Text(
-                            language["intoSummary1"],
+                            language["introSummary1"],
                             style: context.titleMedium,
                           ),
                         ),
@@ -86,7 +86,7 @@ class IntroTabletWidget extends StatelessWidget {
                           ),
                           dense: true,
                           title: Text(
-                            language["intoSummary2"],
+                            language["introSummary2"],
                             style: context.titleMedium,
                           ),
                         ),
@@ -98,7 +98,7 @@ class IntroTabletWidget extends StatelessWidget {
                           ),
                           dense: true,
                           title: Text(
-                            language["intoSummary3"],
+                            language["introSummary3"],
                             style: context.titleMedium,
                           ),
                         )
@@ -177,7 +177,7 @@ class IntroBigScreenWidget extends StatelessWidget {
                       ],
                     ),
                     Text(
-                      language["intoTitle"],
+                      language["introTitle"],
                       style: Theme.of(context)
                           .textTheme
                           .headlineMedium
@@ -195,7 +195,7 @@ class IntroBigScreenWidget extends StatelessWidget {
                           ),
                           dense: true,
                           title: Text(
-                            language["intoSummary1"],
+                            language["introSummary1"],
                             style: Theme.of(context)
                                 .textTheme
                                 .titleMedium
@@ -213,7 +213,7 @@ class IntroBigScreenWidget extends StatelessWidget {
                           ),
                           dense: true,
                           title: Text(
-                            language["intoSummary2"],
+                            language["introSummary2"],
                             style: Theme.of(context)
                                 .textTheme
                                 .titleMedium
@@ -231,7 +231,7 @@ class IntroBigScreenWidget extends StatelessWidget {
                           ),
                           dense: true,
                           title: Text(
-                            language["intoSummary3"],
+                            language["introSummary3"],
                             style: Theme.of(context)
                                 .textTheme
                                 .titleMedium
@@ -318,7 +318,7 @@ class IntroMobileWidget extends StatelessWidget {
                     ],
                   ),
                   Text(
-                    language["intoTitle"],
+                    language["introTitle"],
                     style: context.headlineSmall?.copyWith(
                       color: context.secondary,
                     ),
@@ -326,9 +326,9 @@ class IntroMobileWidget extends StatelessWidget {
                   const SizedBox(height: 24),
                   Column(
                     children: [
-                      IntroTextWidget(title: language["intoSummary1"]),
-                      IntroTextWidget(title: language["intoSummary2"]),
-                      IntroTextWidget(title: language["intoSummary3"]),
+                      IntroTextWidget(title: language["introSummary1"]),
+                      IntroTextWidget(title: language["introSummary2"]),
+                      IntroTextWidget(title: language["introSummary3"]),
                     ],
                   ),
                   const Spacer(),
