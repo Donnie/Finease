@@ -43,7 +43,7 @@ Future<void> aInitialMigration(Database db) async {
   await db.execute('''
     CREATE TABLE Messages(
       id INTEGER PRIMARY KEY,
-      text TEXT,
+      content TEXT,
       type TEXT,
       created_at INTEGER
     )

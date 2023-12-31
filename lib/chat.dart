@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:fineas/widgets/drawer.dart';
-import 'package:fineas/widgets/list.dart';
-import 'package:fineas/widgets/input.dart';
 import 'package:fineas/db/db.dart';
-import 'package:fineas/backend/message.dart';
+import 'package:fineas/db/messages.dart';
+import 'package:fineas/widgets/drawer.dart';
+import 'package:fineas/widgets/input.dart';
+import 'package:fineas/widgets/list.dart';
+import 'package:flutter/material.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -31,8 +31,8 @@ class ChatScreenState extends State<ChatScreen> {
   }
 
   void _loadMessages() async {
-    var db = DatabaseHelper();
-    var loadedMessages = await db.getMessages();
+    var msg = MessageService();
+    var loadedMessages = await msg.getMessages();
     setState(() {
       messages.addAll(loadedMessages);
     });
@@ -46,9 +46,9 @@ class ChatScreenState extends State<ChatScreen> {
 
   void _sendMessage() async {
     await sendMessage(
-      text: _controller.text,
-      messages: messages,
-      updateState: () {
+      content: _controller.text,
+      messageList: messages,
+      onStateUpdated: () {
         setState(() {
           _controller.clear();
           _focusNode.requestFocus();

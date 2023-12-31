@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fineas/backend/message.dart';
+import 'package:fineas/db/messages.dart';
 
 class MessagesListView extends StatelessWidget {
   final List<Message> messages;
@@ -28,7 +28,7 @@ class MessagesListView extends StatelessWidget {
                 borderRadius: BorderRadius.circular(5),
               ),
               child: Text(
-                message.text,
+                message.content,
                 style: const TextStyle(color: Colors.black, fontSize: 10),
               ),
             ),
