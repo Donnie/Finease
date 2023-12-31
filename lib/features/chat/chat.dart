@@ -15,7 +15,7 @@ class ChatScreen extends StatefulWidget {
 
 class ChatScreenState extends State<ChatScreen> {
   bool isDarkModeEnabled = false;
-  final List<Message> messages = []; // Ensure this list holds Message objects
+  final List<Message> messages = [];
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
 

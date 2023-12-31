@@ -7,7 +7,7 @@ export 'widgets/button.dart';
 // export 'widgets/icon_picker.dart';
 export 'widgets/icon_title.dart';
 // export 'widgets/pill_chip.dart';
-// export 'widgets/text_field.dart';
+export 'widgets/text_field.dart';
 // export 'widgets/date_time_picker.dart';
 // export 'widgets/toggle_button.dart';
 // export 'widgets/user_image_widget.dart';

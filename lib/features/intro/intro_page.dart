@@ -24,7 +24,7 @@ class IntroTabletWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FineaseAnnotatedRegionWidget(
+    return AppAnnotatedRegionWidget(
       color: Colors.transparent,
       child: ColoredBox(
         color: context.surface,
@@ -143,7 +143,7 @@ class IntroBigScreenWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FineaseAnnotatedRegionWidget(
+    return AppAnnotatedRegionWidget(
       color: context.background,
       child: Material(
         child: Row(
@@ -289,7 +289,7 @@ class IntroMobileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FineaseAnnotatedRegionWidget(
+    return AppAnnotatedRegionWidget(
       color: context.background,
       child: Scaffold(
         appBar: AppBar(

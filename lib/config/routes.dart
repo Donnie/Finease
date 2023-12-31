@@ -1,3 +1,4 @@
+import 'package:finease/features/onboarding/user_onboarding_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:finease/config/routes_name.dart';
@@ -13,6 +14,13 @@ final GoRouter goRouter = GoRouter(
       path: RoutesName.intro.path,
       builder: (BuildContext context, GoRouterState state) {
         return const IntroPage();
+      },
+    ),
+    GoRoute(
+      name: RoutesName.userOnboarding.name,
+      path: RoutesName.userOnboarding.path,
+      builder: (BuildContext context, GoRouterState state) {
+        return const UserOnboardingPage();
       },
     )
   ],
