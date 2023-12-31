@@ -1,0 +1,85 @@
+import 'package:finease/widgets/intro_features.dart';
+import 'package:flutter/material.dart';
+import 'package:finease/core/widgets/lava/lava_clock.dart';
+import 'package:finease/core/common.dart';
+import 'package:finease/core/widgets/export.dart';
+
+class IntroTabletWidget extends StatelessWidget {
+  const IntroTabletWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AppAnnotatedRegionWidget(
+      color: Colors.transparent,
+      child: ColoredBox(
+        color: context.surface,
+        child: LavaAnimation(
+          color: context.primaryContainer,
+          child: Scaffold(
+            extendBodyBehindAppBar: true,
+            backgroundColor: Colors.transparent,
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              toolbarHeight: 0,
+            ),
+            body: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 22),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 24),
+                    Row(
+                      children: [
+                        const FineaseIcon(size: 52),
+                        Text(
+                          language["appTitle"],
+                          textAlign: TextAlign.center,
+                          style: context.displayMedium?.copyWith(
+                            color: context.onSurface.withOpacity(0.75),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Text(
+                      language["introTitle"],
+                      textAlign: TextAlign.center,
+                      style: context.headlineMedium?.copyWith(
+                        color: context.secondary,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    const FeatureList(),
+                    const Spacer(),
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      dense: true,
+                      title: Text(
+                        language["usageWarning"],
+                        style: context.titleSmall?.copyWith(
+                          color: context.bodySmall?.color,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            bottomNavigationBar: SafeArea(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 28.0, vertical: 24),
+                child: FineaseBigButton(
+                  onPressed: () {},
+                  title: language["introCTA"],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
