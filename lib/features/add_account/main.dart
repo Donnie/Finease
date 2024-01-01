@@ -77,13 +77,7 @@ class _AddAccountsPageState extends State<AddAccountsPage> {
             ),
           ),
         ),
-        body: const IndexedStack(
-          children: [
-            Center(
-              child: IntroAccountAddWidget(),
-            ),
-          ],
-        ),
+        body: const IntroAccountAddWidget(),
       ),
     );
   }
