@@ -76,7 +76,7 @@ class IntroTabletWidget extends StatelessWidget {
                     const EdgeInsets.symmetric(horizontal: 28.0, vertical: 24),
                 child: AppBigButton(
                   onPressed: () {
-                    SettingService().setSetting("introDone", "true");
+                    SettingService().setSetting(Setting.introDone, "true");
                     context.go(RoutesName.onboarding.path);
                   },
                   title: language["introCTA"],

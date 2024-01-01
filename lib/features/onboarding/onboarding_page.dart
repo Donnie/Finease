@@ -35,7 +35,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   void saveName() async {
     if (_formState.currentState!.validate()) {
       String name = _nameController.text;
-      await _settingService.setSetting('userName', name);
+      await _settingService.setSetting(Setting.userName, name);
       changePage(++currentIndex);
     }
   }
