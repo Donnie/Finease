@@ -20,7 +20,7 @@ List<Account> defaultAccountsData() {
       name: 'Friend',
       balance: 0,
       currency: "EUR",
-      liquid: true,
+      liquid: false,
       self: true,
     ),
   ];

@@ -43,7 +43,7 @@ class AccountService {
     );
   }
 
-  Future<int> softDeleteAccount(int id) async {
+  Future<int> deleteAccount(int id) async {
     final dbClient = await _databaseHelper.db;
     final currentTime = DateTime.now();
     return await dbClient.update(
@@ -56,7 +56,7 @@ class AccountService {
     );
   }
 
-  Future<int> deleteAccount(int id) async {
+  Future<int> hardDeleteAccount(int id) async {
     final dbClient = await _databaseHelper.db;
     return await dbClient.delete(
       Accounts,
@@ -75,9 +75,9 @@ class Account {
   DateTime? deletedAt;
   int balance;
   String currency;
-  bool? liquid;
+  bool liquid;
   String name;
-  bool? self;
+  bool self;
 
   Account({
     this.id,
@@ -86,9 +86,9 @@ class Account {
     this.deletedAt,
     required this.balance,
     required this.currency,
-    this.liquid,
+    required this.liquid,
     required this.name,
-    this.self,
+    required this.self,
   });
 
   factory Account.fromJson(Map<String, dynamic> json) {
@@ -101,9 +101,9 @@ class Account {
           : null,
       balance: json['balance'],
       currency: json['currency'],
-      liquid: json['liquid'],
+      liquid: json['liquid'] == 1,
       name: json['name'],
-      self: json['self'],
+      self: json['self'] == 1,
     );
   }
 
@@ -115,9 +115,9 @@ class Account {
       'deleted_at': deletedAt?.toIso8601String(),
       'balance': balance,
       'currency': currency,
-      'liquid': liquid,
+      'liquid': liquid ? 1 : 0,
       'name': name,
-      'self': self,
+      'self': self ? 1 : 0,
     };
   }
 }

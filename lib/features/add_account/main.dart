@@ -26,10 +26,6 @@ class _AddAccountsPageState extends State<AddAccountsPage> {
     super.initState();
   }
   
-  void saveAccountAndNavigate() async {
-    await _settingService.setSetting(Setting.accountSetup, "true");
-  }
-
   @override
   Widget build(BuildContext context) {
     return AppAnnotatedRegionWidget(
@@ -44,7 +40,7 @@ class _AddAccountsPageState extends State<AddAccountsPage> {
                 FloatingActionButton.extended(
                   heroTag: 'backButton',
                   onPressed: () {
-                    SettingService().deleteSetting(Setting.accountSetup);
+                    _settingService.deleteSetting(Setting.accountSetup);
                     context.go(RoutesName.addName.path);
                   },
                   extendedPadding: const EdgeInsets.symmetric(horizontal: 24),
@@ -60,9 +56,7 @@ class _AddAccountsPageState extends State<AddAccountsPage> {
                 const Spacer(),
                 FloatingActionButton.extended(
                   heroTag: 'next',
-                  onPressed: () {
-                    saveAccountAndNavigate();
-                  },
+                  onPressed: () => _settingService.setSetting(Setting.accountSetup, "true"),
                   extendedPadding: const EdgeInsets.symmetric(horizontal: 24),
                   label: Icon(MdiIcons.arrowRight),
                   icon: Text(

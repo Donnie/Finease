@@ -1,5 +1,5 @@
 import 'package:finease/core/common.dart';
-import 'package:finease/db/settings.dart';
+import 'package:finease/db/accounts.dart';
 import 'package:finease/features/add_account/default_account.dart';
 import 'package:finease/widgets/account_item.dart';
 import 'package:finease/widgets/filled_card.dart';
@@ -19,14 +19,50 @@ class IntroAccountAddWidget extends StatefulWidget {
 
 class _IntroAccountAddWidgetState extends State<IntroAccountAddWidget>
     with AutomaticKeepAliveClientMixin {
-  ValueNotifier<Settings> settingsNotifier = ValueNotifier<Settings>({});
+  final ValueNotifier<List<Account>> accountsNotifier =
+      ValueNotifier<List<Account>>([]);
+  final AccountService _accountService = AccountService();
 
   @override
   bool get wantKeepAlive => true;
+  List<Account> selectedAccounts = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchAccounts();
+  }
+
+  Future<void> _fetchAccounts() async {
+    final accounts =
+        await _accountService.getAllAccounts();
+    selectedAccounts = accounts;
+    accountsNotifier.value = [...selectedAccounts];
+  }
+
+  void selectAccount(Account model) async {
+    var account = await _accountService.createAccount(model);
+    if (account != null) {
+      setState(() {
+        selectedAccounts.add(account);
+        accountsNotifier.value = [...selectedAccounts];
+      });
+    }
+  }
+
+  void deselectAccount(Account model) async {
+    await _accountService.deleteAccount(model.id!);
+    setState(() {
+      selectedAccounts.remove(model);
+      accountsNotifier.value = [...selectedAccounts];
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    List<Account> egAccounts = defaultAccountsData();
+
     return Scaffold(
       body: ListView(
         shrinkWrap: true,
@@ -41,42 +77,45 @@ class _IntroAccountAddWidgetState extends State<IntroAccountAddWidget>
             ),
             icon: MdiIcons.bankPlus,
           ),
-          ValueListenableBuilder<Settings>(
-            valueListenable: settingsNotifier,
-            builder: (context, value, child) {
+          ValueListenableBuilder<List<Account>>(
+            valueListenable: accountsNotifier,
+            builder: (context, accounts, child) {
               return ScreenTypeLayout.builder(
                 mobile: (p0) => AppFilledCard(
                   child: ListView.separated(
                     separatorBuilder: (context, index) => const Divider(),
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount: 1,
+                    itemCount: accounts.length,
                     shrinkWrap: true,
-                    itemBuilder: (context, index) => AccountItemWidget(
-                      icon: MdiIcons.creditCard,
-                      name: "Main",
-                      bankName: "N26",
-                      onPress: () {},
-                    ),
+                    itemBuilder: (context, index) {
+                      final account = accounts[index];
+                      return AccountItemWidget(
+                        account: account,
+                        onPress: () => deselectAccount(account),
+                      );
+                    },
                   ),
                 ),
                 tablet: (p0) => FractionallySizedBox(
-                    widthFactor: 0.8,
-                    child: GridView.builder(
-                      gridDelegate:
-                          const SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 240,
-                        childAspectRatio: 2,
-                      ),
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: 1,
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) => AccountItemWidget(
-                        icon: MdiIcons.creditCard,
-                        name: "Main",
-                        bankName: "N26",
-                        onPress: () async {},
-                      ),
-                    )),
+                  widthFactor: 0.8,
+                  child: GridView.builder(
+                    gridDelegate:
+                        const SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: 240,
+                      childAspectRatio: 2,
+                    ),
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: accounts.length,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      final account = accounts[index];
+                      return AccountItemWidget(
+                        account: account,
+                        onPress: () => deselectAccount(account),
+                      );
+                    },
+                  ),
+                ),
               );
             },
           ),
@@ -94,10 +133,10 @@ class _IntroAccountAddWidgetState extends State<IntroAccountAddWidget>
               spacing: 12.0,
               runSpacing: 12.0,
               children: [
-                ...defaultAccountsData().map(
+                ...egAccounts.map(
                   (model) => FilterChip(
                     selected: false,
-                    onSelected: (value) {},
+                    onSelected: (value) => selectAccount(model),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(28),
                       side: BorderSide(
@@ -142,5 +181,11 @@ class _IntroAccountAddWidgetState extends State<IntroAccountAddWidget>
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    accountsNotifier.dispose();
+    super.dispose();
   }
 }
