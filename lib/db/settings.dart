@@ -5,6 +5,7 @@ enum Setting {
   introDone,
   userName,
   accountSetup,
+  onboarded,
 }
 
 typedef Settings = Map<Setting, String>;
@@ -19,6 +20,7 @@ class SettingService {
     Setting.introDone: 'introDone',
     Setting.userName: 'userName',
     Setting.accountSetup: 'accountSetup',
+    Setting.onboarded: 'onboarded',
   };
 
   Future<int> createSetting(Setting key, String value) async {

@@ -39,20 +39,26 @@ final GoRouter goRouter = GoRouter(
     );
   },
   redirect: (_, GoRouterState state) async {
-    final String introDone = await SettingService().getSetting(Setting.introDone);
-    if (introDone != "true") {
-      return RoutesName.intro.path;
+    final String onboarded = await SettingService().getSetting(Setting.onboarded);
+    if (onboarded != "true") {
+      return null;
     }
+    return RoutesName.home.path;
 
-    final String userName = await SettingService().getSetting(Setting.userName);
-    if (userName.isEmpty) {
-      return RoutesName.addName.path;
-    }
+    // final String introDone = await SettingService().getSetting(Setting.introDone);
+    // if (introDone != "true") {
+    //   return RoutesName.intro.path;
+    // }
 
-    final String accountSetup = await SettingService().getSetting(Setting.accountSetup);
-    if (accountSetup != "true") {
-      return RoutesName.addAccount.path;
-    }
-    return null;
+    // final String userName = await SettingService().getSetting(Setting.userName);
+    // if (userName.isEmpty) {
+    //   return RoutesName.addName.path;
+    // }
+
+    // final String accountSetup = await SettingService().getSetting(Setting.accountSetup);
+    // if (accountSetup != "true") {
+    //   return RoutesName.addAccount.path;
+    // }
+    // return null;
   }
 );
