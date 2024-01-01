@@ -1,5 +1,6 @@
 import 'package:finease/core/common.dart';
 import 'package:finease/db/settings.dart';
+import 'package:finease/features/add_account/default_account.dart';
 import 'package:finease/widgets/account_item.dart';
 import 'package:finease/widgets/filled_card.dart';
 import 'package:finease/widgets/intro_top.dart';
@@ -93,6 +94,28 @@ class _IntroAccountAddWidgetState extends State<IntroAccountAddWidget>
               spacing: 12.0,
               runSpacing: 12.0,
               children: [
+                ...defaultAccountsData().map(
+                  (model) => FilterChip(
+                    selected: false,
+                    onSelected: (value) {},
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(28),
+                      side: BorderSide(
+                        width: 1,
+                        color: context.primary,
+                      ),
+                    ),
+                    showCheckmark: false,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    label: Text(model.name),
+                    labelStyle: context.titleMedium,
+                    padding: const EdgeInsets.all(12),
+                    avatar: Icon(
+                      Icons.add_rounded,
+                      color: context.primary,
+                    ),
+                  ),
+                ),
                 FilterChip(
                   selected: false,
                   onSelected: (value) {},
