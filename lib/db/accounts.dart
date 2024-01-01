@@ -1,6 +1,7 @@
 import 'package:finease/db/db.dart';
 
 const String Accounts = 'Accounts';
+
 class AccountService {
   final DatabaseHelper _databaseHelper;
 
@@ -29,7 +30,10 @@ class AccountService {
 
   Future<List<Account>> getAllAccounts() async {
     final dbClient = await _databaseHelper.db;
-    final List<Map<String, dynamic>> accounts = await dbClient.query(Accounts);
+    final List<Map<String, dynamic>> accounts = await dbClient.query(
+      Accounts,
+      where: 'deleted_at IS NULL',
+    );
     return accounts.map((json) => Account.fromJson(json)).toList();
   }
 
@@ -49,7 +53,7 @@ class AccountService {
     return await dbClient.update(
       Accounts,
       {
-        'deleted_at': currentTime.toIso8601String(), // Set the deleted_at timestamp
+        'deleted_at': currentTime.toIso8601String(),
       },
       where: 'id = ?',
       whereArgs: [id],
@@ -64,8 +68,6 @@ class AccountService {
       whereArgs: [id],
     );
   }
-
-  // Note: You will also likely want methods for handling soft deletes, i.e., updating the 'deleted_at' field.
 }
 
 class Account {
