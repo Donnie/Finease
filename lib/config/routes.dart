@@ -1,5 +1,6 @@
 import 'package:finease/config/routes_name.dart';
 import 'package:finease/db/settings.dart';
+import 'package:finease/features/add_account/main.dart';
 import 'package:finease/features/add_name/main.dart';
 import 'package:finease/features/intro/intro_page.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,13 @@ final GoRouter goRouter = GoRouter(
         return const AddNamePage();
       },
     ),
+    GoRoute(
+      name: RoutesName.addAccount.name,
+      path: RoutesName.addAccount.path,
+      builder: (BuildContext context, GoRouterState state) {
+        return const AddAccountsPage();
+      },
+    ),
   ],
   errorBuilder: (BuildContext context, GoRouterState state) {
     return Center(
@@ -32,7 +40,7 @@ final GoRouter goRouter = GoRouter(
   },
   redirect: (_, GoRouterState state) async {
     final String introDone = await SettingService().getSetting(Setting.introDone);
-    if (introDone.isEmpty) {
+    if (introDone != "true") {
       return RoutesName.intro.path;
     }
 
@@ -42,8 +50,8 @@ final GoRouter goRouter = GoRouter(
     }
 
     final String accountSetup = await SettingService().getSetting(Setting.accountSetup);
-    if (accountSetup.isEmpty) {
-      return RoutesName.addName.path;
+    if (accountSetup != "true") {
+      return RoutesName.addAccount.path;
     }
     return null;
   }
