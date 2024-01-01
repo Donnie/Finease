@@ -4,6 +4,7 @@ Future<void> aInitialMigration(Database db) async {
   await db.execute('''
     CREATE TABLE Accounts (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
+      currency TEXT NOT NULL,
       name TEXT NOT NULL,
       type TEXT CHECK(type IN ('ASSET', 'LIABILITY', 'EQUITY', 'REVENUE', 'EXPENSE')),
       balance BIGINT NOT NULL DEFAULT 0,

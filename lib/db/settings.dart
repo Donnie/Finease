@@ -4,6 +4,7 @@ import 'package:sqflite/sqflite.dart';
 enum Setting {
   introDone,
   userName,
+  accountSetup,
 }
 
 class SettingService {
@@ -15,6 +16,7 @@ class SettingService {
   final Map<Setting, String> _settingKeys = {
     Setting.introDone: 'introDone',
     Setting.userName: 'userName',
+    Setting.accountSetup: 'accountSetup',
   };
 
   Future<int> createSetting(Setting key, String value) async {
