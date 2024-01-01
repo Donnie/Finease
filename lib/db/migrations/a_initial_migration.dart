@@ -4,28 +4,28 @@ Future<void> aInitialMigration(Database db) async {
   await db.execute('''
     CREATE TABLE Accounts (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      deleted_at DATETIME,
+      balance BIGINT NOT NULL DEFAULT 0,
+      currency TEXT NOT NULL,
+      liquid BOOLEAN,
       name TEXT NOT NULL,
-      type TEXT CHECK(type IN ('ASSET', 'LIABILITY', 'EQUITY', 'REVENUE', 'EXPENSE')),
-      balance DECIMAL(19, 4) NOT NULL DEFAULT 0.0
-    )
-  ''');
-
-  await db.execute('''
-    CREATE TABLE Transactions (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      description TEXT,
-      date DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW'))
+      self BOOLEAN
     )
   ''');
 
   await db.execute('''
     CREATE TABLE Entries (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      transaction_id INTEGER NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      deleted_at DATETIME,
       debit_account_id INTEGER NOT NULL,
       credit_account_id INTEGER NOT NULL,
-      amount DECIMAL(19, 4) NOT NULL,
-      FOREIGN KEY (transaction_id) REFERENCES Transactions(id),
+      amount BIGINT NOT NULL,
+      date DATETIME,
+      notes TEXT,
       FOREIGN KEY (debit_account_id) REFERENCES Accounts(id),
       FOREIGN KEY (credit_account_id) REFERENCES Accounts(id)
     )
@@ -34,18 +34,8 @@ Future<void> aInitialMigration(Database db) async {
   await db.execute('''
     CREATE TABLE Settings (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      setting_key TEXT NOT NULL UNIQUE,
-      setting_value TEXT NOT NULL,
-      setting_type TEXT NOT NULL
-    )
-  ''');
-
-  await db.execute('''
-    CREATE TABLE Messages(
-      id INTEGER PRIMARY KEY,
-      content TEXT,
-      type TEXT,
-      created_at INTEGER
+      key TEXT NOT NULL UNIQUE,
+      value TEXT NOT NULL
     )
   ''');
 }
