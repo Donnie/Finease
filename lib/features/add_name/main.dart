@@ -1,5 +1,6 @@
 import 'package:finease/config/routes_name.dart';
 import 'package:finease/core/common.dart';
+import 'package:finease/db/db.dart';
 import 'package:finease/widgets/export.dart';
 import 'package:finease/db/settings.dart';
 import 'package:finease/widgets/intro_set_name_widget.dart';
@@ -39,8 +40,9 @@ class _AddNamePageState extends State<AddNamePage> {
   }
 
   void saveName() async {
+    String name = _nameController.text;
     if (_formState.currentState!.validate()) {
-      String name = _nameController.text;
+      context.go(RoutesName.addAccount.path);
       await _settingService.setSetting(Setting.userName, name);
     }
   }
@@ -58,7 +60,10 @@ class _AddNamePageState extends State<AddNamePage> {
               children: [
                 FloatingActionButton.extended(
                   heroTag: 'backButton',
-                  onPressed: () => context.go(RoutesName.intro.path),
+                  onPressed: () {
+                    context.go(RoutesName.intro.path);
+                    DatabaseHelper().clearDatabase();
+                  },
                   extendedPadding: const EdgeInsets.symmetric(horizontal: 24),
                   label: Text(
                     language["back"],
@@ -74,7 +79,6 @@ class _AddNamePageState extends State<AddNamePage> {
                   heroTag: 'next',
                   onPressed: () {
                     saveName();
-                    context.go(RoutesName.addAccount.path);
                   },
                   extendedPadding: const EdgeInsets.symmetric(horizontal: 24),
                   label: Icon(MdiIcons.arrowRight),
