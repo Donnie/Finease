@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:finease/core/common.dart';
 
-class FineaseIconTitle extends StatelessWidget {
-  const FineaseIconTitle({super.key});
+class AppIconTitle extends StatelessWidget {
+  const AppIconTitle({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +28,8 @@ class FineaseIconTitle extends StatelessWidget {
   }
 }
 
-class FineaseIcon extends StatelessWidget {
-  const FineaseIcon({
+class AppIcon extends StatelessWidget {
+  const AppIcon({
     super.key,
     this.size = 32,
   });

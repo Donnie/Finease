@@ -36,7 +36,7 @@ class IntroTabletWidget extends StatelessWidget {
                     const SizedBox(height: 24),
                     Row(
                       children: [
-                        const FineaseIcon(size: 52),
+                        const AppIcon(size: 52),
                         Text(
                           language["appTitle"],
                           textAlign: TextAlign.center,

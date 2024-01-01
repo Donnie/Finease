@@ -33,7 +33,7 @@ class IntroMobileWidget extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      const FineaseIcon(size: 52),
+                      const AppIcon(size: 52),
                       Text(
                         language["appTitle"],
                         style: context.displayMedium?.copyWith(

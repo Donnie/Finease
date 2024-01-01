@@ -35,8 +35,8 @@ class AppBigButton extends StatelessWidget {
   }
 }
 
-class FineaseButton extends StatelessWidget {
-  const FineaseButton({
+class AppButton extends StatelessWidget {
+  const AppButton({
     super.key,
     required this.onPressed,
     required this.title,
@@ -59,8 +59,8 @@ class FineaseButton extends StatelessWidget {
   }
 }
 
-class FineaseIconButton extends StatelessWidget {
-  const FineaseIconButton({
+class AppIconButton extends StatelessWidget {
+  const AppIconButton({
     super.key,
     required this.onPressed,
     required this.title,
@@ -86,8 +86,8 @@ class FineaseIconButton extends StatelessWidget {
   }
 }
 
-class FineaseTextButton extends StatelessWidget {
-  const FineaseTextButton({
+class AppTextButton extends StatelessWidget {
+  const AppTextButton({
     super.key,
     required this.onPressed,
     required this.title,
@@ -109,8 +109,8 @@ class FineaseTextButton extends StatelessWidget {
   }
 }
 
-class FineaseOutlineButton extends StatelessWidget {
-  const FineaseOutlineButton({
+class AppOutlineButton extends StatelessWidget {
+  const AppOutlineButton({
     super.key,
     required this.onPressed,
     required this.title,
@@ -132,8 +132,8 @@ class FineaseOutlineButton extends StatelessWidget {
   }
 }
 
-class FineaseOutlineIconButton extends StatelessWidget {
-  const FineaseOutlineIconButton({
+class AppOutlineIconButton extends StatelessWidget {
+  const AppOutlineIconButton({
     super.key,
     required this.onPressed,
     required this.title,
