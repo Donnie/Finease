@@ -77,7 +77,7 @@ class IntroTabletWidget extends StatelessWidget {
                 child: AppBigButton(
                   onPressed: () {
                     SettingService().setSetting(Setting.introDone, "true");
-                    context.go(RoutesName.onboarding.path);
+                    context.go(RoutesName.addName.path);
                   },
                   title: language["introCTA"],
                 ),

@@ -1,6 +1,6 @@
 enum RoutesName {
   intro,
-  onboarding,
+  addName,
 }
 
 extension RoutesNameHelper on RoutesName {
@@ -8,8 +8,8 @@ extension RoutesNameHelper on RoutesName {
     switch (this) {
       case RoutesName.intro:
         return 'intro';
-      case RoutesName.onboarding:
-        return 'onboarding';
+      case RoutesName.addName:
+        return 'addName';
     }
   }
 
@@ -17,8 +17,8 @@ extension RoutesNameHelper on RoutesName {
     switch (this) {
       case RoutesName.intro:
         return '/intro';
-      case RoutesName.onboarding:
-        return '/onboarding';
+      case RoutesName.addName:
+        return '/addName';
     }
   }
 }

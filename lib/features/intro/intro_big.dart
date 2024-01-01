@@ -76,7 +76,7 @@ class IntroBigScreenWidget extends StatelessWidget {
                           title: language["introCTA"],
                           onPressed: () {
                             SettingService().setSetting(Setting.introDone, "true");
-                            context.go(RoutesName.onboarding.path);
+                            context.go(RoutesName.addName.path);
                           },
                         )
                       ],

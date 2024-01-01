@@ -1,50 +1,37 @@
+import 'package:finease/config/routes_name.dart';
 import 'package:finease/core/common.dart';
 import 'package:finease/core/widgets/export.dart';
 import 'package:finease/db/settings.dart';
-import 'package:finease/features/onboarding/add_accounts.dart';
 import 'package:finease/widgets/intro_set_name_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-class OnboardingPage extends StatefulWidget {
-  const OnboardingPage({
+class AddNamePage extends StatefulWidget {
+  const AddNamePage({
     super.key,
     this.forceCountrySelector = false,
   });
   final bool forceCountrySelector;
 
   @override
-  State<OnboardingPage> createState() => _OnboardingPageState();
+  State<AddNamePage> createState() => _AddNamePageState();
 }
 
-class _OnboardingPageState extends State<OnboardingPage> {
+class _AddNamePageState extends State<AddNamePage> {
   final GlobalKey<FormState> _formState = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final SettingService _settingService = SettingService();
-  int currentIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero).then((value) {
-      if (widget.forceCountrySelector) {
-        changePage(4);
-      }
-    });
   }
 
   void saveName() async {
     if (_formState.currentState!.validate()) {
       String name = _nameController.text;
       await _settingService.setSetting(Setting.userName, name);
-      changePage(++currentIndex);
-    }
-  }
-  
-  void saveAccountAndNavigate() async {
-    await _settingService.setSetting(Setting.accountSetup, "true");
-    if (mounted) {
-      changePage(++currentIndex);
     }
   }
 
@@ -59,42 +46,17 @@ class _OnboardingPageState extends State<OnboardingPage> {
             padding: const EdgeInsets.all(16.0),
             child: Row(
               children: [
-                Visibility(
-                  visible: currentIndex != 0,
-                  child: FloatingActionButton.extended(
-                    heroTag: 'backButton',
-                    onPressed: () {
-                      if (currentIndex == 0) {
-                        changePage(0);
-                      } else {
-                        changePage(--currentIndex);
-                      }
-                    },
-                    extendedPadding: const EdgeInsets.symmetric(horizontal: 24),
-                    label: Text(
-                      language["back"],
-                      style: context.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1,
-                      ),
-                    ),
-                    icon: Icon(MdiIcons.arrowLeft),
-                  ),
-                ),
                 const Spacer(),
                 FloatingActionButton.extended(
                   heroTag: 'next',
                   onPressed: () {
-                    if (currentIndex == 0) {
-                      saveName();
-                    } else if (currentIndex == 1) {
-                      saveAccountAndNavigate();
-                    }
+                    saveName();
+                    context.go(RoutesName.addAccount.path);
                   },
                   extendedPadding: const EdgeInsets.symmetric(horizontal: 24),
                   label: Icon(MdiIcons.arrowRight),
                   icon: Text(
-                    currentIndex == 4 ? language["done"] : language["next"],
+                    language["next"],
                     style: context.bodyLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                       letterSpacing: 1,
@@ -106,7 +68,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
           ),
         ),
         body: IndexedStack(
-          index: currentIndex,
           children: [
             Center(
               child: IntroSetNameWidget(
@@ -114,16 +75,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 nameController: _nameController,
               ),
             ),
-            const IntroAccountAddWidget(),
           ],
         ),
       ),
     );
-  }
-
-  void changePage(int index) {
-    setState(() {
-      currentIndex = index;
-    });
   }
 }
