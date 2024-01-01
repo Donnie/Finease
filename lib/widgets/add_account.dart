@@ -26,6 +26,7 @@ class _IntroAccountAddWidgetState extends State<IntroAccountAddWidget>
   @override
   bool get wantKeepAlive => true;
   List<Account> selectedAccounts = [];
+  List<Account> egAccounts = defaultAccountsData();
 
   @override
   void initState() {
@@ -44,6 +45,7 @@ class _IntroAccountAddWidgetState extends State<IntroAccountAddWidget>
     var account = await _accountService.createAccount(model);
     if (account != null) {
       setState(() {
+        egAccounts.remove(model);
         selectedAccounts.add(account);
         accountsNotifier.value = [...selectedAccounts];
       });
@@ -52,7 +54,9 @@ class _IntroAccountAddWidgetState extends State<IntroAccountAddWidget>
 
   void deselectAccount(Account model) async {
     await _accountService.deleteAccount(model.id!);
+    model.id = null;
     setState(() {
+      egAccounts.add(model);
       selectedAccounts.remove(model);
       accountsNotifier.value = [...selectedAccounts];
     });
@@ -61,7 +65,6 @@ class _IntroAccountAddWidgetState extends State<IntroAccountAddWidget>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    List<Account> egAccounts = defaultAccountsData();
 
     return Scaffold(
       body: ListView(
