@@ -7,6 +7,8 @@ enum Setting {
   accountSetup,
 }
 
+typedef Settings = Map<Setting, String>;
+
 class SettingService {
   final DatabaseHelper _databaseHelper;
 
@@ -40,6 +42,26 @@ class SettingService {
       return maps.first['value'] as String;
     }
     return "";
+  }
+
+  Future<Settings> loadSettings() async {
+    final dbClient = await _databaseHelper.db;
+    final maps = await dbClient.query('Settings', columns: ['key', 'value']);
+    
+    Settings settings = {};
+
+    for (var map in maps) {
+      final keyAsString = map['key'] as String?;
+      final value = map['value'] as String?;
+
+      if (keyAsString != null && value != null) {
+        final key = _settingKeys.entries
+            .firstWhere((entry) => entry.value == keyAsString).key;
+        settings[key] = value;
+      }
+    }
+
+    return settings;
   }
 
   Future<int> setSetting(Setting key, String value) async {

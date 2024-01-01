@@ -950,6 +950,7 @@ const Map<String, dynamic> language = {
   "selectDateRangeTooltip": "Date range",
   "selectIconSubTitle": "Tap to select icon",
   "selectIconTitle": "Select icon",
+  "setupAccounts": "Setup Accounts",
   "setBudget": "Set budget for category",
   "settings": "Settings",
   "smallSizeFab": "Small size FAB",

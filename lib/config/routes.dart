@@ -23,7 +23,7 @@ final GoRouter goRouter = GoRouter(
       builder: (BuildContext context, GoRouterState state) {
         return const OnboardingPage();
       },
-    )
+    ),
   ],
   errorBuilder: (BuildContext context, GoRouterState state) {
     return Center(
@@ -32,12 +32,17 @@ final GoRouter goRouter = GoRouter(
   },
   redirect: (_, GoRouterState state) async {
     final String introDone = await SettingService().getSetting(Setting.introDone);
-    if (introDone != "true") {
+    if (introDone.isEmpty) {
       return RoutesName.intro.path;
     }
 
     final String userName = await SettingService().getSetting(Setting.userName);
     if (userName.isEmpty) {
+      return RoutesName.onboarding.path;
+    }
+
+    final String accountSetup = await SettingService().getSetting(Setting.accountSetup);
+    if (accountSetup.isEmpty) {
       return RoutesName.onboarding.path;
     }
     return null;

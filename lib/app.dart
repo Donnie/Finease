@@ -2,6 +2,7 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:finease/config/routes.dart';
 import 'package:finease/core/constants/constants.dart';
 import 'package:finease/core/theme/app_theme.dart';
+import 'package:finease/db/settings.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,7 +15,7 @@ class MainApp extends StatefulWidget {
     required this.settings,
   });
 
-  final String settings;
+  final Settings settings;
 
   @override
   State<MainApp> createState() => _MainAppState();
@@ -24,7 +25,7 @@ class _MainAppState extends State<MainApp> {
   ColorScheme lightColorScheme = const ColorScheme.light();  // default light scheme
   ColorScheme darkColorScheme = const ColorScheme.dark();    // default dark scheme
 
-  ValueNotifier<Map<String, dynamic>> settingsNotifier = ValueNotifier<Map<String, dynamic>>({});
+  ValueNotifier<Settings> settingsNotifier = ValueNotifier<Settings>({});
   // Add any state-related properties or methods here
   @override
   void initState() {
@@ -33,8 +34,7 @@ class _MainAppState extends State<MainApp> {
   }
 
   Future<void> loadInitialSettings() async {
-    // Provide your logic to retrieve initial settings from the database
-    Map<String, dynamic> initialSettings = {};
+    Settings initialSettings = {};
     settingsNotifier.value = initialSettings;
   }
 
@@ -42,9 +42,9 @@ class _MainAppState extends State<MainApp> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        Provider<String>(create: (_) => widget.settings),
+        Provider<Settings>(create: (_) => widget.settings),
       ],
-      child: ValueListenableBuilder<Map<String, dynamic>>(
+      child: ValueListenableBuilder<Settings>(
         valueListenable: settingsNotifier,
         builder: (context, value, _) {
           const ThemeMode themeMode = ThemeMode.dark;

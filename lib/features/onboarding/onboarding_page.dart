@@ -1,6 +1,7 @@
 import 'package:finease/core/common.dart';
 import 'package:finease/core/widgets/export.dart';
 import 'package:finease/db/settings.dart';
+import 'package:finease/features/onboarding/add_accounts.dart';
 import 'package:finease/widgets/intro_set_name_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -36,6 +37,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
     if (_formState.currentState!.validate()) {
       String name = _nameController.text;
       await _settingService.setSetting(Setting.userName, name);
+      changePage(++currentIndex);
+    }
+  }
+  
+  void saveAccountAndNavigate() async {
+    await _settingService.setSetting(Setting.accountSetup, "true");
+    if (mounted) {
       changePage(++currentIndex);
     }
   }
@@ -79,6 +87,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   onPressed: () {
                     if (currentIndex == 0) {
                       saveName();
+                    } else if (currentIndex == 1) {
+                      saveAccountAndNavigate();
                     }
                   },
                   extendedPadding: const EdgeInsets.symmetric(horizontal: 24),
@@ -104,6 +114,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 nameController: _nameController,
               ),
             ),
+            const IntroAccountAddWidget(),
           ],
         ),
       ),
