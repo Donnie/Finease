@@ -38,7 +38,7 @@ class _IntroAccountAddWidgetState extends State<IntroAccountAddWidget>
                 color: context.onSurface,
               ),
             ),
-            icon: Icons.credit_card_outlined,
+            icon: MdiIcons.bankPlus,
           ),
           ValueListenableBuilder<Settings>(
             valueListenable: settingsNotifier,
