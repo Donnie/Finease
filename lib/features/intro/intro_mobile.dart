@@ -1,7 +1,7 @@
 import 'package:finease/config/routes_name.dart';
 import 'package:finease/core/common.dart';
-import 'package:finease/core/widgets/export.dart';
-import 'package:finease/core/widgets/lava/lava_clock.dart';
+import 'package:finease/widgets/export.dart';
+import 'package:finease/widgets/lava/lava_clock.dart';
 import 'package:finease/db/settings.dart';
 import 'package:finease/widgets/intro_features.dart';
 import 'package:flutter/material.dart';

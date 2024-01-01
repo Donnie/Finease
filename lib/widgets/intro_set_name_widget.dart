@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:finease/core/common.dart';
-import 'package:finease/core/widgets/export.dart';
+import 'package:finease/widgets/export.dart';
 import 'package:finease/widgets/intro_top.dart';
 
 class IntroSetNameWidget extends StatelessWidget {
