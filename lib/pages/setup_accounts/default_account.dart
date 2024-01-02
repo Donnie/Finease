@@ -7,21 +7,21 @@ List<Account> defaultAccountsData() {
       balance: 0,
       currency: "EUR",
       liquid: true,
-      self: true,
+      debit: true,
     ),
     Account(
       name: 'Groceries',
       balance: 0,
       currency: "EUR",
       liquid: false,
-      self: false,
+      debit: false,
     ),
     Account(
       name: 'Friend',
       balance: 0,
       currency: "EUR",
       liquid: false,
-      self: true,
+      debit: true,
     ),
   ];
 }

@@ -11,7 +11,7 @@ Future<void> aInitialMigration(Database db) async {
       currency TEXT NOT NULL,
       liquid BOOLEAN,
       name TEXT NOT NULL,
-      self BOOLEAN
+      debit BOOLEAN
     )
   ''');
 

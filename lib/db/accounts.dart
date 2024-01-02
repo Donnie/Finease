@@ -79,7 +79,7 @@ class Account {
   String currency;
   bool liquid;
   String name;
-  bool self;
+  bool debit;
 
   Account({
     this.id,
@@ -90,7 +90,7 @@ class Account {
     required this.currency,
     required this.liquid,
     required this.name,
-    required this.self,
+    required this.debit,
   });
 
   factory Account.fromJson(Map<String, dynamic> json) {
@@ -105,7 +105,7 @@ class Account {
       currency: json['currency'],
       liquid: json['liquid'] == 1,
       name: json['name'],
-      self: json['self'] == 1,
+      debit: json['debit'] == 1,
     );
   }
 
@@ -119,7 +119,7 @@ class Account {
       'currency': currency,
       'liquid': liquid ? 1 : 0,
       'name': name,
-      'self': self ? 1 : 0,
+      'debit': debit ? 1 : 0,
     };
   }
 }

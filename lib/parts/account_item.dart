@@ -17,8 +17,8 @@ class AccountItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final icon = account.self ? MdiIcons.arrowBottomLeft : MdiIcons.arrowTopRight;
-    final color = account.self ? Color(Colors.green.shade200.value) : Color(Colors.red.shade200.value);
+    final icon = account.debit ? MdiIcons.arrowBottomLeft : MdiIcons.arrowTopRight;
+    final color = account.debit ? Color(Colors.green.shade200.value) : Color(Colors.red.shade200.value);
     final tileColor = account.liquid ? Color(Colors.brown.shade900.value) : Color(Colors.grey.shade800.value);
 
     return ScreenTypeLayout.builder(
