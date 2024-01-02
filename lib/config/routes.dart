@@ -1,6 +1,6 @@
 import 'package:finease/config/routes_name.dart';
 import 'package:finease/db/settings.dart';
-import 'package:finease/features/add_account/main.dart';
+import 'package:finease/features/setup_account/main.dart';
 import 'package:finease/features/add_name/main.dart';
 import 'package:finease/features/intro/intro_page.dart';
 import 'package:flutter/material.dart';
