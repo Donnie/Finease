@@ -1,9 +1,9 @@
 import 'package:finease/core/common.dart';
 import 'package:finease/db/accounts.dart';
-import 'package:finease/features/setup_account/default_account.dart';
-import 'package:finease/widgets/account_item.dart';
-import 'package:finease/widgets/filled_card.dart';
-import 'package:finease/widgets/intro_top.dart';
+import 'package:finease/pages/setup_accounts/default_account.dart';
+import 'package:finease/parts/account_item.dart';
+import 'package:finease/parts/filled_card.dart';
+import 'package:finease/parts/intro_top.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:responsive_builder/responsive_builder.dart';

@@ -1,6 +1,6 @@
 import 'package:finease/core/common.dart';
 import 'package:finease/db/accounts.dart';
-import 'package:finease/widgets/card.dart';
+import 'package:finease/parts/card.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:responsive_builder/responsive_builder.dart';

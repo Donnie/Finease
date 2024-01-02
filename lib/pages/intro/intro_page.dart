@@ -1,6 +1,6 @@
-import 'package:finease/features/intro/intro_big.dart';
-import 'package:finease/features/intro/intro_mobile.dart';
-import 'package:finease/features/intro/intro_tablet.dart';
+import 'package:finease/pages/intro/intro_big.dart';
+import 'package:finease/pages/intro/intro_mobile.dart';
+import 'package:finease/pages/intro/intro_tablet.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 

@@ -1,8 +1,8 @@
 import 'package:finease/config/routes_name.dart';
 import 'package:finease/db/settings.dart';
-import 'package:finease/features/setup_account/main.dart';
-import 'package:finease/features/add_name/main.dart';
-import 'package:finease/features/intro/intro_page.dart';
+import 'package:finease/pages/setup_accounts/main.dart';
+import 'package:finease/pages/add_name/main.dart';
+import 'package:finease/pages/intro/intro_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
