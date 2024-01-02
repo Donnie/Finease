@@ -1,6 +1,7 @@
 enum RoutesName {
   intro,
   addName,
+  setupAccounts,
   addAccount,
   home,
 }
@@ -12,6 +13,8 @@ extension RoutesNameHelper on RoutesName {
         return 'intro';
       case RoutesName.addName:
         return 'addName';
+      case RoutesName.setupAccounts:
+        return 'setupAccounts';
       case RoutesName.addAccount:
         return 'addAccount';
       case RoutesName.home:
@@ -25,6 +28,8 @@ extension RoutesNameHelper on RoutesName {
         return '/intro';
       case RoutesName.addName:
         return '/addName';
+      case RoutesName.setupAccounts:
+        return '/setupAccounts';
       case RoutesName.addAccount:
         return '/addAccount';
       case RoutesName.home:

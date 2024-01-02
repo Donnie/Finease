@@ -1,33 +1,50 @@
-import 'package:finease/config/routes_name.dart';
+import 'package:finease/routes/routes_name.dart';
 import 'package:finease/core/common.dart';
-import 'package:finease/widgets/export.dart';
+import 'package:finease/db/db.dart';
+import 'package:finease/parts/export.dart';
 import 'package:finease/db/settings.dart';
-import 'package:finease/widgets/add_account.dart';
+import 'package:finease/parts/intro_set_name_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-class AddAccountsPage extends StatefulWidget {
-  const AddAccountsPage({
+class AddNamePage extends StatefulWidget {
+  const AddNamePage({
     super.key,
     this.forceCountrySelector = false,
   });
   final bool forceCountrySelector;
 
   @override
-  State<AddAccountsPage> createState() => _AddAccountsPageState();
+  State<AddNamePage> createState() => _AddNamePageState();
 }
 
-class _AddAccountsPageState extends State<AddAccountsPage> {
+class _AddNamePageState extends State<AddNamePage> {
+  final GlobalKey<FormState> _formState = GlobalKey<FormState>();
+  final TextEditingController _nameController = TextEditingController();
   final SettingService _settingService = SettingService();
 
   @override
   void initState() {
     super.initState();
+    getName();
   }
-  
-  void saveAccountAndNavigate() async {
-    await _settingService.setSetting(Setting.accountSetup, "true");
+
+  void getName() async {
+    final String userName = await SettingService().getSetting(Setting.userName);
+    if (mounted) {
+      setState(() {
+        _nameController.text = userName;
+      });
+    }
+  }
+
+  void saveName() async {
+    String name = _nameController.text;
+    if (_formState.currentState!.validate()) {
+      context.go(RoutesName.setupAccounts.path);
+      await _settingService.setSetting(Setting.userName, name);
+    }
   }
 
   @override
@@ -44,8 +61,8 @@ class _AddAccountsPageState extends State<AddAccountsPage> {
                 FloatingActionButton.extended(
                   heroTag: 'backButton',
                   onPressed: () {
-                    SettingService().deleteSetting(Setting.accountSetup);
-                    context.go(RoutesName.addName.path);
+                    context.go(RoutesName.intro.path);
+                    DatabaseHelper().clearDatabase();
                   },
                   extendedPadding: const EdgeInsets.symmetric(horizontal: 24),
                   label: Text(
@@ -61,7 +78,7 @@ class _AddAccountsPageState extends State<AddAccountsPage> {
                 FloatingActionButton.extended(
                   heroTag: 'next',
                   onPressed: () {
-                    saveAccountAndNavigate();
+                    saveName();
                   },
                   extendedPadding: const EdgeInsets.symmetric(horizontal: 24),
                   label: Icon(MdiIcons.arrowRight),
@@ -77,7 +94,16 @@ class _AddAccountsPageState extends State<AddAccountsPage> {
             ),
           ),
         ),
-        body: const IntroAccountAddWidget(),
+        body: IndexedStack(
+          children: [
+            Center(
+              child: IntroSetNameWidget(
+                formState: _formState,
+                nameController: _nameController,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

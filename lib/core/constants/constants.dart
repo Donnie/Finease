@@ -927,7 +927,7 @@ const Map<String, dynamic> language = {
   "raiseABugOrRequest": "Raise a bug or request",
   "raiseABugOrRequestDesc":
       "Found a bug or need a feature to be implemented? Ask away!",
-  "recommendedAccounts": "Recommended accounts",
+  "recommendedAccounts": "Example accounts",
   "recommendedCategories": "Recommended categories",
   "recurring": "Recurring",
   "recurringAction": "Add recurring events",

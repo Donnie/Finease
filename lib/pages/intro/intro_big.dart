@@ -1,9 +1,9 @@
-import 'package:finease/config/routes_name.dart';
+import 'package:finease/routes/routes_name.dart';
 import 'package:finease/core/common.dart';
-import 'package:finease/widgets/export.dart';
-import 'package:finease/widgets/lava/lava_clock.dart';
+import 'package:finease/parts/export.dart';
+import 'package:finease/parts/lava/lava_clock.dart';
 import 'package:finease/db/settings.dart';
-import 'package:finease/widgets/intro_features.dart';
+import 'package:finease/parts/intro_features.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 

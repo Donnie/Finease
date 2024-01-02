@@ -1,8 +1,9 @@
-import 'package:finease/config/routes_name.dart';
+import 'package:finease/pages/add_account/main.dart';
+import 'package:finease/routes/routes_name.dart';
 import 'package:finease/db/settings.dart';
-import 'package:finease/features/add_account/main.dart';
-import 'package:finease/features/add_name/main.dart';
-import 'package:finease/features/intro/intro_page.dart';
+import 'package:finease/pages/setup_accounts/main.dart';
+import 'package:finease/pages/add_name/main.dart';
+import 'package:finease/pages/intro/intro_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -26,10 +27,17 @@ final GoRouter goRouter = GoRouter(
       },
     ),
     GoRoute(
+      name: RoutesName.setupAccounts.name,
+      path: RoutesName.setupAccounts.path,
+      builder: (BuildContext context, GoRouterState state) {
+        return const SetupAccountsPage();
+      },
+    ),
+    GoRoute(
       name: RoutesName.addAccount.name,
       path: RoutesName.addAccount.path,
       builder: (BuildContext context, GoRouterState state) {
-        return const AddAccountsPage();
+        return const AddAccountScreen();
       },
     ),
   ],
@@ -57,7 +65,7 @@ final GoRouter goRouter = GoRouter(
 
     // final String accountSetup = await SettingService().getSetting(Setting.accountSetup);
     // if (accountSetup != "true") {
-    //   return RoutesName.addAccount.path;
+    //   return RoutesName.setupAccounts.path;
     // }
     // return null;
   }

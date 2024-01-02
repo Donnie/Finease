@@ -57,6 +57,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.3"
+  currency_picker:
+    dependency: "direct main"
+    description:
+      name: currency_picker
+      sha256: eb75deb7bc92e3f31e1b8ad4efacf71371e8e49d7a0eebd1c1a8e9fae58cc23d
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.20"
   dynamic_color:
     dependency: "direct main"
     description:

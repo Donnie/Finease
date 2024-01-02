@@ -1,5 +1,5 @@
 import 'package:dynamic_color/dynamic_color.dart';
-import 'package:finease/config/routes.dart';
+import 'package:finease/routes/routes.dart';
 import 'package:finease/core/constants/constants.dart';
 import 'package:finease/core/theme/app_theme.dart';
 import 'package:finease/db/settings.dart';

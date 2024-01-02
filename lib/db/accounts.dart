@@ -1,6 +1,7 @@
 import 'package:finease/db/db.dart';
 
 const String Accounts = 'Accounts';
+
 class AccountService {
   final DatabaseHelper _databaseHelper;
 
@@ -29,7 +30,10 @@ class AccountService {
 
   Future<List<Account>> getAllAccounts() async {
     final dbClient = await _databaseHelper.db;
-    final List<Map<String, dynamic>> accounts = await dbClient.query(Accounts);
+    final List<Map<String, dynamic>> accounts = await dbClient.query(
+      Accounts,
+      where: 'deleted_at IS NULL',
+    );
     return accounts.map((json) => Account.fromJson(json)).toList();
   }
 
@@ -43,20 +47,20 @@ class AccountService {
     );
   }
 
-  Future<int> softDeleteAccount(int id) async {
+  Future<int> deleteAccount(int id) async {
     final dbClient = await _databaseHelper.db;
     final currentTime = DateTime.now();
     return await dbClient.update(
       Accounts,
       {
-        'deleted_at': currentTime.toIso8601String(), // Set the deleted_at timestamp
+        'deleted_at': currentTime.toIso8601String(),
       },
       where: 'id = ?',
       whereArgs: [id],
     );
   }
 
-  Future<int> deleteAccount(int id) async {
+  Future<int> hardDeleteAccount(int id) async {
     final dbClient = await _databaseHelper.db;
     return await dbClient.delete(
       Accounts,
@@ -64,8 +68,6 @@ class AccountService {
       whereArgs: [id],
     );
   }
-
-  // Note: You will also likely want methods for handling soft deletes, i.e., updating the 'deleted_at' field.
 }
 
 class Account {
@@ -75,9 +77,9 @@ class Account {
   DateTime? deletedAt;
   int balance;
   String currency;
-  bool? liquid;
+  bool liquid;
   String name;
-  bool? self;
+  bool debit;
 
   Account({
     this.id,
@@ -86,9 +88,9 @@ class Account {
     this.deletedAt,
     required this.balance,
     required this.currency,
-    this.liquid,
+    required this.liquid,
     required this.name,
-    this.self,
+    required this.debit,
   });
 
   factory Account.fromJson(Map<String, dynamic> json) {
@@ -101,9 +103,9 @@ class Account {
           : null,
       balance: json['balance'],
       currency: json['currency'],
-      liquid: json['liquid'],
+      liquid: json['liquid'] == 1,
       name: json['name'],
-      self: json['self'],
+      debit: json['debit'] == 1,
     );
   }
 
@@ -115,9 +117,9 @@ class Account {
       'deleted_at': deletedAt?.toIso8601String(),
       'balance': balance,
       'currency': currency,
-      'liquid': liquid,
+      'liquid': liquid ? 1 : 0,
       'name': name,
-      'self': self,
+      'debit': debit ? 1 : 0,
     };
   }
 }
