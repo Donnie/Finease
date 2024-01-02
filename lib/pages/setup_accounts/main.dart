@@ -32,6 +32,7 @@ class _SetupAccountsPageState extends State<SetupAccountsPage> {
       color: context.background,
       child: Scaffold(
         resizeToAvoidBottomInset: true,
+        body: const IntroAccountAddWidget(),
         bottomNavigationBar: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -71,7 +72,6 @@ class _SetupAccountsPageState extends State<SetupAccountsPage> {
             ),
           ),
         ),
-        body: const IntroAccountAddWidget(),
       ),
     );
   }

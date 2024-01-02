@@ -1,4 +1,5 @@
 import 'package:finease/core/common.dart';
+import 'package:finease/db/accounts.dart';
 import 'package:finease/pages/add_account/account_body.dart';
 import 'package:finease/parts/export.dart';
 import 'package:flutter/material.dart';
@@ -12,11 +13,13 @@ class AddAccountScreen extends StatefulWidget {
 }
 
 class AddAccountScreenState extends State<AddAccountScreen> {
+  final AccountService _accountService = AccountService();
+
   final _formState = GlobalKey<FormState>();
   final _accountName = TextEditingController();
   final _accountCurrency = TextEditingController();
-  bool _creditDebitValue = true;
-  bool _liquidAssetsValue = true;
+  bool accountDebit = true;
+  bool accountLiquid = true;
 
   @override
   Widget build(BuildContext context) {
@@ -50,13 +53,13 @@ class AddAccountScreenState extends State<AddAccountScreen> {
 
   void _accountDebit(bool value) {
     setState(() {
-      _creditDebitValue = value;
+      accountDebit = value;
     });
   }
 
   void _accountLiquid(bool value) {
     setState(() {
-      _liquidAssetsValue = value;
+      accountLiquid = value;
     });
   }
 
@@ -65,15 +68,15 @@ class AddAccountScreenState extends State<AddAccountScreen> {
     String accountCurrency = _accountCurrency.text;
     if (_formState.currentState?.validate() ?? false) {
       _formState.currentState?.save();
-
-      // Handle form submission logic
-      print('''
-Debit: $_creditDebitValue
-Liquid Assets: $_liquidAssetsValue
-_accountName: $accountName
-_accountCurrency: $accountCurrency
-''');
+      Account account = Account(
+        name: accountName,
+        currency: accountCurrency,
+        balance: 0,
+        liquid: accountLiquid,
+        debit: accountDebit,
+      );
       context.pop();
+      _accountService.createAccount(account);
     }
   }
 }
