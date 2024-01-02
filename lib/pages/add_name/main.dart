@@ -1,4 +1,4 @@
-import 'package:finease/config/routes_name.dart';
+import 'package:finease/routes/routes_name.dart';
 import 'package:finease/core/common.dart';
 import 'package:finease/db/db.dart';
 import 'package:finease/parts/export.dart';
@@ -42,7 +42,7 @@ class _AddNamePageState extends State<AddNamePage> {
   void saveName() async {
     String name = _nameController.text;
     if (_formState.currentState!.validate()) {
-      context.go(RoutesName.addAccount.path);
+      context.go(RoutesName.setupAccounts.path);
       await _settingService.setSetting(Setting.userName, name);
     }
   }

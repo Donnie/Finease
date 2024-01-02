@@ -1,4 +1,4 @@
-import 'package:finease/config/routes_name.dart';
+import 'package:finease/routes/routes_name.dart';
 import 'package:finease/core/common.dart';
 import 'package:finease/parts/export.dart';
 import 'package:finease/parts/lava/lava_clock.dart';
