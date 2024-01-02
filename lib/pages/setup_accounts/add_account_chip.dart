@@ -1,19 +1,20 @@
 import 'package:finease/core/common.dart';
-import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class AddAccountChip extends StatelessWidget {
   const AddAccountChip({
     super.key,
+    required this.onSelected,
   });
+
+  final Function onSelected;
 
   @override
   Widget build(BuildContext context) {
     return FilterChip(
       selected: false,
       onSelected: (value) {
-        context.pushNamed(RoutesName.addAccount.name);
+        onSelected();
       },
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(28),

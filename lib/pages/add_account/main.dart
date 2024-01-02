@@ -44,7 +44,10 @@ class AddAccountScreenState extends State<AddAccountScreen> {
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: AppBigButton(
-          onPressed: _submitForm,
+          onPressed: () {
+            _submitForm();
+            context.pop();
+          },
           title: "Add",
         ),
       ),
@@ -63,7 +66,7 @@ class AddAccountScreenState extends State<AddAccountScreen> {
     });
   }
 
-  void _submitForm() {
+  void _submitForm() async {
     String accountName = _accountName.text;
     String accountCurrency = _accountCurrency.text;
     if (_formState.currentState?.validate() ?? false) {
@@ -75,8 +78,7 @@ class AddAccountScreenState extends State<AddAccountScreen> {
         liquid: accountLiquid,
         debit: accountDebit,
       );
-      context.pop();
-      _accountService.createAccount(account);
+      await _accountService.createAccount(account);
     }
   }
 }

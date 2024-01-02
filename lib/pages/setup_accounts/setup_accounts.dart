@@ -5,7 +5,9 @@ import 'package:finease/pages/setup_accounts/default_account.dart';
 import 'package:finease/parts/account_item.dart';
 import 'package:finease/parts/filled_card.dart';
 import 'package:finease/parts/intro_top.dart';
+import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
@@ -106,7 +108,12 @@ class SetupAccountsWidgetState extends State<SetupAccountsWidget>
               children: [
                 ...egAccounts
                     .map((model) => _buildAccountChip(model, isEGAccount: true)),
-                const AddAccountChip(),
+                AddAccountChip(
+                  onSelected: () async {
+                    await context.pushNamed(RoutesName.addAccount.name);
+                    _fetchAccounts();
+                  }
+                ),
               ],
             ),
           ),
