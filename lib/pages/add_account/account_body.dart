@@ -1,3 +1,4 @@
+import 'package:currency_picker/currency_picker.dart';
 import 'package:finease/parts/export.dart';
 import 'package:finease/parts/pill_chip.dart';
 import 'package:flutter/material.dart';
@@ -48,19 +49,30 @@ class AddAccountBody extends StatelessWidget {
               },
             ),
             const SizedBox(height: 16),
-            AppTextFormField(
-              key: const Key('account_currency_textfield'),
-              controller: accountCurrency,
-              hintText: 'Enter currency',
-              label: 'Enter currency',
-              keyboardType: TextInputType.name,
-              validator: (val) {
-                if (val!.isNotEmpty) {
-                  return null;
-                } else {
-                  return 'Enter currency';
-                }
-              },
+            GestureDetector(
+              onTap: () => showCurrencyPicker(
+                context: context,
+                showFlag: true,
+                onSelect: (Currency currency) {
+                  accountCurrency.text = currency.code;
+                },
+              ),
+              child: AbsorbPointer(
+                child: AppTextFormField(
+                  key: const Key('account_currency_textfield'),
+                  controller: accountCurrency,
+                  hintText: 'Select currency',
+                  label: 'Currency',
+                  keyboardType: TextInputType.name,
+                  validator: (val) {
+                    if (val!.isNotEmpty) {
+                      return null;
+                    } else {
+                      return 'Please select a currency';
+                    }
+                  },
+                ),
+              ),
             ),
             const SizedBox(height: 16),
             LiquidAssetsSwitchFormField(
