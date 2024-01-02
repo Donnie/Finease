@@ -1,3 +1,4 @@
+import 'package:finease/pages/add_account/main.dart';
 import 'package:finease/routes/routes_name.dart';
 import 'package:finease/db/settings.dart';
 import 'package:finease/pages/setup_accounts/main.dart';
@@ -30,6 +31,13 @@ final GoRouter goRouter = GoRouter(
       path: RoutesName.setupAccounts.path,
       builder: (BuildContext context, GoRouterState state) {
         return const SetupAccountsPage();
+      },
+    ),
+    GoRoute(
+      name: RoutesName.addAccount.name,
+      path: RoutesName.addAccount.path,
+      builder: (BuildContext context, GoRouterState state) {
+        return const AddAccountScreen();
       },
     ),
   ],
