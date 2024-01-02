@@ -163,7 +163,6 @@ class _IntroAccountAddWidgetState extends State<IntroAccountAddWidget>
                 FilterChip(
                   selected: false,
                   onSelected: (value) {
-                    print(value);
                     context.pushNamed(RoutesName.addAccount.name);
                   },
                   shape: RoundedRectangleBorder(

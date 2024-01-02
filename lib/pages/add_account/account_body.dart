@@ -6,11 +6,17 @@ class AddAccountBody extends StatelessWidget {
   const AddAccountBody({
     super.key,
     required this.formState,
-    required this.nameController,
+    required this.accountName,
+    required this.accountCurrency,
+    this.onCreditDebitSaved,
+    this.onLiquidAssetsSaved,
   });
 
   final GlobalKey<FormState> formState;
-  final TextEditingController nameController;
+  final TextEditingController accountName;
+  final TextEditingController accountCurrency;
+  final ValueChanged<bool>? onCreditDebitSaved;
+  final ValueChanged<bool>? onLiquidAssetsSaved;
 
   @override
   Widget build(BuildContext context) {
@@ -20,24 +26,16 @@ class AddAccountBody extends StatelessWidget {
         key: formState,
         child: ListView(
           children: [
-            Row(
-              children: [
-                AppPillChip(
-                  isSelected: false,
-                  title: "Credit",
-                  onPressed: () => {},
-                ),
-                AppPillChip(
-                  isSelected: true,
-                  title: "Debit",
-                  onPressed: () => {},
-                ),
-              ],
+            CreditDebitSelectionFormField(
+              key: const Key('account_debit'),
+              onSaved: (bool? value) {
+                onCreditDebitSaved?.call(value!);
+              },
             ),
             const SizedBox(height: 16),
             AppTextFormField(
               key: const Key('account_name_textfield'),
-              controller: nameController,
+              controller: accountName,
               hintText: 'Enter account name',
               label: 'Enter account name',
               keyboardType: TextInputType.name,
@@ -52,7 +50,7 @@ class AddAccountBody extends StatelessWidget {
             const SizedBox(height: 16),
             AppTextFormField(
               key: const Key('account_currency_textfield'),
-              controller: nameController,
+              controller: accountCurrency,
               hintText: 'Enter currency',
               label: 'Enter currency',
               keyboardType: TextInputType.name,
@@ -65,20 +63,64 @@ class AddAccountBody extends StatelessWidget {
               },
             ),
             const SizedBox(height: 16),
-            _customSwitch('Liquid Assets'),
+            LiquidAssetsSwitchFormField(
+              key: const Key('account_liquidity'),
+              onSaved: (bool? value) {
+                onLiquidAssetsSaved?.call(value!);
+              },
+            ),
           ],
         ),
       ),
     );
   }
+}
 
-  Widget _customSwitch(String label) {
-    return SwitchListTile(
-      title: Text(label),
-      value: false,
-      onChanged: (bool value) {
-        // Placeholder for switch action
-      },
-    );
-  }
+class CreditDebitSelectionFormField extends FormField<bool> {
+  CreditDebitSelectionFormField({
+    Key? key,
+    FormFieldSetter<bool>? onSaved,
+    bool initialValue = true,
+  }) : super(
+          key: key,
+          onSaved: onSaved,
+          initialValue: initialValue,
+          builder: (FormFieldState<bool> state) {
+            final isDebit = state.value ?? initialValue;
+            return Row(
+              children: [
+                AppPillChip(
+                  isSelected: !isDebit,
+                  title: "Credit",
+                  onPressed: () => state.didChange(false),
+                ),
+                AppPillChip(
+                  isSelected: isDebit,
+                  title: "Debit",
+                  onPressed: () => state.didChange(true),
+                ),
+              ],
+            );
+          },
+        );
+}
+
+class LiquidAssetsSwitchFormField extends FormField<bool> {
+  LiquidAssetsSwitchFormField({
+    Key? key,
+    FormFieldSetter<bool>? onSaved,
+    bool initialValue = true,
+  }) : super(
+          key: key,
+          onSaved: onSaved,
+          initialValue: initialValue,
+          builder: (FormFieldState<bool> state) {
+            final isLiquidAssets = state.value ?? initialValue;
+            return SwitchListTile(
+              title: const Text('Liquid Assets'),
+              value: isLiquidAssets,
+              onChanged: (bool value) => state.didChange(value),
+            );
+          },
+        );
 }
