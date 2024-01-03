@@ -40,6 +40,13 @@ final GoRouter goRouter = GoRouter(
         return const AddAccountScreen();
       },
     ),
+    GoRoute(
+      name: RoutesName.home.name,
+      path: RoutesName.home.path,
+      builder: (BuildContext context, GoRouterState state) {
+        return const AddAccountScreen();
+      },
+    ),
   ],
   errorBuilder: (BuildContext context, GoRouterState state) {
     return Center(

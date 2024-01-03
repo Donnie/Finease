@@ -10,9 +10,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 class SetupAccountsPage extends StatefulWidget {
   const SetupAccountsPage({
     super.key,
-    this.forceCountrySelector = false,
   });
-  final bool forceCountrySelector;
 
   @override
   State<SetupAccountsPage> createState() => _SetupAccountsPageState();
