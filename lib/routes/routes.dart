@@ -1,4 +1,5 @@
 import 'package:finease/pages/add_account/main.dart';
+import 'package:finease/pages/home/main.dart';
 import 'package:finease/routes/routes_name.dart';
 import 'package:finease/db/settings.dart';
 import 'package:finease/pages/setup_accounts/main.dart';
@@ -44,7 +45,7 @@ final GoRouter goRouter = GoRouter(
       name: RoutesName.home.name,
       path: RoutesName.home.path,
       builder: (BuildContext context, GoRouterState state) {
-        return const AddAccountScreen();
+        return const HomePage();
       },
     ),
   ],

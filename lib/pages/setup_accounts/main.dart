@@ -55,7 +55,10 @@ class _SetupAccountsPageState extends State<SetupAccountsPage> {
                 const Spacer(),
                 FloatingActionButton.extended(
                   heroTag: 'next',
-                  onPressed: () => _settingService.setSetting(Setting.accountSetup, "true"),
+                  onPressed: () {
+                    _settingService.setSetting(Setting.accountSetup, "true");
+                    _settingService.setSetting(Setting.onboarded, "true");
+                  },
                   extendedPadding: const EdgeInsets.symmetric(horizontal: 24),
                   label: Icon(MdiIcons.arrowRight),
                   icon: Text(
