@@ -3,6 +3,7 @@ import 'package:finease/pages/home/destinations.dart';
 import 'package:finease/pages/home/mobile.dart';
 import 'package:finease/pages/home/tablet.dart';
 import 'package:finease/parts/export.dart';
+import 'package:finease/parts/floating_action.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
@@ -18,8 +19,12 @@ class HomePage extends StatelessWidget {
       child: ScreenTypeLayout.builder(
         mobile: (p0) => HomePageMobile(
           destinations: destinations,
+          floatingActionButton: const HomeFloatingActionButtonWidget(),
         ),
-        tablet: (p0) => const HomePageTablet(),
+        tablet: (p0) => HomePageTablet(
+          destinations: destinations,
+          floatingActionButton: const HomeFloatingActionButtonWidget(),
+        ),
         desktop: (p0) => Container(),
       ),
     );

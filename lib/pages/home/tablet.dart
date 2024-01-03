@@ -8,7 +8,12 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 class HomePageTablet extends StatelessWidget {
   const HomePageTablet({
     super.key,
+    required this.floatingActionButton,
+    required this.destinations,
   });
+
+  final List<Destination> destinations;
+  final Widget floatingActionButton;
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +22,7 @@ class HomePageTablet extends StatelessWidget {
       children: [
         NavigationRail(
           groupAlignment: 0,
+          leading: floatingActionButton,
           elevation: 1,
           selectedLabelTextStyle: context.bodyLarge!.copyWith(
             fontWeight: FontWeight.bold,

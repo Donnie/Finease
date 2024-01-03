@@ -1,22 +1,26 @@
-
 import 'package:finease/core/common.dart';
-import 'package:finease/core/enum/page_type.dart';
+import 'package:finease/pages/home/destinations.dart';
 import 'package:finease/parts/export.dart';
 import 'package:finease/parts/user_widget.dart';
 import 'package:flutter/material.dart';
 
+final GlobalKey<ScaffoldState> _scaffoldStateKey = GlobalKey<ScaffoldState>();
+
 class HomePageMobile extends StatelessWidget {
   const HomePageMobile({
     super.key,
+    required this.floatingActionButton,
     required this.destinations,
   });
 
   final List<Destination> destinations;
+  final Widget floatingActionButton;
 
   @override
   Widget build(BuildContext context) {
     const double toolbarHeight = kToolbarHeight + 8;
     return Scaffold(
+      key: _scaffoldStateKey,
       resizeToAvoidBottomInset: true,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(toolbarHeight),
@@ -45,36 +49,37 @@ class HomePageMobile extends StatelessWidget {
         ),
       ),
       drawer: NavigationDrawer(
-            children: [
-              const Padding(
-                padding: EdgeInsets.all(24.0),
-                child: AppIconTitle(),
-              ),
-              const Divider(),
-              ...destinations
-                  .map((e) => NavigationDrawerDestination(
-                        icon: e.icon,
-                        selectedIcon: e.selectedIcon,
-                        label: Text(e.pageType.name(context)),
-                      ))
-                  ,
-              const Divider(),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: ListTile(
-                  onTap: () {
-                    // context.pushNamed(RoutesName.setting.name);
-                    // Navigator.pop(context);
-                  },
-                  leading: const Icon(Icons.settings),
-                  title: Text(
-                    language["settings"],
-                    style: context.bodyLarge,
-                  ),
-                ),
-              ),
-            ],
+        onDestinationSelected: (i) {
+          _scaffoldStateKey.currentState?.closeDrawer();
+        },
+        children: [
+          const Padding(
+            padding: EdgeInsets.all(24.0),
+            child: AppIconTitle(),
           ),
+          const Divider(),
+          ...destinations.map((e) => NavigationDrawerDestination(
+                icon: e.icon,
+                selectedIcon: e.selectedIcon,
+                label: Text(e.pageType.name(context)),
+              )),
+          const Divider(),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: ListTile(
+              onTap: () {
+                // context.pushNamed(RoutesName.setting.name);
+                // Navigator.pop(context);
+              },
+              leading: const Icon(Icons.settings),
+              title: Text(
+                language["settings"],
+                style: context.bodyLarge,
+              ),
+            ),
+          ),
+        ],
+      ),
       body: IndexedStack(
         children: [
           Center(
@@ -82,21 +87,7 @@ class HomePageMobile extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: SafeArea(
-        child: Container(),
-      ),
+      floatingActionButton: floatingActionButton,
     );
   }
-}
-
-class Destination {
-  Destination({
-    required this.pageType,
-    required this.icon,
-    required this.selectedIcon,
-  });
-
-  final Icon icon;
-  final PageType pageType;
-  final Icon selectedIcon;
 }

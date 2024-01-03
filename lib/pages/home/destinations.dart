@@ -1,6 +1,5 @@
 
 import 'package:finease/core/enum/page_type.dart';
-import 'package:finease/pages/home/mobile.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -41,3 +40,15 @@ List<Destination> destinations = [
     selectedIcon: Icon(MdiIcons.cashSync),
   ),
 ];
+
+class Destination {
+  Destination({
+    required this.pageType,
+    required this.icon,
+    required this.selectedIcon,
+  });
+
+  final Icon icon;
+  final PageType pageType;
+  final Icon selectedIcon;
+}
