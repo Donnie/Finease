@@ -1,5 +1,5 @@
 import 'package:finease/pages/add_account/main.dart';
-import 'package:finease/pages/home/main.dart';
+import 'package:finease/pages/home/frame/main.dart';
 import 'package:finease/routes/routes_name.dart';
 import 'package:finease/db/settings.dart';
 import 'package:finease/pages/setup_accounts/main.dart';

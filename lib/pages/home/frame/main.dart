@@ -1,7 +1,7 @@
 import 'package:finease/core/common.dart';
-import 'package:finease/pages/home/destinations.dart';
-import 'package:finease/pages/home/mobile.dart';
-import 'package:finease/pages/home/tablet.dart';
+import 'package:finease/pages/home/frame/destinations.dart';
+import 'package:finease/pages/home/frame/mobile.dart';
+import 'package:finease/pages/home/frame/tablet.dart';
 import 'package:finease/parts/export.dart';
 import 'package:finease/parts/floating_action.dart';
 import 'package:flutter/material.dart';

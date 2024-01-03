@@ -1,5 +1,5 @@
 import 'package:finease/core/common.dart';
-import 'package:finease/pages/home/destinations.dart';
+import 'package:finease/pages/home/frame/destinations.dart';
 import 'package:finease/parts/export.dart';
 import 'package:finease/parts/user_widget.dart';
 import 'package:flutter/material.dart';
