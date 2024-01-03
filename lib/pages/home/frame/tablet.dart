@@ -3,7 +3,9 @@ import 'package:finease/pages/home/frame/destinations.dart';
 import 'package:finease/pages/home/screen/main.dart';
 import 'package:finease/parts/export.dart';
 import 'package:finease/parts/user_widget.dart';
+import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class HomePageTablet extends StatelessWidget {
@@ -38,7 +40,14 @@ class HomePageTablet extends StatelessWidget {
           labelType: NavigationRailLabelType.all,
           backgroundColor: context.surface,
           selectedIndex: 0,
-          onDestinationSelected: (index) {},
+          onDestinationSelected: (index) {
+            switch (index) {
+              case 7:
+                context.pushNamed(RoutesName.settings.name);
+                break;
+              default:
+            }
+          },
           minWidth: 55,
           useIndicator: true,
           destinations: [

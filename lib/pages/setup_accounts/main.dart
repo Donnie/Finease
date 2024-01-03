@@ -58,6 +58,7 @@ class _SetupAccountsPageState extends State<SetupAccountsPage> {
                   onPressed: () {
                     _settingService.setSetting(Setting.accountSetup, "true");
                     _settingService.setSetting(Setting.onboarded, "true");
+                    context.go(RoutesName.home.path);
                   },
                   extendedPadding: const EdgeInsets.symmetric(horizontal: 24),
                   label: Icon(MdiIcons.arrowRight),

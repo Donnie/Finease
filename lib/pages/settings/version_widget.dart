@@ -34,7 +34,7 @@ class _VersionWidgetState extends State<VersionWidget> {
         title: language["version"],
       );
     }
-    final version = packageInfo?.version ?? '';
+    String version = packageInfo!.version;
     return SettingsOption(
       icon: MdiIcons.numeric,
       title: language["version"],

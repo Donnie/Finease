@@ -3,7 +3,9 @@ import 'package:finease/pages/home/frame/destinations.dart';
 import 'package:finease/pages/home/screen/main.dart';
 import 'package:finease/parts/export.dart';
 import 'package:finease/parts/user_widget.dart';
+import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 final GlobalKey<ScaffoldState> _scaffoldStateKey = GlobalKey<ScaffoldState>();
 
@@ -69,8 +71,8 @@ class HomePageMobile extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: ListTile(
               onTap: () {
-                // context.pushNamed(RoutesName.setting.name);
-                // Navigator.pop(context);
+                context.pushNamed(RoutesName.settings.name);
+                _scaffoldStateKey.currentState?.closeDrawer();
               },
               leading: const Icon(Icons.settings),
               title: Text(

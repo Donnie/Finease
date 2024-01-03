@@ -1,7 +1,9 @@
 import 'package:finease/db/db.dart';
 import 'package:finease/pages/settings/setting_option.dart';
+import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 import 'package:finease/core/common.dart';
+import 'package:go_router/go_router.dart';
 
 class ResetAppWidget extends StatefulWidget {
   const ResetAppWidget({super.key});
@@ -34,7 +36,13 @@ class _ResetAppWidgetState extends State<ResetAppWidget> {
               ),
               TextButton(
                 child: Text(language["resetApp"]),
-                onPressed: () => DatabaseHelper().clearDatabase(),
+                onPressed: () async {
+                  await DatabaseHelper().clearDatabase().then((value) {
+                    Navigator.of(dialogContext).pop(false);
+                    context.pop();
+                    context.go(RoutesName.intro.path);
+                  });
+                },
               ),
             ],
           ),
@@ -43,4 +51,3 @@ class _ResetAppWidgetState extends State<ResetAppWidget> {
     );
   }
 }
-
