@@ -11,9 +11,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 class AddNamePage extends StatefulWidget {
   const AddNamePage({
     super.key,
-    this.forceCountrySelector = false,
   });
-  final bool forceCountrySelector;
 
   @override
   State<AddNamePage> createState() => _AddNamePageState();

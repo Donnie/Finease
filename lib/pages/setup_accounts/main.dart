@@ -10,9 +10,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 class SetupAccountsPage extends StatefulWidget {
   const SetupAccountsPage({
     super.key,
-    this.forceCountrySelector = false,
   });
-  final bool forceCountrySelector;
 
   @override
   State<SetupAccountsPage> createState() => _SetupAccountsPageState();
@@ -57,7 +55,11 @@ class _SetupAccountsPageState extends State<SetupAccountsPage> {
                 const Spacer(),
                 FloatingActionButton.extended(
                   heroTag: 'next',
-                  onPressed: () => _settingService.setSetting(Setting.accountSetup, "true"),
+                  onPressed: () {
+                    _settingService.setSetting(Setting.accountSetup, "true");
+                    _settingService.setSetting(Setting.onboarded, "true");
+                    context.go(RoutesName.home.path);
+                  },
                   extendedPadding: const EdgeInsets.symmetric(horizontal: 24),
                   label: Icon(MdiIcons.arrowRight),
                   icon: Text(

@@ -1,5 +1,6 @@
 import 'package:finease/db/db.dart';
 
+// ignore: constant_identifier_names
 const String Accounts = 'Accounts';
 
 class AccountService {

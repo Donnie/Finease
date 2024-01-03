@@ -983,7 +983,7 @@ const Map<String, dynamic> language = {
   "updatedTransaction": "Transaction updated",
   "updateTransaction": "Update transaction",
   "usageWarning":
-      '*This app still in beta, expect the unexpected behavior and UI changes',
+      '*This app still in beta, expect unexpected behavior and UI changes',
   "validAmount": "Enter valid amount",
   "validDescription": "Enter valid description",
   "validName": "Enter valid name",
