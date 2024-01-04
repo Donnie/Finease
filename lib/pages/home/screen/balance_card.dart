@@ -1,5 +1,6 @@
 import 'package:finease/core/theme/custom_color.dart';
 import 'package:finease/db/accounts.dart';
+import 'package:finease/db/settings.dart';
 import 'package:finease/parts/card.dart';
 import 'package:flutter/material.dart';
 import 'package:finease/core/common.dart';
@@ -13,7 +14,9 @@ class BalanceCard extends StatefulWidget {
 
 class _BalanceCardState extends State<BalanceCard> {
   final AccountService accountService = AccountService();
+  final SettingService _settingService = SettingService();
   double balanceAmount = 0.0;
+  String prefCurrency = "USD";
 
   @override
   void initState() {
@@ -22,8 +25,10 @@ class _BalanceCardState extends State<BalanceCard> {
   }
 
   Future<void> _fetchBalance() async {
+    String prefCurrency = await _settingService.getSetting(Setting.prefCurrency);
     double fetchedAmount = await accountService.getTotalBalance();
     setState(() {
+      prefCurrency = prefCurrency;
       balanceAmount = fetchedAmount;
     });
   }
@@ -42,6 +47,7 @@ class _BalanceCardState extends State<BalanceCard> {
           children: [
             TotalBalanceWidget(
               title: language["totalBalance"],
+              currency: prefCurrency,
               amount: balanceAmount, // Use the fetched balance amount
             ),
             const SizedBox(height: 24),
@@ -59,12 +65,14 @@ class _BalanceCardState extends State<BalanceCard> {
 class TotalBalanceWidget extends StatelessWidget {
   const TotalBalanceWidget({
     super.key,
+    required this.currency,
     required this.title,
     required this.amount,
   });
 
   final double amount;
   final String title;
+  final String currency;
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +87,7 @@ class TotalBalanceWidget extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          "\$ $amount",
+          "$currency $amount",
           style: context.headlineMedium?.copyWith(
             color: context.onPrimaryContainer,
             fontWeight: FontWeight.w700,

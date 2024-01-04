@@ -1,4 +1,5 @@
 import 'package:currency_picker/currency_picker.dart';
+import 'package:finease/db/currency.dart';
 import 'package:finease/parts/export.dart';
 import 'package:finease/parts/pill_chip.dart';
 import 'package:flutter/material.dart';
@@ -111,6 +112,7 @@ class AddAccountBodyState extends State<AddAccountBody> {
             GestureDetector(
               onTap: () => showCurrencyPicker(
                 context: context,
+                currencyFilter: SupportedCurrency,
                 showFlag: true,
                 onSelect: (Currency currency) =>
                     widget.accountCurrency.text = currency.code,

@@ -1,4 +1,5 @@
 import 'package:currency_picker/currency_picker.dart';
+import 'package:finease/db/currency.dart';
 import 'package:flutter/material.dart';
 
 import 'package:finease/core/common.dart';
@@ -70,6 +71,7 @@ class IntroSetNameWidget extends StatelessWidget {
                   GestureDetector(
                     onTap: () => showCurrencyPicker(
                       context: context,
+                      currencyFilter: SupportedCurrency,
                       showFlag: true,
                       onSelect: (Currency curr) => currency.text = curr.code,
                     ),
