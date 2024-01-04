@@ -3,7 +3,7 @@ import 'package:finease/core/common.dart';
 import 'package:finease/db/db.dart';
 import 'package:finease/parts/export.dart';
 import 'package:finease/db/settings.dart';
-import 'package:finease/parts/intro_set_name_widget.dart';
+import 'package:finease/pages/add_name/intro_set_name_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -19,29 +19,32 @@ class AddNamePage extends StatefulWidget {
 
 class _AddNamePageState extends State<AddNamePage> {
   final GlobalKey<FormState> _formState = GlobalKey<FormState>();
-  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _name = TextEditingController();
+  final TextEditingController _currency = TextEditingController();
   final SettingService _settingService = SettingService();
 
   @override
   void initState() {
     super.initState();
-    getName();
+    getValues();
   }
 
-  void getName() async {
+  void getValues() async {
     final String userName = await _settingService.getSetting(Setting.userName);
+    final String currency = await _settingService.getSetting(Setting.prefCurrency);
     if (mounted) {
       setState(() {
-        _nameController.text = userName;
+        _name.text = userName;
+        _currency.text = currency;
       });
     }
   }
 
-  void saveName() async {
-    String name = _nameController.text;
+  void saveForm() async {
     if (_formState.currentState!.validate()) {
       context.go(RoutesName.setupAccounts.path);
-      await _settingService.setSetting(Setting.userName, name);
+      await _settingService.setSetting(Setting.userName, _name.text);
+      await _settingService.setSetting(Setting.prefCurrency, _currency.text);
     }
   }
 
@@ -76,7 +79,7 @@ class _AddNamePageState extends State<AddNamePage> {
                 FloatingActionButton.extended(
                   heroTag: 'next',
                   onPressed: () {
-                    saveName();
+                    saveForm();
                   },
                   extendedPadding: const EdgeInsets.symmetric(horizontal: 24),
                   label: Icon(MdiIcons.arrowRight),
@@ -97,7 +100,8 @@ class _AddNamePageState extends State<AddNamePage> {
             Center(
               child: IntroSetNameWidget(
                 formState: _formState,
-                nameController: _nameController,
+                name: _name,
+                currency: _currency,
               ),
             ),
           ],

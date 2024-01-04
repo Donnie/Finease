@@ -26,20 +26,20 @@ class AccountService {
   Future adjustFirstBalance(Account account, int balance) async {
     final dbClient = await _databaseHelper.db;
     if (balance != 0) {
-      // Check if an account named "Past-3666" already exists
+      // Check if an account named "Past" already exists
       List<Map> accounts = await dbClient.query(
         Accounts,
         where: 'name = ?',
-        whereArgs: ['Past-3666'],
+        whereArgs: ['Past'],
       );
 
       int pastId;
       if (accounts.isEmpty) {
-        // If "Past-3666" doesn't exist, create it
+        // If "Past" doesn't exist, create it
         Account past = Account(
-          name: "Past-3666",
+          name: "Past",
           currency: account.currency,
-          balance: balance,
+          balance: 0,
           liquid: false,
           debit: false,
           owned: false,

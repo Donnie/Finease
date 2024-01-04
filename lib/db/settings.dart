@@ -7,6 +7,7 @@ enum Setting {
   accountSetup,
   onboarded,
   startAccount,
+  prefCurrency,
 }
 
 typedef Settings = Map<Setting, String>;
