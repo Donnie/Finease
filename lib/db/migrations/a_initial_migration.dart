@@ -11,6 +11,7 @@ Future<void> aInitialMigration(Database db) async {
       currency TEXT NOT NULL,
       liquid BOOLEAN,
       name TEXT NOT NULL,
+      owned BOOLEAN,
       debit BOOLEAN
     )
   ''');
@@ -24,11 +25,24 @@ Future<void> aInitialMigration(Database db) async {
       debit_account_id INTEGER NOT NULL,
       credit_account_id INTEGER NOT NULL,
       amount BIGINT NOT NULL,
-      date DATETIME,
+      date DATETIME DEFAULT CURRENT_TIMESTAMP,
       notes TEXT,
       FOREIGN KEY (debit_account_id) REFERENCES Accounts(id),
       FOREIGN KEY (credit_account_id) REFERENCES Accounts(id)
     )
+  ''');
+
+  await db.execute('''
+    CREATE TRIGGER UpdateAccountBalanceAfterInsert
+    AFTER INSERT ON Entries
+    BEGIN
+      UPDATE Accounts
+      SET balance = balance + NEW.amount
+      WHERE id = NEW.credit_account_id;
+      UPDATE Accounts
+      SET balance = balance + NEW.amount
+      WHERE id = NEW.debit_account_id;
+    END;
   ''');
 
   await db.execute('''

@@ -8,6 +8,7 @@ List<Account> defaultAccountsData() {
       currency: "EUR",
       liquid: true,
       debit: true,
+      owned: true,
     ),
     Account(
       name: 'Groceries',
@@ -15,6 +16,7 @@ List<Account> defaultAccountsData() {
       currency: "EUR",
       liquid: false,
       debit: false,
+      owned: false,
     ),
     Account(
       name: 'Friend',
@@ -22,6 +24,7 @@ List<Account> defaultAccountsData() {
       currency: "EUR",
       liquid: false,
       debit: true,
+      owned: true,
     ),
   ];
 }
