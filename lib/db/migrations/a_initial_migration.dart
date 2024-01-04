@@ -38,10 +38,20 @@ Future<void> aInitialMigration(Database db) async {
     BEGIN
       UPDATE Accounts
       SET balance = balance + NEW.amount
-      WHERE id = NEW.credit_account_id;
+      WHERE id = NEW.credit_account_id
+        AND debit = 0;
+      UPDATE Accounts
+      SET balance = balance - NEW.amount
+      WHERE id = NEW.credit_account_id
+        AND debit = 1;
       UPDATE Accounts
       SET balance = balance + NEW.amount
-      WHERE id = NEW.debit_account_id;
+      WHERE id = NEW.debit_account_id
+        AND debit = 1;
+      UPDATE Accounts
+      SET balance = balance - NEW.amount
+      WHERE id = NEW.debit_account_id
+        AND debit = 0;
     END;
   ''');
 
@@ -51,5 +61,15 @@ Future<void> aInitialMigration(Database db) async {
       key TEXT NOT NULL UNIQUE,
       value TEXT NOT NULL
     )
+  ''');
+
+  await db.execute('''
+    INSERT INTO Accounts (currency, liquid, name, owned, debit)
+    VALUES ('USD', 1, 'Past', 0, 0);
+  ''');
+
+  await db.execute('''
+    INSERT INTO Settings (key, value)
+    VALUES ('pastAccount', '1');
   ''');
 }

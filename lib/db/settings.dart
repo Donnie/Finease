@@ -6,7 +6,7 @@ enum Setting {
   userName,
   accountSetup,
   onboarded,
-  startAccount,
+  pastAccount,
   prefCurrency,
 }
 

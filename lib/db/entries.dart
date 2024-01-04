@@ -10,7 +10,6 @@ class EntryService {
   Future<Entry?> createEntry(Entry entry) async {
     final dbClient = await _databaseHelper.db;
 
-    // Insert the new entry
     final id = await dbClient.insert('Entries', entry.toJson());
     entry.id = id;
 
@@ -70,6 +69,22 @@ class EntryService {
       whereArgs: [id],
     );
   }
+
+  Future adjustFirstBalance(int accountId, int balance) async {
+    if (balance == 0) {
+      return;
+    }
+
+    final dbClient = await _databaseHelper.db;
+    Entry entry = Entry(
+      debitAccountId: accountId,
+      creditAccountId: 1,
+      amount: balance,
+      notes: "Auto Adjusted by App",
+    );
+
+    await dbClient.insert('Entries', entry.toJson());
+  }
 }
 
 class Entry {
@@ -100,13 +115,11 @@ class Entry {
       id: json['id'],
       createdAt: DateTime.tryParse(json['created_at'] ?? ''),
       updatedAt: DateTime.tryParse(json['updated_at'] ?? ''),
-      deletedAt: json['deleted_at'] != null
-          ? DateTime.tryParse(json['deleted_at'])
-          : null,
+      deletedAt: DateTime.tryParse(json['deleted_at'] ?? ''),
       debitAccountId: json['debit_account_id'],
       creditAccountId: json['credit_account_id'],
       amount: json['amount'],
-      date: DateTime.tryParse(json['date'] ?? ''),
+      date: DateTime.tryParse(json['date']),
       notes: json['notes'],
     );
   }
@@ -114,13 +127,12 @@ class Entry {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'created_at': createdAt?.toIso8601String(),
-      'updated_at': updatedAt?.toIso8601String(),
+      'updated_at': DateTime.now().toIso8601String(),
       'deleted_at': deletedAt?.toIso8601String(),
       'debit_account_id': debitAccountId,
       'credit_account_id': creditAccountId,
       'amount': amount,
-      'date': date?.toIso8601String(),
+      'date': (date ?? DateTime.now()).toIso8601String(),
       'notes': notes,
     };
   }

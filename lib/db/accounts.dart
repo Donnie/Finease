@@ -18,48 +18,9 @@ class AccountService {
     final id = await dbClient.insert(Accounts, account.toJson());
     account.id = id;
     if (account.owned) {
-      await adjustFirstBalance(account, balance);
+      await EntryService().adjustFirstBalance(id, balance);
     }
     return account;
-  }
-
-  Future adjustFirstBalance(Account account, int balance) async {
-    final dbClient = await _databaseHelper.db;
-    if (balance != 0) {
-      // Check if an account named "Past" already exists
-      List<Map> accounts = await dbClient.query(
-        Accounts,
-        where: 'name = ?',
-        whereArgs: ['Past'],
-      );
-
-      int pastId;
-      if (accounts.isEmpty) {
-        // If "Past" doesn't exist, create it
-        Account past = Account(
-          name: "Past",
-          currency: account.currency,
-          balance: 0,
-          liquid: false,
-          debit: false,
-          owned: false,
-        );
-        pastId = await dbClient.insert(Accounts, past.toJson());
-      } else {
-        // If it exists, use the existing account's ID
-        pastId = accounts
-            .first['id'];
-      }
-
-      await SettingService().setSetting(Setting.startAccount, "$pastId");
-      Entry firstTransaction = Entry(
-        debitAccountId: account.id!,
-        creditAccountId: pastId,
-        amount: balance,
-        notes: "Auto Adjusted by App"
-      );
-      await EntryService().createEntry(firstTransaction);
-    }
   }
 
   Future<Account?> getAccount(int id) async {
@@ -77,13 +38,13 @@ class AccountService {
 
   Future<List<Account>> getAllAccounts() async {
     final dbClient = await _databaseHelper.db;
-    String startAccountId =
-        await SettingService().getSetting(Setting.startAccount);
+    String pastAccountId =
+        await SettingService().getSetting(Setting.pastAccount);
 
     final List<Map<String, dynamic>> accounts = await dbClient.query(
       Accounts,
       where: 'deleted_at IS NULL AND id != ?',
-      whereArgs: [startAccountId],
+      whereArgs: [pastAccountId],
     );
     return accounts.map((json) => Account.fromJson(json)).toList();
   }
@@ -178,9 +139,7 @@ class Account {
       id: json['id'],
       createdAt: DateTime.tryParse(json['created_at'] ?? ''),
       updatedAt: DateTime.tryParse(json['updated_at'] ?? ''),
-      deletedAt: json['deleted_at'] != null
-          ? DateTime.tryParse(json['deleted_at'])
-          : null,
+      deletedAt: DateTime.tryParse(json['deleted_at'] ?? ''),
       balance: json['balance'],
       currency: json['currency'],
       liquid: json['liquid'] == 1,
@@ -193,8 +152,7 @@ class Account {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'created_at': createdAt?.toIso8601String(),
-      'updated_at': updatedAt?.toIso8601String(),
+      'updated_at': DateTime.now().toIso8601String(),
       'deleted_at': deletedAt?.toIso8601String(),
       'balance': balance,
       'currency': currency,
