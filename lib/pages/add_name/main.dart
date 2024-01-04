@@ -29,7 +29,7 @@ class _AddNamePageState extends State<AddNamePage> {
   }
 
   void getName() async {
-    final String userName = await SettingService().getSetting(Setting.userName);
+    final String userName = await _settingService.getSetting(Setting.userName);
     if (mounted) {
       setState(() {
         _nameController.text = userName;

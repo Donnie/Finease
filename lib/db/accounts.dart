@@ -120,7 +120,7 @@ class AccountService {
     );
   }
 
-  Future<int> getTotalBalance() async {
+  Future<double> getTotalBalance() async {
     final dbClient = await _databaseHelper.db;
 
     String sql = '''
@@ -144,7 +144,7 @@ class AccountService {
       totalBalance = result.first['total_balance'];
     }
 
-    return totalBalance;
+    return totalBalance/100;
   }
 }
 
