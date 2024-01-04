@@ -1,5 +1,6 @@
 import 'package:finease/core/common.dart';
 import 'package:finease/db/accounts.dart';
+import 'package:finease/db/settings.dart';
 import 'package:finease/pages/setup_accounts/add_account_chip.dart';
 import 'package:finease/pages/setup_accounts/default_account.dart';
 import 'package:finease/parts/account_item.dart';
@@ -23,17 +24,19 @@ class SetupAccountsWidgetState extends State<SetupAccountsWidget>
   final ValueNotifier<List<Account>> accountsNotifier =
       ValueNotifier<List<Account>>([]);
   final AccountService _accountService = AccountService();
+  final SettingService _settingService = SettingService();
 
   @override
   bool get wantKeepAlive => true;
 
   List<Account> selectedAccounts = [];
-  List<Account> egAccounts = defaultAccountsData();
+  List<Account> egAccounts = [];
 
   @override
   void initState() {
     super.initState();
     _fetchAccounts();
+    _setEgAccount();
   }
 
   Future<void> _fetchAccounts() async {
@@ -41,6 +44,13 @@ class SetupAccountsWidgetState extends State<SetupAccountsWidget>
     setState(() {
       selectedAccounts = accounts;
       accountsNotifier.value = [...selectedAccounts];
+    });
+  }
+
+  Future<void> _setEgAccount() async {
+    final prefCurrency = await _settingService.getSetting(Setting.prefCurrency);
+    setState(() {
+      egAccounts = defaultAccountsData(prefCurrency);
     });
   }
 

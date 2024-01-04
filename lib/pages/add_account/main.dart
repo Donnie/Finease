@@ -17,9 +17,11 @@ class AddAccountScreenState extends State<AddAccountScreen> {
 
   final _formState = GlobalKey<FormState>();
   final _accountName = TextEditingController();
+  final _accountBalance = TextEditingController();
   final _accountCurrency = TextEditingController();
   bool accountDebit = true;
   bool accountLiquid = true;
+  bool accountOwned = true;
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +32,11 @@ class AddAccountScreenState extends State<AddAccountScreen> {
         body: AddAccountForm(
           formState: _formState,
           accountName: _accountName,
+          accountBalance: _accountBalance,
           accountCurrency: _accountCurrency,
           onCreditDebitSaved: _accountDebit,
           onLiquidAssetsSaved: _accountLiquid,
+          onAccountOwned: _accountOwned,
         ),
         bottomNavigationBar: _buildBottomBar(),
       ),
@@ -66,17 +70,30 @@ class AddAccountScreenState extends State<AddAccountScreen> {
     });
   }
 
+  void _accountOwned(bool value) {
+    setState(() {
+      accountOwned = value;
+    });
+  }
+
+  int accountBalance(TextEditingController value) {
+    int balance = int.tryParse(value.text) ?? 0;
+    return balance * 100;
+  }
+
   void _submitForm() async {
     String accountName = _accountName.text;
     String accountCurrency = _accountCurrency.text;
+    int balance = accountBalance(_accountBalance);
     if (_formState.currentState?.validate() ?? false) {
       _formState.currentState?.save();
       Account account = Account(
         name: accountName,
         currency: accountCurrency,
-        balance: 0,
+        balance: balance,
         liquid: accountLiquid,
         debit: accountDebit,
+        owned: accountOwned,
       );
       await _accountService.createAccount(account);
     }
@@ -86,17 +103,21 @@ class AddAccountScreenState extends State<AddAccountScreen> {
 class AddAccountForm extends StatelessWidget {
   final GlobalKey<FormState> formState;
   final TextEditingController accountName;
+  final TextEditingController accountBalance;
   final TextEditingController accountCurrency;
   final Function(bool) onCreditDebitSaved;
   final Function(bool) onLiquidAssetsSaved;
+  final Function(bool) onAccountOwned;
 
   const AddAccountForm({
     super.key,
     required this.formState,
     required this.accountName,
+    required this.accountBalance,
     required this.accountCurrency,
     required this.onCreditDebitSaved,
     required this.onLiquidAssetsSaved,
+    required this.onAccountOwned,
   });
 
   @override
@@ -104,9 +125,11 @@ class AddAccountForm extends StatelessWidget {
     return AddAccountBody(
       formState: formState,
       accountName: accountName,
+      accountBalance: accountBalance,
       accountCurrency: accountCurrency,
       onCreditDebitSaved: onCreditDebitSaved,
       onLiquidAssetsSaved: onLiquidAssetsSaved,
+      onAccountOwned: onAccountOwned,
     );
   }
 }
