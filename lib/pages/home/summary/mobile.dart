@@ -1,4 +1,4 @@
-import 'package:finease/pages/home/screen/balance_card.dart';
+import 'package:finease/pages/home/summary/balance_card.dart';
 import 'package:flutter/material.dart';
 
 class SummaryMobileWidget extends StatelessWidget {

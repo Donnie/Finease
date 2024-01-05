@@ -1,4 +1,4 @@
-import 'package:finease/pages/home/screen/mobile.dart';
+import 'package:finease/pages/home/summary/mobile.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
