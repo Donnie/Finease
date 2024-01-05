@@ -1,5 +1,6 @@
 import 'package:finease/core/theme/custom_color.dart';
 import 'package:finease/db/accounts.dart';
+import 'package:finease/db/currency.dart';
 import 'package:finease/db/settings.dart';
 import 'package:finease/parts/card.dart';
 import 'package:flutter/material.dart';
@@ -79,6 +80,7 @@ class TotalBalanceWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String symbol = SupportedCurrency[currency]!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -90,7 +92,7 @@ class TotalBalanceWidget extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          "$currency ${amount.toStringAsFixed(2)}",
+          "$symbol ${amount.toStringAsFixed(2)}",
           style: context.headlineMedium?.copyWith(
             color: context.onPrimaryContainer,
             fontWeight: FontWeight.w700,
@@ -115,6 +117,7 @@ class TotalCreditDebit extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String symbol = SupportedCurrency[currency]!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -143,7 +146,7 @@ class TotalCreditDebit extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '$currency ${debit.toStringAsFixed(2)}',
+                    '$symbol ${debit.toStringAsFixed(2)}',
                     style: context.titleLarge?.copyWith(
                       color: context.onPrimaryContainer,
                     ),
@@ -172,7 +175,7 @@ class TotalCreditDebit extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '$currency ${credit.toStringAsFixed(2)}',
+                    '$symbol ${credit.toStringAsFixed(2)}',
                     style: context.titleLarge?.copyWith(
                       color: context.onPrimaryContainer,
                     ),

@@ -55,35 +55,40 @@ class CurrencyBoxService {
 }
 
 // ignore: non_constant_identifier_names
-final List<String> SupportedCurrency = [
-  "AUD",
-  "BGN",
-  "BRL",
-  "CAD",
-  "CHF",
-  "CNY",
-  "CZK",
-  "DKK",
-  "GBP",
-  "HKD",
-  "HUF",
-  "IDR",
-  "ILS",
-  "INR",
-  "ISK",
-  "JPY",
-  "KRW",
-  "MXN",
-  "MYR",
-  "NOK",
-  "NZD",
-  "PHP",
-  "PLN",
-  "RON",
-  "SEK",
-  "SGD",
-  "THB",
-  "TRY",
-  "USD",
-  "ZAR",
-];
+final Map<String, String> SupportedCurrency = {
+  "AUD": "A\$", // Australian Dollar
+  "BGN": "лв", // Bulgarian Lev
+  "BRL": "R\$", // Brazilian Real
+  "CAD": "C\$", // Canadian Dollar
+  "CHF": "Fr", // Swiss Franc
+  "CNY": "¥", // Chinese Yuan
+  "CZK": "Kč", // Czech Koruna
+  "DKK": "kr", // Danish Krone
+  "EUR": "€", // Euro
+  "GBP": "£", // British Pound
+  "HKD": "HK\$", // Hong Kong Dollar
+  "HUF": "Ft", // Hungarian Forint
+  "IDR": "Rp", // Indonesian Rupiah
+  "ILS": "₪", // Israeli New Shekel
+  "INR": "₹", // Indian Rupee
+  "ISK": "kr", // Icelandic Króna
+  "JPY": "¥", // Japanese Yen
+  "KRW": "₩", // South Korean Won
+  "MXN": "Mex\$", // Mexican Peso
+  "MYR": "RM", // Malaysian Ringgit
+  "NOK": "kr", // Norwegian Krone
+  "NZD": "NZ\$", // New Zealand Dollar
+  "PHP": "₱", // Philippine Peso
+  "PLN": "zł", // Polish Zloty
+  "RON": "lei", // Romanian Leu
+  "SEK": "kr", // Swedish Krona
+  "SGD": "S\$", // Singapore Dollar
+  "THB": "฿", // Thai Baht
+  "TRY": "₺", // Turkish Lira
+  "USD": "\$", // United States Dollar
+  "ZAR": "R", // South African Rand
+};
+
+String? get(String currencyCode) {
+  return SupportedCurrency[currencyCode];
+}
