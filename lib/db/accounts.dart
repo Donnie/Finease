@@ -122,6 +122,44 @@ class AccountService {
     return totalBalance / 100;
   }
 
+  Future<double> getTotalBalanceByType(bool debit) async {
+    final dbClient = await _databaseHelper.db;
+    String prefCurrency =
+        await _settingService.getSetting(Setting.prefCurrency);
+
+    // Adjust the WHERE clause based on the debit value
+    String debitCondition = debit ? '1' : '0';
+
+    // SQL query to calculate the total balance based on the debit flag
+    String sql = '''
+    SELECT 
+      SUM(balance) as total_balance,
+      currency
+    FROM Accounts
+    WHERE
+      owned = 1 AND
+      debit = $debitCondition AND
+      deleted_at IS NULL
+    GROUP BY currency;
+  ''';
+
+    // Execute the query
+    List<Map<String, dynamic>> result = await dbClient.rawQuery(sql);
+
+    double totalBalance = 0;
+
+    for (var row in result) {
+      String currency = row['currency'];
+      int balance = row['total_balance'];
+
+      // Convert balance to preferred currency
+      double convertedBalance = await _convertCurrency(currency, balance, prefCurrency);
+      totalBalance += convertedBalance;
+    }
+
+    return totalBalance / 100;
+  }
+
   Future<double> _convertCurrency(
     String fromCurrency,
     int balance,

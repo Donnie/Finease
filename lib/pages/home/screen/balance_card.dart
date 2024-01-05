@@ -16,6 +16,8 @@ class _BalanceCardState extends State<BalanceCard> {
   final AccountService accountService = AccountService();
   final SettingService _settingService = SettingService();
   double balanceAmount = 0.0;
+  double debitAmount = 0.0;
+  double creditAmount = 0.0;
   String currency = "USD";
 
   @override
@@ -26,10 +28,13 @@ class _BalanceCardState extends State<BalanceCard> {
 
   Future<void> _fetchBalance() async {
     String prefCurrency = await _settingService.getSetting(Setting.prefCurrency);
-    double fetchedAmount = await accountService.getTotalBalance();
+    double debit = await accountService.getTotalBalanceByType(true);
+    double credit = await accountService.getTotalBalanceByType(false);
     setState(() {
       currency = prefCurrency;
-      balanceAmount = fetchedAmount;
+      balanceAmount = (debit - credit);
+      creditAmount = credit;
+      debitAmount = debit;
     });
   }
 
@@ -46,14 +51,14 @@ class _BalanceCardState extends State<BalanceCard> {
           mainAxisSize: MainAxisSize.min,
           children: [
             TotalBalanceWidget(
-              title: language["totalBalance"],
               currency: currency,
               amount: balanceAmount, // Use the fetched balance amount
             ),
             const SizedBox(height: 24),
-            const TotalCreditDebit(
-              credit: 42109,
-              debit: 102231.12,
+            TotalCreditDebit(
+              currency: currency,
+              credit: creditAmount,
+              debit: debitAmount,
             ),
           ],
         ),
@@ -66,12 +71,10 @@ class TotalBalanceWidget extends StatelessWidget {
   const TotalBalanceWidget({
     super.key,
     required this.currency,
-    required this.title,
     required this.amount,
   });
 
   final double amount;
-  final String title;
   final String currency;
 
   @override
@@ -80,7 +83,7 @@ class TotalBalanceWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          title,
+          language["totalBalance"],
           style: context.titleMedium?.copyWith(
             color: context.onPrimaryContainer.withOpacity(0.85),
           ),
@@ -101,10 +104,12 @@ class TotalBalanceWidget extends StatelessWidget {
 class TotalCreditDebit extends StatelessWidget {
   const TotalCreditDebit({
     super.key,
+    required this.currency,
     required this.debit,
     required this.credit,
   });
 
+  final String currency;
   final double debit;
   final double credit;
 
@@ -138,7 +143,7 @@ class TotalCreditDebit extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '\$ $debit',
+                    '$currency ${debit.toStringAsFixed(2)}',
                     style: context.titleLarge?.copyWith(
                       color: context.onPrimaryContainer,
                     ),
@@ -167,7 +172,7 @@ class TotalCreditDebit extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '\$ $credit',
+                    '$currency ${credit.toStringAsFixed(2)}',
                     style: context.titleLarge?.copyWith(
                       color: context.onPrimaryContainer,
                     ),
