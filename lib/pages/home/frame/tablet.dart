@@ -2,6 +2,7 @@ import 'package:finease/core/common.dart';
 import 'package:finease/pages/home/frame/destinations.dart';
 import 'package:finease/pages/home/summary/main.dart';
 import 'package:finease/parts/export.dart';
+import 'package:finease/parts/floating_action.dart';
 import 'package:finease/parts/user_widget.dart';
 import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
@@ -11,12 +12,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 class HomePageTablet extends StatelessWidget {
   const HomePageTablet({
     super.key,
-    required this.floatingActionButton,
-    required this.destinations,
   });
-
-  final List<Destination> destinations;
-  final Widget floatingActionButton;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +21,7 @@ class HomePageTablet extends StatelessWidget {
       children: [
         NavigationRail(
           groupAlignment: 0,
-          leading: floatingActionButton,
+          leading: const FABWidget(index: 0),
           elevation: 1,
           selectedLabelTextStyle: context.bodyLarge!.copyWith(
             fontWeight: FontWeight.bold,

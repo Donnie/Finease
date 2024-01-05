@@ -3,13 +3,16 @@ import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class HomeFloatingActionButtonWidget extends StatelessWidget {
-  const HomeFloatingActionButtonWidget({
+class FABWidget extends StatelessWidget {
+  const FABWidget({
     super.key,
+    required this.index,
   });
 
-  void _handleClick(BuildContext context, int page) {
-    switch (page) {
+  final int index;
+
+  void _handleClick(BuildContext context) {
+    switch (index) {
       case 1:
         context.goNamed(RoutesName.addAccount.name);
         break;

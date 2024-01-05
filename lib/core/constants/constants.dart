@@ -952,7 +952,7 @@ const Map<String, dynamic> language = {
   "selectIconTitle": "Select icon",
   "setupAccounts": "Setup Accounts",
   "setBudget": "Set budget for category",
-  "settings": "Settings",
+  "settings": "settings",
   "smallSizeFab": "Small size FAB",
   "smallSizeFabMessage": "Show small size action button on all screens",
   "socialLinks": "Social links",
