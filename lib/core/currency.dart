@@ -35,7 +35,7 @@ class ExchangeService {
       }
     }
 
-    // Adding EUR since it's the base rate in the XML and might not be listed
+    // Adding EUR since it's the base rate in the XML and is not listed
     rates['EUR'] = 1.0;
 
     return rates;

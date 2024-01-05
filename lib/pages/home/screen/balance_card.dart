@@ -16,7 +16,7 @@ class _BalanceCardState extends State<BalanceCard> {
   final AccountService accountService = AccountService();
   final SettingService _settingService = SettingService();
   double balanceAmount = 0.0;
-  String prefCurrency = "USD";
+  String currency = "USD";
 
   @override
   void initState() {
@@ -28,7 +28,7 @@ class _BalanceCardState extends State<BalanceCard> {
     String prefCurrency = await _settingService.getSetting(Setting.prefCurrency);
     double fetchedAmount = await accountService.getTotalBalance();
     setState(() {
-      prefCurrency = prefCurrency;
+      currency = prefCurrency;
       balanceAmount = fetchedAmount;
     });
   }
@@ -47,7 +47,7 @@ class _BalanceCardState extends State<BalanceCard> {
           children: [
             TotalBalanceWidget(
               title: language["totalBalance"],
-              currency: prefCurrency,
+              currency: currency,
               amount: balanceAmount, // Use the fetched balance amount
             ),
             const SizedBox(height: 24),
@@ -87,7 +87,7 @@ class TotalBalanceWidget extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          "$currency $amount",
+          "$currency ${amount.toStringAsFixed(2)}",
           style: context.headlineMedium?.copyWith(
             color: context.onPrimaryContainer,
             fontWeight: FontWeight.w700,

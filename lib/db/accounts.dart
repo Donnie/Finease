@@ -1,3 +1,4 @@
+import 'package:finease/db/currency.dart';
 import 'package:finease/db/db.dart';
 import 'package:finease/db/entries.dart';
 import 'package:finease/db/settings.dart';
@@ -7,6 +8,8 @@ const String Accounts = 'Accounts';
 
 class AccountService {
   final DatabaseHelper _databaseHelper;
+  final SettingService _settingService = SettingService();
+  final CurrencyBoxService currencyBoxService = CurrencyBoxService();
 
   AccountService({DatabaseHelper? databaseHelper})
       : _databaseHelper = databaseHelper ?? DatabaseHelper();
@@ -89,23 +92,48 @@ class AccountService {
         (
           SUM(CASE WHEN debit = 1 THEN balance ELSE 0 END) - 
           SUM(CASE WHEN debit = 0 THEN balance ELSE 0 END)
-        ) as total_balance 
-      FROM Accounts 
+        ) as total_balance,
+        currency
+      FROM Accounts
       WHERE
         owned = 1 AND
-        deleted_at IS NULL;
+        deleted_at IS NULL
+      GROUP BY currency;
     ''';
 
     // Execute the query
     List<Map<String, dynamic>> result = await dbClient.rawQuery(sql);
 
-    // Extract the total balance
-    int totalBalance = 0;
-    if (result.isNotEmpty && result.first['total_balance'] != null) {
-      totalBalance = result.first['total_balance'];
+    double totalBalance = 0;
+
+    String prefCurrency =
+        await _settingService.getSetting(Setting.prefCurrency);
+
+    // Loop through each currency and convert the balance to preferred currency
+    for (var row in result) {
+      String currency = row['currency'];
+      int balance = row['total_balance'];
+
+      // Convert balance to preferred currency
+      double convertedBalance = await _convertCurrency(currency, balance, prefCurrency);
+      totalBalance += convertedBalance;
     }
 
-    return totalBalance/100;
+    return totalBalance / 100;
+  }
+
+  Future<double> _convertCurrency(
+    String fromCurrency,
+    int balance,
+    String toCurrency,
+  ) async {
+    await currencyBoxService.init();
+
+    double rate =
+        await currencyBoxService.getSingleRate(fromCurrency, toCurrency);
+    currencyBoxService.close();
+
+    return balance * rate;
   }
 }
 
