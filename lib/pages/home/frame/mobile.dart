@@ -5,16 +5,28 @@ import 'package:finease/pages/home/summary/main.dart';
 import 'package:flutter/material.dart';
 
 final GlobalKey<ScaffoldState> _scaffoldStateKey = GlobalKey<ScaffoldState>();
+class HomePageMobile extends StatefulWidget {
+  final Widget floatingActionButton;
+  final List<Destination> destinations;
 
-class HomePageMobile extends StatelessWidget {
   const HomePageMobile({
-    super.key,
+    Key? key,
     required this.floatingActionButton,
     required this.destinations,
-  });
+  }) : super(key: key);
 
-  final List<Destination> destinations;
-  final Widget floatingActionButton;
+  @override
+  HomePageMobileState createState() => HomePageMobileState();
+}
+
+class HomePageMobileState extends State<HomePageMobile> {
+  Widget _body = const SummaryPage(); // Default body
+
+  void _updateBody(int index) {
+    setState(() {
+      _body = destinations[index].body;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +40,11 @@ class HomePageMobile extends StatelessWidget {
       ),
       drawer: AppDrawer(
         scaffoldKey: _scaffoldStateKey,
-        destinations: destinations,
+        destinations: widget.destinations,
+        onDestinationSelected: _updateBody,
       ),
-      body: const SummaryPage(),
-      floatingActionButton: floatingActionButton,
+      body: _body,
+      floatingActionButton: widget.floatingActionButton,
     );
   }
 }

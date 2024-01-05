@@ -54,7 +54,7 @@ class HomePageTablet extends StatelessWidget {
             ...destinations.map((e) => NavigationRailDestination(
                   icon: e.icon,
                   selectedIcon: e.selectedIcon,
-                  label: Text(e.pageType.name(context)),
+                  label: Text(e.pageType.name),
                 )),
             NavigationRailDestination(
               icon: Icon(MdiIcons.cog),

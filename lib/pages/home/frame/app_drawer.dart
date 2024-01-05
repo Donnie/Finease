@@ -10,15 +10,21 @@ class AppDrawer extends StatelessWidget {
     super.key,
     required this.destinations,
     required this.scaffoldKey,
+    required this.onDestinationSelected,
+    this.selectedIndex = 0,
   });
 
   final List<Destination> destinations;
   final GlobalKey<ScaffoldState> scaffoldKey;
+  final Function(int) onDestinationSelected;
+  final int selectedIndex;
 
   @override
   Widget build(BuildContext context) {
     return NavigationDrawer(
-      onDestinationSelected: (i) {
+      selectedIndex: selectedIndex,
+      onDestinationSelected: (int i) {
+        onDestinationSelected(i);
         scaffoldKey.currentState?.closeDrawer();
       },
       children: [
@@ -30,7 +36,7 @@ class AppDrawer extends StatelessWidget {
         ...destinations.map((e) => NavigationDrawerDestination(
               icon: e.icon,
               selectedIcon: e.selectedIcon,
-              label: Text(e.pageType.name(context)),
+              label: Text(e.pageType.name),
             )),
         const Divider(),
         Padding(
