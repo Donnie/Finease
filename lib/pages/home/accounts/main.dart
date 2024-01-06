@@ -33,8 +33,8 @@ class _AccountsPageState extends State<AccountsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: AccountCard(
-        accounts: accounts,
+      body: ListView(
+        children: accounts.map((a) => AccountWidget(account: a)).toList(),
       ),
       floatingActionButton: VariableFABSize(
         onPressed: () async {
