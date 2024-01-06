@@ -71,7 +71,7 @@ class IntroSetNameWidget extends StatelessWidget {
                   GestureDetector(
                     onTap: () => showCurrencyPicker(
                       context: context,
-                      currencyFilter: SupportedCurrency,
+                      currencyFilter: SupportedCurrency.keys.toList(),
                       showFlag: true,
                       onSelect: (Currency curr) => currency.text = curr.code,
                     ),

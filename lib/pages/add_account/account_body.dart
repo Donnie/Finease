@@ -112,7 +112,7 @@ class AddAccountBodyState extends State<AddAccountBody> {
             GestureDetector(
               onTap: () => showCurrencyPicker(
                 context: context,
-                currencyFilter: SupportedCurrency,
+                currencyFilter: SupportedCurrency.keys.toList(),
                 showFlag: true,
                 onSelect: (Currency currency) =>
                     widget.accountCurrency.text = currency.code,
