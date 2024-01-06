@@ -29,7 +29,7 @@ class AddAccountBody extends StatefulWidget {
 }
 
 class AddAccountBodyState extends State<AddAccountBody> {
-  bool _isAccountTrack = true;
+  bool _trackBalance = true;
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +42,9 @@ class AddAccountBodyState extends State<AddAccountBody> {
             AccountTypeSelectionFormField(
               key: const Key('account_type'),
               onSaved: (AccountType? value) => widget.onAccountType?.call(value!),
+              onChanged: (AccountType? value) => setState(() {
+                _trackBalance = [AccountType.asset, AccountType.liability].contains(value);
+              }),
             ),
             const SizedBox(height: 16),
             SwitchFormField(
@@ -66,7 +69,7 @@ class AddAccountBodyState extends State<AddAccountBody> {
               },
             ),
             Visibility(
-              visible: _isAccountTrack,
+              visible: _trackBalance,
               child: Column(
                 children: [
                   const SizedBox(height: 16),
@@ -135,7 +138,8 @@ class AccountTypeSelectionFormField extends FormField<AccountType> {
   AccountTypeSelectionFormField({
     Key? key,
     FormFieldSetter<AccountType>? onSaved,
-    bool initialValue = true,
+    FormFieldSetter<AccountType>? onChanged,
+    AccountType initialValue = AccountType.asset,
   }) : super(
           key: key,
           onSaved: onSaved,
@@ -150,7 +154,12 @@ class AccountTypeSelectionFormField extends FormField<AccountType> {
                   child: AppPillChip(
                     isSelected: isSelected,
                     title: type.name,
-                    onPressed: () => state.didChange(type),
+                    onPressed: () {
+                      state.didChange(type);
+                      if (onChanged != null) {
+                        onChanged(type);
+                      }
+                    },
                   ),
                 );
               }).toList(),
@@ -165,7 +174,7 @@ class SwitchFormField extends FormField<bool> {
     Key? key,
     Widget? title,
     FormFieldSetter<bool>? onSaved,
-    ValueChanged<bool>? onChanged, // Add this line
+    ValueChanged<bool>? onChanged,
     bool initialValue = true,
   }) : super(
           key: key,
@@ -179,7 +188,7 @@ class SwitchFormField extends FormField<bool> {
               onChanged: (bool newValue) {
                 state.didChange(newValue);
                 if (onChanged != null) {
-                  onChanged(newValue); // Use the provided onChanged callback
+                  onChanged(newValue);
                 }
               },
             );
