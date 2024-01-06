@@ -14,9 +14,20 @@ class AccountsPage extends StatefulWidget {
 }
 
 class _AccountsPageState extends State<AccountsPage> {
+  List<Account> accounts = [];
+
   @override
   void initState() {
     super.initState();
+    loadAccounts();
+  }
+
+  Future<void> loadAccounts() async {
+    List<Account> accountsList = await AccountService().getAllAccounts();
+    setState(() {
+      accounts = accountsList;
+    });
+
   }
 
   @override
@@ -28,17 +39,7 @@ class _AccountsPageState extends State<AccountsPage> {
         body: IndexedStack(
           children: [
             AccountCard(
-              accounts: [
-                Account(
-                  balance: 3400,
-                  currency: "EUR",
-                  liquid: false,
-                  name: "N26",
-                  type: AccountType.asset,
-                  createdAt: DateTime.now(),
-                  updatedAt: DateTime.now(),
-                ),
-              ],
+              accounts: accounts,
             ),
           ],
         ),
