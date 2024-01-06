@@ -20,8 +20,43 @@ class AccountService {
     account.balance = 0;
     final id = await dbClient.insert(Accounts, account.toJson());
     account.id = id;
-    await EntryService().adjustFirstBalance(id, balance);
+    if (account.currency == 'EUR') {
+      await EntryService().adjustFirstBalance(id, balance);
+    } else {
+      await EntryService().adjustFirstForexBalance(id, balance);
+    }
     return account;
+  }
+
+  Future<Account?> createForexAccountIfNotExist(
+    String currency, {
+    int balance = 0,
+    bool liquid = true,
+    name = "Forex3666",
+    type = AccountType.expense,
+  }) async {
+    final dbClient = await _databaseHelper.db;
+    // Check if the account already exists
+    final List<Map<String, dynamic>> existingAccounts = await dbClient.query(
+      Accounts,
+      where: 'currency = ? AND name = ?',
+      whereArgs: [currency, name],
+    );
+    if (existingAccounts.isNotEmpty) {
+      // Account already exists, return the existing account
+      return Account.fromJson(existingAccounts.first);
+    } else {
+      // Account does not exist, create a new one
+      Account newAccount = Account(
+        balance: balance,
+        currency: currency,
+        name: name,
+        type: type,
+        liquid: liquid,
+      );
+      // Persist the new account and return it
+      return await createAccount(newAccount);
+    }
   }
 
   Future<Account?> getAccount(int id) async {
@@ -100,7 +135,8 @@ class AccountService {
       int balance = row['total_balance'];
 
       // Convert balance to preferred currency
-      double convertedBalance = await _convertCurrency(currency, balance, prefCurrency);
+      double convertedBalance =
+          await _convertCurrency(currency, balance, prefCurrency);
       totalBalance += convertedBalance;
     }
 
@@ -136,7 +172,8 @@ class AccountService {
       int balance = row['total_balance'];
 
       // Convert balance to preferred currency
-      double convertedBalance = await _convertCurrency(currency, balance, prefCurrency);
+      double convertedBalance =
+          await _convertCurrency(currency, balance, prefCurrency);
       totalBalance += convertedBalance;
     }
 
@@ -173,7 +210,8 @@ class AccountService {
       int balance = row['total_balance'];
 
       // Convert balance to preferred currency
-      double convertedBalance = await _convertCurrency(currency, balance, prefCurrency);
+      double convertedBalance =
+          await _convertCurrency(currency, balance, prefCurrency);
       totalBalance += convertedBalance;
     }
 
@@ -228,9 +266,8 @@ class Account {
       currency: json['currency'],
       liquid: json['liquid'] == 1,
       name: json['name'],
-      type: AccountType.values.firstWhere(
-        (e) => e.toString().split('.').last == json['type']
-      ),
+      type: AccountType.values
+          .firstWhere((e) => e.toString().split('.').last == json['type']),
     );
   }
 

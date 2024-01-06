@@ -1,11 +1,13 @@
 import 'package:finease/db/accounts.dart';
+import 'package:finease/db/currency.dart';
 import 'package:finease/db/db.dart';
 import 'package:finease/db/settings.dart';
 
 class EntryService {
   final DatabaseHelper _databaseHelper;
+  final CurrencyBoxService _currencyBoxService = CurrencyBoxService();
 
-  EntryService({DatabaseHelper? databaseHelper, AccountService? accountService})
+  EntryService({DatabaseHelper? databaseHelper})
       : _databaseHelper = databaseHelper ?? DatabaseHelper();
 
   Future<Entry?> createEntry(Entry entry) async {
@@ -17,15 +19,36 @@ class EntryService {
     return entry;
   }
 
-  // Future<Entry?> createForexEntry(Entry entry) async {
-  //   final dbClient = await _databaseHelper.db;
-  //   final creditAccount = await AccountService().getAccount(entry.creditAccountId);
-  //   final debitAccount  = await AccountService().getAccount(entry.debitAccountId);
-    
-  //   final rate = await CurrencyBoxService().getSingleRate(debitAccount!.currency, creditAccount!.currency);
-  //   final creditAmount = entry.amount * rate;
-  //   return entry;
-  // }
+  Future<void> createForexEntry(Entry entry) async {
+    final creditAccount =
+        await AccountService().getAccount(entry.creditAccountId);
+    final debitAccount =
+        await AccountService().getAccount(entry.debitAccountId);
+
+    await _currencyBoxService.init();
+    final rate = await _currencyBoxService.getSingleRate(
+        debitAccount!.currency, creditAccount!.currency);
+    final debitAmount = entry.amount * rate;
+
+    final forexAccountDebit = await AccountService()
+        .createForexAccountIfNotExist(debitAccount.currency);
+    final forexAccountCredit = await AccountService()
+        .createForexAccountIfNotExist(creditAccount.currency);
+
+    await createEntry(Entry(
+      debitAccountId: entry.debitAccountId,
+      creditAccountId: forexAccountDebit!.id!,
+      amount: debitAmount.floor(),
+      notes: "Auto Adjusted by App",
+    ));
+
+    await createEntry(Entry(
+      debitAccountId: forexAccountCredit!.id!,
+      creditAccountId: entry.creditAccountId,
+      amount: entry.amount.ceil(),
+      notes: "Auto Adjusted by App",
+    ));
+  }
 
   Future<Entry?> getEntry(int id) async {
     final dbClient = await _databaseHelper.db;
@@ -85,6 +108,21 @@ class EntryService {
     );
 
     await dbClient.insert('Entries', entry.toJson());
+  }
+
+  Future adjustFirstForexBalance(int accountId, int balance) async {
+    if (balance == 0) {
+      return;
+    }
+
+    Entry entry = Entry(
+      debitAccountId: 1,
+      creditAccountId: accountId,
+      amount: balance,
+      notes: "Auto Adjusted by App",
+    );
+
+    await createForexEntry(entry);
   }
 }
 
