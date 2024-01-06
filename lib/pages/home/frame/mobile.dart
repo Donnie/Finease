@@ -1,7 +1,6 @@
 import 'package:finease/pages/home/frame/app_drawer.dart';
 import 'package:finease/pages/home/frame/app_top_bar.dart';
 import 'package:finease/pages/home/frame/destinations.dart';
-import 'package:finease/parts/floating_action.dart';
 import 'package:flutter/material.dart';
 
 final GlobalKey<ScaffoldState> _scaffoldStateKey = GlobalKey<ScaffoldState>();
@@ -40,7 +39,6 @@ class HomePageMobileState extends State<HomePageMobile> {
         onDestinationSelected: _updateBody,
       ),
       body: destinations[destIndex].body,
-      floatingActionButton: FABWidget(index: destIndex),
     );
   }
 }

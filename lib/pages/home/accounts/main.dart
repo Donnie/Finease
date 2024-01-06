@@ -1,8 +1,9 @@
-import 'package:finease/core/common.dart';
 import 'package:finease/db/accounts.dart';
 import 'package:finease/pages/home/accounts/account_card.dart';
-import 'package:finease/parts/export.dart';
+import 'package:finease/parts/variable_fab_size.dart';
+import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class AccountsPage extends StatefulWidget {
   const AccountsPage({
@@ -27,22 +28,20 @@ class _AccountsPageState extends State<AccountsPage> {
     setState(() {
       accounts = accountsList;
     });
-
   }
 
   @override
   Widget build(BuildContext context) {
-    return AppAnnotatedRegionWidget(
-      color: context.background,
-      child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        body: IndexedStack(
-          children: [
-            AccountCard(
-              accounts: accounts,
-            ),
-          ],
-        ),
+    return Scaffold(
+      body: AccountCard(
+        accounts: accounts,
+      ),
+      floatingActionButton: VariableFABSize(
+        onPressed: () async {
+          await context.pushNamed(RoutesName.addAccount.name);
+          loadAccounts();
+        },
+        icon: Icons.add,
       ),
     );
   }
