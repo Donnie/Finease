@@ -1,76 +1,77 @@
-import 'package:finease/parts/card.dart';
+import 'package:finease/db/accounts.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:finease/core/common.dart';
 
 class AccountCard extends StatelessWidget {
   const AccountCard({
     super.key,
+    required this.accounts,
   });
+
+  final List<Account> accounts;
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colorScheme =
-        ColorScheme.fromSeed(seedColor: const Color(0xFF795548));
-    final Color color = colorScheme.primaryContainer;
-    final Color onPrimary = colorScheme.onPrimaryContainer;
-    const num expense = 26000;
-    const num income = 65400;
-    const num savings = income - expense;
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: AspectRatio(
-        aspectRatio: 16 / 5,
-        child: AppCard(
-          elevation: 4,
-          color: color,
-          child: InkWell(
-            onTap: () {
-              // show transactions
-            },
+      child: ListView(
+        children: [
+          ...accounts.map((ac) => AccountWidget(account: ac)),
+        ],
+      ),
+    );
+  }
+}
+
+class AccountWidget extends StatelessWidget {
+  const AccountWidget({
+    super.key,
+    required this.account,
+  });
+
+  final Account account;
+
+  @override
+  Widget build(BuildContext context) {
+    final DateFormat dateFormat =
+        DateFormat.yMd().add_Hms();
+
+    return AspectRatio(
+      aspectRatio: 16 / 6,
+      child: Card(
+        elevation: 4,
+        child: InkWell(
+          onTap: () {
+            // show transactions
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Row(
+                Text(account.name),
+                const Divider(),
+                Expanded(
+                  child: GridView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: 200,
+                      childAspectRatio: 3,
+                      crossAxisSpacing: 20,
+                      mainAxisSpacing: 20,
+                    ),
                     children: [
-                      Expanded(
-                        child: ThisAccountTransactionWidget(
-                          title: "Mar 2023",
-                          content: "N26",
-                          color: onPrimary,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: ThisAccountTransactionWidget(
-                          title: "Savings",
-                          content: savings.toString(),
-                          color: onPrimary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: ThisAccountTransactionWidget(
-                          title: "Income",
-                          content: income.toString(),
-                          color: onPrimary,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: ThisAccountTransactionWidget(
-                          title: "Expense",
-                          color: onPrimary,
-                          content: expense.toString(),
-                        ),
-                      ),
+                      infoTile(
+                          'Balance', '${account.balance} ${account.currency}'),
+                      infoTile('Liquid', account.liquid ? 'Yes' : 'No'),
+                      infoTile('Debit', account.debit ? 'Yes' : 'No'),
+                      infoTile('Track', account.track ? 'Yes' : 'No'),
+                      infoTile(
+                          'Created At', dateFormat.format(account.createdAt!)),
+                      infoTile(
+                          'Updated At', dateFormat.format(account.updatedAt!)),
                     ],
                   ),
                 ),
@@ -79,6 +80,17 @@ class AccountCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget infoTile(String title, String value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+        Text(value, style: const TextStyle(fontSize: 12)),
+      ],
     );
   }
 }

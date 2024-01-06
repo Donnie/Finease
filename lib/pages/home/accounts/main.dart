@@ -1,4 +1,5 @@
 import 'package:finease/core/common.dart';
+import 'package:finease/db/accounts.dart';
 import 'package:finease/pages/home/accounts/account_card.dart';
 import 'package:finease/parts/export.dart';
 import 'package:flutter/material.dart';
@@ -22,11 +23,24 @@ class _AccountsPageState extends State<AccountsPage> {
   Widget build(BuildContext context) {
     return AppAnnotatedRegionWidget(
       color: context.background,
-      child: const Scaffold(
+      child: Scaffold(
         resizeToAvoidBottomInset: true,
         body: IndexedStack(
           children: [
-            AccountCard(),
+            AccountCard(
+              accounts: [
+                Account(
+                  balance: 3400,
+                  currency: "EUR",
+                  liquid: true,
+                  track: true,
+                  name: "N26",
+                  debit: true,
+                  createdAt: DateTime.now(),
+                  updatedAt: DateTime.now(),
+                ),
+              ],
+            ),
           ],
         ),
       ),
