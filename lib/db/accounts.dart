@@ -103,7 +103,6 @@ class AccountService {
       double convertedBalance = await _convertCurrency(currency, balance, prefCurrency);
       totalBalance += convertedBalance;
     }
-    currencyBoxService.close();
 
     return totalBalance / 100;
   }
@@ -140,7 +139,6 @@ class AccountService {
       double convertedBalance = await _convertCurrency(currency, balance, prefCurrency);
       totalBalance += convertedBalance;
     }
-    currencyBoxService.close();
 
     return totalBalance / 100;
   }
@@ -178,7 +176,6 @@ class AccountService {
       double convertedBalance = await _convertCurrency(currency, balance, prefCurrency);
       totalBalance += convertedBalance;
     }
-    currencyBoxService.close();
 
     return totalBalance / 100;
   }
