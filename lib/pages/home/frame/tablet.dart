@@ -1,18 +1,27 @@
 import 'package:finease/core/common.dart';
 import 'package:finease/pages/home/frame/destinations.dart';
-import 'package:finease/pages/home/summary/main.dart';
 import 'package:finease/parts/export.dart';
-import 'package:finease/parts/floating_action.dart';
 import 'package:finease/parts/user_widget.dart';
-import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-class HomePageTablet extends StatelessWidget {
+class HomePageTablet extends StatefulWidget {
   const HomePageTablet({
     super.key,
   });
+
+  @override
+  HomePageTabletState createState() => HomePageTabletState();
+}
+
+class HomePageTabletState extends State<HomePageTablet> {
+  int destIndex = 0;
+
+  void _updateBody(int index) {
+    setState(() {
+      destIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +30,6 @@ class HomePageTablet extends StatelessWidget {
       children: [
         NavigationRail(
           groupAlignment: 0,
-          leading: const FABWidget(index: 0),
           elevation: 1,
           selectedLabelTextStyle: context.bodyLarge!.copyWith(
             fontWeight: FontWeight.bold,
@@ -35,15 +43,8 @@ class HomePageTablet extends StatelessWidget {
           ),
           labelType: NavigationRailLabelType.all,
           backgroundColor: context.surface,
-          selectedIndex: 0,
-          onDestinationSelected: (index) {
-            switch (index) {
-              case 7:
-                context.pushNamed(RoutesName.settings.name);
-                break;
-              default:
-            }
-          },
+          selectedIndex: destIndex,
+          onDestinationSelected: _updateBody,
           minWidth: 55,
           useIndicator: true,
           destinations: [
@@ -73,7 +74,7 @@ class HomePageTablet extends StatelessWidget {
                 child: AppIconTitle(),
               ),
               leadingWidth: 180,
-              title: const Text("Home"),
+              title: Text(destinations[destIndex].pageType.name),
               actions: const [
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8.0),
@@ -81,7 +82,7 @@ class HomePageTablet extends StatelessWidget {
                 )
               ],
             ),
-            body: const SummaryPage(),
+            body: destinations[destIndex].body,
           ),
         ),
       ],

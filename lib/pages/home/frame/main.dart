@@ -17,7 +17,7 @@ class HomePage extends StatelessWidget {
       child: ScreenTypeLayout.builder(
         mobile: (p0) => const HomePageMobile(),
         tablet: (p0) => const HomePageTablet(),
-        desktop: (p0) => Container(),
+        desktop: (p0) => const HomePageTablet(),
       ),
     );
   }
