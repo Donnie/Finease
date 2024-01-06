@@ -1,3 +1,4 @@
+import 'package:finease/pages/home/accounts/main.dart';
 import 'package:finease/pages/home/summary/main.dart';
 import 'package:finease/pages/home/months/main.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,12 @@ List<Destination> destinations = [
     body: const SummaryPage(),
     icon: const Icon(Icons.home_outlined),
     selectedIcon: const Icon(Icons.home),
+  ),
+  Destination(
+    body: const AccountsPage(),
+    pageType: PageType.accounts,
+    icon: const Icon(Icons.credit_card_outlined),
+    selectedIcon: const Icon(Icons.credit_card),
   ),
   Destination(
     body: const MonthsPage(),
@@ -33,6 +40,7 @@ class Destination {
 
 enum PageType {
   home,
+  accounts,
   months;
 
   int get toIndex => index;
