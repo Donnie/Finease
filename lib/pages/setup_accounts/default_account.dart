@@ -10,7 +10,7 @@ List<Account> defaultAccountsData(
       currency: prefCurrency,
       liquid: true,
       debit: true,
-      owned: true,
+      track: true,
     ),
     Account(
       name: 'Groceries',
@@ -18,7 +18,7 @@ List<Account> defaultAccountsData(
       currency: prefCurrency,
       liquid: false,
       debit: false,
-      owned: false,
+      track: false,
     ),
     Account(
       name: 'Friend',
@@ -26,7 +26,7 @@ List<Account> defaultAccountsData(
       currency: prefCurrency,
       liquid: false,
       debit: true,
-      owned: true,
+      track: true,
     ),
   ];
 }

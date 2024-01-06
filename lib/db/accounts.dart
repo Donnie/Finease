@@ -20,7 +20,7 @@ class AccountService {
     account.balance = 0;
     final id = await dbClient.insert(Accounts, account.toJson());
     account.id = id;
-    if (account.owned) {
+    if (account.track) {
       await EntryService().adjustFirstBalance(id, balance);
     }
     return account;
@@ -96,7 +96,7 @@ class AccountService {
         currency
       FROM Accounts
       WHERE
-        owned = 1 AND
+        track = 1 AND
         deleted_at IS NULL
       GROUP BY currency;
     ''';
@@ -137,7 +137,7 @@ class AccountService {
       currency
     FROM Accounts
     WHERE
-      owned = 1 AND
+      track = 1 AND
       debit = $debitCondition AND
       deleted_at IS NULL
     GROUP BY currency;
@@ -183,7 +183,7 @@ class Account {
   bool liquid;
   String name;
   bool debit;
-  bool owned;
+  bool track;
 
   Account({
     this.id,
@@ -195,7 +195,7 @@ class Account {
     required this.liquid,
     required this.name,
     required this.debit,
-    required this.owned,
+    required this.track,
   });
 
   factory Account.fromJson(Map<String, dynamic> json) {
@@ -209,7 +209,7 @@ class Account {
       liquid: json['liquid'] == 1,
       name: json['name'],
       debit: json['debit'] == 1,
-      owned: json['owned'] == 1,
+      track: json['track'] == 1,
     );
   }
 
@@ -223,7 +223,7 @@ class Account {
       'liquid': liquid ? 1 : 0,
       'name': name,
       'debit': debit ? 1 : 0,
-      'owned': owned ? 1 : 0,
+      'track': track ? 1 : 0,
     };
   }
 }

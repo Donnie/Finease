@@ -11,7 +11,7 @@ Future<void> aInitialMigration(Database db) async {
       currency TEXT NOT NULL,
       liquid BOOLEAN,
       name TEXT NOT NULL,
-      owned BOOLEAN,
+      track BOOLEAN,
       debit BOOLEAN
     )
   ''');
@@ -64,7 +64,7 @@ Future<void> aInitialMigration(Database db) async {
   ''');
 
   await db.execute('''
-    INSERT INTO Accounts (currency, liquid, name, owned, debit)
+    INSERT INTO Accounts (currency, liquid, name, track, debit)
     VALUES ('USD', 1, 'Past', 0, 0);
   ''');
 

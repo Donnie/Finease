@@ -21,7 +21,7 @@ class AddAccountScreenState extends State<AddAccountScreen> {
   final _accountCurrency = TextEditingController();
   bool accountDebit = true;
   bool accountLiquid = true;
-  bool accountOwned = true;
+  bool accountTrack = true;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +36,7 @@ class AddAccountScreenState extends State<AddAccountScreen> {
           accountCurrency: _accountCurrency,
           onCreditDebitSaved: _accountDebit,
           onLiquidAssetsSaved: _accountLiquid,
-          onAccountOwned: _accountOwned,
+          onAccountTrack: _accountTrack,
         ),
         bottomNavigationBar: _buildBottomBar(),
       ),
@@ -70,9 +70,9 @@ class AddAccountScreenState extends State<AddAccountScreen> {
     });
   }
 
-  void _accountOwned(bool value) {
+  void _accountTrack(bool value) {
     setState(() {
-      accountOwned = value;
+      accountTrack = value;
     });
   }
 
@@ -93,7 +93,7 @@ class AddAccountScreenState extends State<AddAccountScreen> {
         balance: balance,
         liquid: accountLiquid,
         debit: accountDebit,
-        owned: accountOwned,
+        track: accountTrack,
       );
       await _accountService.createAccount(account);
     }
@@ -107,7 +107,7 @@ class AddAccountForm extends StatelessWidget {
   final TextEditingController accountCurrency;
   final Function(bool) onCreditDebitSaved;
   final Function(bool) onLiquidAssetsSaved;
-  final Function(bool) onAccountOwned;
+  final Function(bool) onAccountTrack;
 
   const AddAccountForm({
     super.key,
@@ -117,7 +117,7 @@ class AddAccountForm extends StatelessWidget {
     required this.accountCurrency,
     required this.onCreditDebitSaved,
     required this.onLiquidAssetsSaved,
-    required this.onAccountOwned,
+    required this.onAccountTrack,
   });
 
   @override
@@ -129,7 +129,7 @@ class AddAccountForm extends StatelessWidget {
       accountCurrency: accountCurrency,
       onCreditDebitSaved: onCreditDebitSaved,
       onLiquidAssetsSaved: onLiquidAssetsSaved,
-      onAccountOwned: onAccountOwned,
+      onAccountTrack: onAccountTrack,
     );
   }
 }

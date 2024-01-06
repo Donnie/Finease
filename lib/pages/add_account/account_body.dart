@@ -14,7 +14,7 @@ class AddAccountBody extends StatefulWidget {
     required this.accountCurrency,
     this.onCreditDebitSaved,
     this.onLiquidAssetsSaved,
-    this.onAccountOwned,
+    this.onAccountTrack,
   });
 
   final GlobalKey<FormState> formState;
@@ -23,14 +23,14 @@ class AddAccountBody extends StatefulWidget {
   final TextEditingController accountCurrency;
   final ValueChanged<bool>? onCreditDebitSaved;
   final ValueChanged<bool>? onLiquidAssetsSaved;
-  final ValueChanged<bool>? onAccountOwned;
+  final ValueChanged<bool>? onAccountTrack;
 
   @override
   AddAccountBodyState createState() => AddAccountBodyState();
 }
 
 class AddAccountBodyState extends State<AddAccountBody> {
-  bool _isAccountOwned = true;
+  bool _isAccountTrack = true;
 
   @override
   Widget build(BuildContext context) {
@@ -53,11 +53,11 @@ class AddAccountBodyState extends State<AddAccountBody> {
             ),
             const SizedBox(height: 16),
             SwitchFormField(
-              key: const Key('account_owned'),
-              title: const Text('Own Account'),
-              onSaved: (bool? value) => widget.onAccountOwned?.call(value!),
+              key: const Key('account_track'),
+              title: const Text('Track Balance'),
+              onSaved: (bool? value) => widget.onAccountTrack?.call(value!),
               onChanged: (value) => setState(() {
-                _isAccountOwned = value;
+                _isAccountTrack = value;
               }),
             ),
             const SizedBox(height: 16),
@@ -76,7 +76,7 @@ class AddAccountBodyState extends State<AddAccountBody> {
               },
             ),
             Visibility(
-              visible: _isAccountOwned,
+              visible: _isAccountTrack,
               child: Column(
                 children: [
                   const SizedBox(height: 16),
