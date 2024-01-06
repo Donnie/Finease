@@ -11,33 +11,22 @@ class FABWidget extends StatelessWidget {
 
   final int index;
 
+  static final Map<int, void Function(BuildContext)> _navigationActions = {
+    1: (context) => context.pushNamed(RoutesName.addAccount.name),
+  };
+
   void _handleClick(BuildContext context) {
-    switch (index) {
-      case 1:
-        context.goNamed(RoutesName.addAccount.name);
-        break;
-      case 6:
-        context.pushNamed(RoutesName.addAccount.name);
-        break;
-      case 0:
-        context.pushNamed(RoutesName.addAccount.name);
-        break;
-      case 4:
-        context.goNamed(RoutesName.addAccount.name);
-        break;
-      case 2:
-        context.goNamed(RoutesName.addAccount.name);
-        break;
-      case 5:
-        break;
-    }
+    _navigationActions[index]?.call(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    return VariableFABSize(
-      onPressed: () => _handleClick,
-      icon: Icons.add,
+    return Visibility(
+      visible: _navigationActions[index] != null,
+      child: VariableFABSize(
+        onPressed: () => _handleClick(context),
+        icon: Icons.add,
+      ),
     );
   }
 }
