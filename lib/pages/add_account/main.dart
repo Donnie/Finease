@@ -19,9 +19,8 @@ class AddAccountScreenState extends State<AddAccountScreen> {
   final _accountName = TextEditingController();
   final _accountBalance = TextEditingController();
   final _accountCurrency = TextEditingController();
-  bool accountDebit = true;
+  AccountType accountType = AccountType.asset;
   bool accountLiquid = true;
-  bool accountTrack = true;
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +33,8 @@ class AddAccountScreenState extends State<AddAccountScreen> {
           accountName: _accountName,
           accountBalance: _accountBalance,
           accountCurrency: _accountCurrency,
-          onCreditDebitSaved: _accountDebit,
+          onAccountType: _accountType,
           onLiquidAssetsSaved: _accountLiquid,
-          onAccountTrack: _accountTrack,
         ),
         bottomNavigationBar: _buildBottomBar(),
       ),
@@ -58,21 +56,15 @@ class AddAccountScreenState extends State<AddAccountScreen> {
     );
   }
 
-  void _accountDebit(bool value) {
+  void _accountType(AccountType value) {
     setState(() {
-      accountDebit = value;
+      accountType = value;
     });
   }
 
   void _accountLiquid(bool value) {
     setState(() {
       accountLiquid = value;
-    });
-  }
-
-  void _accountTrack(bool value) {
-    setState(() {
-      accountTrack = value;
     });
   }
 
@@ -92,8 +84,7 @@ class AddAccountScreenState extends State<AddAccountScreen> {
         currency: accountCurrency,
         balance: balance,
         liquid: accountLiquid,
-        debit: accountDebit,
-        track: accountTrack,
+        type: accountType,
       );
       await _accountService.createAccount(account);
     }
@@ -105,9 +96,8 @@ class AddAccountForm extends StatelessWidget {
   final TextEditingController accountName;
   final TextEditingController accountBalance;
   final TextEditingController accountCurrency;
-  final Function(bool) onCreditDebitSaved;
+  final Function(AccountType) onAccountType;
   final Function(bool) onLiquidAssetsSaved;
-  final Function(bool) onAccountTrack;
 
   const AddAccountForm({
     super.key,
@@ -115,9 +105,8 @@ class AddAccountForm extends StatelessWidget {
     required this.accountName,
     required this.accountBalance,
     required this.accountCurrency,
-    required this.onCreditDebitSaved,
+    required this.onAccountType,
     required this.onLiquidAssetsSaved,
-    required this.onAccountTrack,
   });
 
   @override
@@ -127,9 +116,8 @@ class AddAccountForm extends StatelessWidget {
       accountName: accountName,
       accountBalance: accountBalance,
       accountCurrency: accountCurrency,
-      onCreditDebitSaved: onCreditDebitSaved,
+      onAccountType: onAccountType,
       onLiquidAssetsSaved: onLiquidAssetsSaved,
-      onAccountTrack: onAccountTrack,
     );
   }
 }

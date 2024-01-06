@@ -32,10 +32,9 @@ class _AccountsPageState extends State<AccountsPage> {
                 Account(
                   balance: 3400,
                   currency: "EUR",
-                  liquid: true,
-                  track: true,
+                  liquid: false,
                   name: "N26",
-                  debit: true,
+                  type: AccountType.asset,
                   createdAt: DateTime.now(),
                   updatedAt: DateTime.now(),
                 ),

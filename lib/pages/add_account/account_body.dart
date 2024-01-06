@@ -1,4 +1,5 @@
 import 'package:currency_picker/currency_picker.dart';
+import 'package:finease/db/accounts.dart';
 import 'package:finease/db/currency.dart';
 import 'package:finease/parts/export.dart';
 import 'package:finease/parts/pill_chip.dart';
@@ -12,18 +13,16 @@ class AddAccountBody extends StatefulWidget {
     required this.accountName,
     required this.accountBalance,
     required this.accountCurrency,
-    this.onCreditDebitSaved,
+    this.onAccountType,
     this.onLiquidAssetsSaved,
-    this.onAccountTrack,
   });
 
   final GlobalKey<FormState> formState;
   final TextEditingController accountName;
   final TextEditingController accountBalance;
   final TextEditingController accountCurrency;
-  final ValueChanged<bool>? onCreditDebitSaved;
+  final ValueChanged<AccountType>? onAccountType;
   final ValueChanged<bool>? onLiquidAssetsSaved;
-  final ValueChanged<bool>? onAccountTrack;
 
   @override
   AddAccountBodyState createState() => AddAccountBodyState();
@@ -40,9 +39,9 @@ class AddAccountBodyState extends State<AddAccountBody> {
         key: widget.formState,
         child: ListView(
           children: [
-            CreditDebitSelectionFormField(
-              key: const Key('account_debit'),
-              onSaved: (bool? value) => widget.onCreditDebitSaved?.call(value!),
+            AccountTypeSelectionFormField(
+              key: const Key('account_type'),
+              onSaved: (AccountType? value) => widget.onAccountType?.call(value!),
             ),
             const SizedBox(height: 16),
             SwitchFormField(
@@ -50,15 +49,6 @@ class AddAccountBodyState extends State<AddAccountBody> {
               title: const Text('Liquid Assets'),
               onSaved: (bool? value) =>
                   widget.onLiquidAssetsSaved?.call(value!),
-            ),
-            const SizedBox(height: 16),
-            SwitchFormField(
-              key: const Key('account_track'),
-              title: const Text('Track Balance'),
-              onSaved: (bool? value) => widget.onAccountTrack?.call(value!),
-              onChanged: (value) => setState(() {
-                _isAccountTrack = value;
-              }),
             ),
             const SizedBox(height: 16),
             AppTextFormField(
@@ -141,30 +131,30 @@ class AddAccountBodyState extends State<AddAccountBody> {
   }
 }
 
-class CreditDebitSelectionFormField extends FormField<bool> {
-  CreditDebitSelectionFormField({
+class AccountTypeSelectionFormField extends FormField<AccountType> {
+  AccountTypeSelectionFormField({
     Key? key,
-    FormFieldSetter<bool>? onSaved,
+    FormFieldSetter<AccountType>? onSaved,
     bool initialValue = true,
   }) : super(
           key: key,
           onSaved: onSaved,
-          initialValue: initialValue,
-          builder: (FormFieldState<bool> state) {
-            final isDebit = state.value ?? initialValue;
-            return Row(
-              children: [
-                AppPillChip(
-                  isSelected: !isDebit,
-                  title: "Credit",
-                  onPressed: () => state.didChange(false),
-                ),
-                AppPillChip(
-                  isSelected: isDebit,
-                  title: "Debit",
-                  onPressed: () => state.didChange(true),
-                ),
-              ],
+          initialValue: AccountType.asset,
+          builder: (FormFieldState<AccountType> state) {
+            return Padding(
+              padding: const EdgeInsets.all(8),
+              child: Row(
+              children: AccountType.values.map((type) {
+                final isSelected = state.value == type;
+                return Expanded(
+                  child: AppPillChip(
+                    isSelected: isSelected,
+                    title: type.name,
+                    onPressed: () => state.didChange(type),
+                  ),
+                );
+              }).toList(),
+            ),
             );
           },
         );

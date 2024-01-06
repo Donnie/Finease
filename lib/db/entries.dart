@@ -33,7 +33,6 @@ class EntryService {
     final dbClient = await _databaseHelper.db;
     final List<Map<String, dynamic>> entries = await dbClient.query(
       'Entries',
-      where: 'deleted_at IS NULL',
     );
     return entries.map((json) => Entry.fromJson(json)).toList();
   }
@@ -49,19 +48,6 @@ class EntryService {
   }
 
   Future<int> deleteEntry(int id) async {
-    final dbClient = await _databaseHelper.db;
-    final currentTime = DateTime.now();
-    return await dbClient.update(
-      'Entries',
-      {
-        'deleted_at': currentTime.toIso8601String(),
-      },
-      where: 'id = ?',
-      whereArgs: [id],
-    );
-  }
-
-  Future<int> hardDeleteEntry(int id) async {
     final dbClient = await _databaseHelper.db;
     return await dbClient.delete(
       'Entries',
@@ -91,7 +77,6 @@ class Entry {
   int? id;
   DateTime? createdAt;
   DateTime? updatedAt;
-  DateTime? deletedAt;
   int debitAccountId;
   int creditAccountId;
   int amount;
@@ -102,7 +87,6 @@ class Entry {
     this.id,
     this.createdAt,
     this.updatedAt,
-    this.deletedAt,
     required this.debitAccountId,
     required this.creditAccountId,
     required this.amount,
@@ -115,7 +99,6 @@ class Entry {
       id: json['id'],
       createdAt: DateTime.tryParse(json['created_at'] ?? ''),
       updatedAt: DateTime.tryParse(json['updated_at'] ?? ''),
-      deletedAt: DateTime.tryParse(json['deleted_at'] ?? ''),
       debitAccountId: json['debit_account_id'],
       creditAccountId: json['credit_account_id'],
       amount: json['amount'],
@@ -128,7 +111,6 @@ class Entry {
     return {
       'id': id,
       'updated_at': DateTime.now().toIso8601String(),
-      'deleted_at': deletedAt?.toIso8601String(),
       'debit_account_id': debitAccountId,
       'credit_account_id': creditAccountId,
       'amount': amount,
