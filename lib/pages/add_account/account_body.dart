@@ -1,4 +1,5 @@
 import 'package:currency_picker/currency_picker.dart';
+import 'package:finease/db/accounts.dart';
 import 'package:finease/db/currency.dart';
 import 'package:finease/parts/export.dart';
 import 'package:finease/parts/pill_chip.dart';
@@ -12,25 +13,23 @@ class AddAccountBody extends StatefulWidget {
     required this.accountName,
     required this.accountBalance,
     required this.accountCurrency,
-    this.onCreditDebitSaved,
+    this.onAccountType,
     this.onLiquidAssetsSaved,
-    this.onAccountOwned,
   });
 
   final GlobalKey<FormState> formState;
   final TextEditingController accountName;
   final TextEditingController accountBalance;
   final TextEditingController accountCurrency;
-  final ValueChanged<bool>? onCreditDebitSaved;
+  final ValueChanged<AccountType>? onAccountType;
   final ValueChanged<bool>? onLiquidAssetsSaved;
-  final ValueChanged<bool>? onAccountOwned;
 
   @override
   AddAccountBodyState createState() => AddAccountBodyState();
 }
 
 class AddAccountBodyState extends State<AddAccountBody> {
-  bool _isAccountOwned = true;
+  bool _trackBalance = true;
 
   @override
   Widget build(BuildContext context) {
@@ -40,9 +39,12 @@ class AddAccountBodyState extends State<AddAccountBody> {
         key: widget.formState,
         child: ListView(
           children: [
-            CreditDebitSelectionFormField(
-              key: const Key('account_debit'),
-              onSaved: (bool? value) => widget.onCreditDebitSaved?.call(value!),
+            AccountTypeSelectionFormField(
+              key: const Key('account_type'),
+              onSaved: (AccountType? value) => widget.onAccountType?.call(value!),
+              onChanged: (AccountType? value) => setState(() {
+                _trackBalance = [AccountType.asset, AccountType.liability].contains(value);
+              }),
             ),
             const SizedBox(height: 16),
             SwitchFormField(
@@ -50,15 +52,6 @@ class AddAccountBodyState extends State<AddAccountBody> {
               title: const Text('Liquid Assets'),
               onSaved: (bool? value) =>
                   widget.onLiquidAssetsSaved?.call(value!),
-            ),
-            const SizedBox(height: 16),
-            SwitchFormField(
-              key: const Key('account_owned'),
-              title: const Text('Own Account'),
-              onSaved: (bool? value) => widget.onAccountOwned?.call(value!),
-              onChanged: (value) => setState(() {
-                _isAccountOwned = value;
-              }),
             ),
             const SizedBox(height: 16),
             AppTextFormField(
@@ -76,7 +69,7 @@ class AddAccountBodyState extends State<AddAccountBody> {
               },
             ),
             Visibility(
-              visible: _isAccountOwned,
+              visible: _trackBalance,
               child: Column(
                 children: [
                   const SizedBox(height: 16),
@@ -141,30 +134,36 @@ class AddAccountBodyState extends State<AddAccountBody> {
   }
 }
 
-class CreditDebitSelectionFormField extends FormField<bool> {
-  CreditDebitSelectionFormField({
+class AccountTypeSelectionFormField extends FormField<AccountType> {
+  AccountTypeSelectionFormField({
     Key? key,
-    FormFieldSetter<bool>? onSaved,
-    bool initialValue = true,
+    FormFieldSetter<AccountType>? onSaved,
+    FormFieldSetter<AccountType>? onChanged,
+    AccountType initialValue = AccountType.asset,
   }) : super(
           key: key,
           onSaved: onSaved,
-          initialValue: initialValue,
-          builder: (FormFieldState<bool> state) {
-            final isDebit = state.value ?? initialValue;
-            return Row(
-              children: [
-                AppPillChip(
-                  isSelected: !isDebit,
-                  title: "Credit",
-                  onPressed: () => state.didChange(false),
-                ),
-                AppPillChip(
-                  isSelected: isDebit,
-                  title: "Debit",
-                  onPressed: () => state.didChange(true),
-                ),
-              ],
+          initialValue: AccountType.asset,
+          builder: (FormFieldState<AccountType> state) {
+            return Padding(
+              padding: const EdgeInsets.all(8),
+              child: Row(
+              children: AccountType.values.map((type) {
+                final isSelected = state.value == type;
+                return Expanded(
+                  child: AppPillChip(
+                    isSelected: isSelected,
+                    title: type.name,
+                    onPressed: () {
+                      state.didChange(type);
+                      if (onChanged != null) {
+                        onChanged(type);
+                      }
+                    },
+                  ),
+                );
+              }).toList(),
+            ),
             );
           },
         );
@@ -175,7 +174,7 @@ class SwitchFormField extends FormField<bool> {
     Key? key,
     Widget? title,
     FormFieldSetter<bool>? onSaved,
-    ValueChanged<bool>? onChanged, // Add this line
+    ValueChanged<bool>? onChanged,
     bool initialValue = true,
   }) : super(
           key: key,
@@ -189,7 +188,7 @@ class SwitchFormField extends FormField<bool> {
               onChanged: (bool newValue) {
                 state.didChange(newValue);
                 if (onChanged != null) {
-                  onChanged(newValue); // Use the provided onChanged callback
+                  onChanged(newValue);
                 }
               },
             );

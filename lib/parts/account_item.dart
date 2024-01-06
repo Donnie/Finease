@@ -17,9 +17,19 @@ class AccountItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final icon = account.debit ? MdiIcons.arrowBottomLeft : MdiIcons.arrowTopRight;
-    final color = account.debit ? Color(Colors.green.shade200.value) : Color(Colors.red.shade200.value);
-    final tileColor = account.liquid ? Color(Colors.brown.shade900.value) : Color(Colors.grey.shade800.value);
+    final icon = (account.type == AccountType.asset ||
+            account.type == AccountType.income)
+        ? MdiIcons.arrowBottomLeft
+        : MdiIcons.arrowTopRight;
+
+    final color = (account.type == AccountType.asset ||
+            account.type == AccountType.income)
+        ? Color(Colors.green.shade200.value)
+        : Color(Colors.red.shade200.value);
+
+    final tileColor = account.liquid
+        ? Color(Colors.brown.shade900.value)
+        : Color(Colors.grey.shade800.value);
 
     return ScreenTypeLayout.builder(
       mobile: (p0) => ListTile(
@@ -31,7 +41,7 @@ class AccountItemWidget extends StatelessWidget {
           color: color,
         ),
         title: Text(account.name),
-        subtitle: Text(account.name),
+        subtitle: Text(account.currency),
         trailing: Icon(MdiIcons.delete),
       ),
       tablet: (p0) => AppCard(
@@ -59,7 +69,7 @@ class AccountItemWidget extends StatelessWidget {
                         style: context.titleMedium,
                       ),
                       Text(
-                        account.name,
+                        account.currency,
                         style: context.bodySmall,
                       ),
                     ],

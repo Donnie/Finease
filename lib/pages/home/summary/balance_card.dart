@@ -19,6 +19,7 @@ class _BalanceCardState extends State<BalanceCard> {
   double balanceAmount = 0.0;
   double debitAmount = 0.0;
   double creditAmount = 0.0;
+  double liquidAmount = 0.0;
   String currency = "USD";
 
   @override
@@ -28,14 +29,17 @@ class _BalanceCardState extends State<BalanceCard> {
   }
 
   Future<void> _fetchBalance() async {
-    String prefCurrency = await _settingService.getSetting(Setting.prefCurrency);
-    double debit = await accountService.getTotalBalanceByType(true);
-    double credit = await accountService.getTotalBalanceByType(false);
+    String prefCurrency =
+        await _settingService.getSetting(Setting.prefCurrency);
+    double debit = await accountService.getTotalBalanceByType(AccountType.asset);
+    double credit = await accountService.getTotalBalanceByType(AccountType.liability);
+    double liquid = await accountService.getTotalLiquidBalance();
     setState(() {
       currency = prefCurrency;
       balanceAmount = (debit - credit);
       creditAmount = credit;
       debitAmount = debit;
+      liquidAmount = liquid;
     });
   }
 
@@ -53,7 +57,8 @@ class _BalanceCardState extends State<BalanceCard> {
           children: [
             TotalBalanceWidget(
               currency: currency,
-              amount: balanceAmount, // Use the fetched balance amount
+              amount: balanceAmount,
+              liquid: liquidAmount,
             ),
             const SizedBox(height: 24),
             TotalCreditDebit(
@@ -73,9 +78,11 @@ class TotalBalanceWidget extends StatelessWidget {
     super.key,
     required this.currency,
     required this.amount,
+    required this.liquid,
   });
 
   final double amount;
+  final double liquid;
   final String currency;
 
   @override
@@ -84,19 +91,51 @@ class TotalBalanceWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          language["totalBalance"],
-          style: context.titleMedium?.copyWith(
-            color: context.onPrimaryContainer.withOpacity(0.85),
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          "$symbol ${amount.toStringAsFixed(2)}",
-          style: context.headlineMedium?.copyWith(
-            color: context.onPrimaryContainer,
-            fontWeight: FontWeight.w700,
-          ),
+        Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    language["totalBalance"],
+                    style: context.titleMedium?.copyWith(
+                      color: context.onPrimaryContainer.withOpacity(0.85),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    "$symbol ${amount.toStringAsFixed(2)}",
+                    style: context.headlineMedium?.copyWith(
+                      color: context.onPrimaryContainer,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    "Liquid",
+                    style: context.titleMedium?.copyWith(
+                      color: context.onPrimaryContainer.withOpacity(0.85),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    "$symbol ${liquid.toStringAsFixed(2)}",
+                    style: context.headlineMedium?.copyWith(
+                      color: context.onPrimaryContainer,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ],
     );
@@ -156,7 +195,7 @@ class TotalCreditDebit extends StatelessWidget {
             ),
             Expanded(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   RichText(
                     text: TextSpan(
