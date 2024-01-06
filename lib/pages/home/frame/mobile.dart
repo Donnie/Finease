@@ -29,9 +29,9 @@ class HomePageMobileState extends State<HomePageMobile> {
     return Scaffold(
       key: _scaffoldStateKey,
       resizeToAvoidBottomInset: true,
-      appBar: const PreferredSize(
-        preferredSize: Size.fromHeight(toolbarHeight),
-        child: TopBar(title: "Home"),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(toolbarHeight),
+        child: TopBar(title: destinations[destIndex].pageType.name),
       ),
       drawer: AppDrawer(
         scaffoldKey: _scaffoldStateKey,
