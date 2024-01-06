@@ -148,6 +148,7 @@ class AccountService {
 
     double totalBalance = 0;
 
+    await currencyBoxService.init();
     for (var row in result) {
       String currency = row['currency'];
       int balance = row['total_balance'];
@@ -156,6 +157,7 @@ class AccountService {
       double convertedBalance = await _convertCurrency(currency, balance, prefCurrency);
       totalBalance += convertedBalance;
     }
+    currencyBoxService.close();
 
     return totalBalance / 100;
   }
@@ -165,12 +167,8 @@ class AccountService {
     int balance,
     String toCurrency,
   ) async {
-    await currencyBoxService.init();
-
     double rate =
         await currencyBoxService.getSingleRate(fromCurrency, toCurrency);
-    currencyBoxService.close();
-
     return balance * rate;
   }
 }

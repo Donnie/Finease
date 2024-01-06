@@ -23,7 +23,9 @@ class CurrencyBoxService {
   }
 
   Future<double> getSingleRate(
-      String baseCurrency, String targetCurrency) async {
+    String baseCurrency,
+    String targetCurrency,
+  ) async {
     final currentDate = DateTime.now();
     final lastUpdate = _box.get('lastUpdate') as DateTime?;
 
@@ -31,12 +33,22 @@ class CurrencyBoxService {
       await _updateRates(baseCurrency);
     }
 
-    final rate = _box.get(targetCurrency) as double?;
-    if (rate == null) {
+    // Retrieve the rate for the targetCurrency and the baseCurrency
+    final targetRate = _box.get(targetCurrency) as double?;
+    final baseRate = _box.get(baseCurrency) as double?;
+
+    // Check if either rate is null
+    if (targetRate == null) {
       throw Exception('Rate for $targetCurrency not found');
     }
+    if (baseRate == null) {
+      throw Exception('Rate for $baseCurrency not found');
+    }
 
-    return rate;
+    // Calculate the combined rate
+    final combinedRate = targetRate / baseRate;
+
+    return combinedRate;
   }
 
   Future<void> _updateRates(String baseCurrency) async {
