@@ -1,5 +1,6 @@
 import 'package:finease/db/accounts.dart';
 import 'package:finease/db/db.dart';
+import 'package:finease/db/settings.dart';
 
 class EntryService {
   final DatabaseHelper _databaseHelper;
@@ -16,6 +17,16 @@ class EntryService {
     return entry;
   }
 
+  // Future<Entry?> createForexEntry(Entry entry) async {
+  //   final dbClient = await _databaseHelper.db;
+  //   final creditAccount = await AccountService().getAccount(entry.creditAccountId);
+  //   final debitAccount  = await AccountService().getAccount(entry.debitAccountId);
+    
+  //   final rate = await CurrencyBoxService().getSingleRate(debitAccount!.currency, creditAccount!.currency);
+  //   final creditAmount = entry.amount * rate;
+  //   return entry;
+  // }
+
   Future<Entry?> getEntry(int id) async {
     final dbClient = await _databaseHelper.db;
     final List<Map<String, dynamic>> entries = await dbClient.query(
@@ -31,8 +42,12 @@ class EntryService {
 
   Future<List<Entry>> getAllEntries() async {
     final dbClient = await _databaseHelper.db;
+    String pastAccountId =
+        await SettingService().getSetting(Setting.pastAccount);
     final List<Map<String, dynamic>> entries = await dbClient.query(
       'Entries',
+      where: 'debit_account_id != ? AND credit_account_id != ?',
+      whereArgs: [pastAccountId, pastAccountId],
     );
     return entries.map((json) => Entry.fromJson(json)).toList();
   }
@@ -63,8 +78,8 @@ class EntryService {
 
     final dbClient = await _databaseHelper.db;
     Entry entry = Entry(
-      debitAccountId: accountId,
-      creditAccountId: 1,
+      debitAccountId: 1,
+      creditAccountId: accountId,
       amount: balance,
       notes: "Auto Adjusted by App",
     );
