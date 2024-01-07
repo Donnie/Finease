@@ -39,14 +39,14 @@ class EntryService {
     await createEntry(Entry(
       debitAccountId: entry.debitAccountId,
       creditAccountId: forexAccountDebit!.id!,
-      amount: debitAmount.floor(),
+      amount: debitAmount,
       notes: "Auto Adjusted by App",
     ));
 
     await createEntry(Entry(
       debitAccountId: forexAccountCredit!.id!,
       creditAccountId: entry.creditAccountId,
-      amount: entry.amount.ceil(),
+      amount: entry.amount,
       notes: "Auto Adjusted by App",
     ));
   }
@@ -92,7 +92,7 @@ class EntryService {
     );
   }
 
-  Future adjustFirstBalance(int accountId, int balance) async {
+  Future adjustFirstBalance(int accountId, double balance) async {
     if (balance == 0) {
       return;
     }
@@ -108,7 +108,7 @@ class EntryService {
     await dbClient.insert('Entries', entry.toJson());
   }
 
-  Future adjustFirstForexBalance(int accountId, int balance) async {
+  Future adjustFirstForexBalance(int accountId, double balance) async {
     if (balance == 0) {
       return;
     }
@@ -130,7 +130,7 @@ class Entry {
   DateTime? updatedAt;
   int debitAccountId;
   int creditAccountId;
-  int amount;
+  double amount;
   DateTime? date;
   String? notes;
 
@@ -152,7 +152,7 @@ class Entry {
       updatedAt: DateTime.tryParse(json['updated_at'] ?? ''),
       debitAccountId: json['debit_account_id'],
       creditAccountId: json['credit_account_id'],
-      amount: json['amount'],
+      amount: json['amount'] / 100,
       date: DateTime.tryParse(json['date']),
       notes: json['notes'],
     );
@@ -164,7 +164,7 @@ class Entry {
       'updated_at': DateTime.now().toIso8601String(),
       'debit_account_id': debitAccountId,
       'credit_account_id': creditAccountId,
-      'amount': amount,
+      'amount': (amount * 100).round().toInt(),
       'date': (date ?? DateTime.now()).toIso8601String(),
       'notes': notes,
     };

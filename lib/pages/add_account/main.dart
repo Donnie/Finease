@@ -68,15 +68,10 @@ class AddAccountScreenState extends State<AddAccountScreen> {
     });
   }
 
-  int accountBalance(TextEditingController value) {
-    double balance = double.tryParse(value.text) ?? 0;
-    return (balance * 100).toInt();
-  }
-
   void _submitForm() async {
     String accountName = _accountName.text;
     String accountCurrency = _accountCurrency.text;
-    int balance = accountBalance(_accountBalance);
+    double balance = double.tryParse(_accountBalance.text) ?? 0;
     if (_formState.currentState?.validate() ?? false) {
       _formState.currentState?.save();
       Account account = Account(

@@ -16,7 +16,7 @@ class AccountService {
 
   Future<Account?> createAccount(Account account) async {
     final dbClient = await _databaseHelper.db;
-    int balance = account.balance;
+    double balance = account.balance;
     account.balance = 0;
     final id = await dbClient.insert(Accounts, account.toJson());
     account.id = id;
@@ -30,7 +30,7 @@ class AccountService {
 
   Future<Account?> createForexAccountIfNotExist(
     String currency, {
-    int balance = 0,
+    double balance = 0,
     bool liquid = true,
     name = "Forex",
     type = AccountType.expense,
@@ -241,7 +241,7 @@ class Account {
   int? id;
   DateTime? createdAt;
   DateTime? updatedAt;
-  int balance;
+  double balance;
   String currency;
   bool liquid;
   bool hidden;
@@ -265,7 +265,7 @@ class Account {
       id: json['id'],
       createdAt: DateTime.tryParse(json['created_at'] ?? ''),
       updatedAt: DateTime.tryParse(json['updated_at'] ?? ''),
-      balance: json['balance'],
+      balance: json['balance'] / 100,
       currency: json['currency'],
       liquid: json['liquid'] == 1,
       hidden: json['hidden'] == 1,
@@ -279,7 +279,7 @@ class Account {
     return {
       'id': id,
       'updated_at': DateTime.now().toIso8601String(),
-      'balance': balance,
+      'balance': (balance * 100).round().toInt(),
       'currency': currency,
       'liquid': liquid ? 1 : 0,
       'hidden': hidden ? 1 : 0,
