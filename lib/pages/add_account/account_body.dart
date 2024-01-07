@@ -41,9 +41,11 @@ class AddAccountBodyState extends State<AddAccountBody> {
           children: [
             AccountTypeSelectionFormField(
               key: const Key('account_type'),
-              onSaved: (AccountType? value) => widget.onAccountType?.call(value!),
+              onSaved: (AccountType? value) =>
+                  widget.onAccountType?.call(value!),
               onChanged: (AccountType? value) => setState(() {
-                _trackBalance = [AccountType.asset, AccountType.liability].contains(value);
+                _trackBalance =
+                    [AccountType.asset, AccountType.liability].contains(value);
               }),
             ),
             const SizedBox(height: 16),
@@ -148,10 +150,9 @@ class AccountTypeSelectionFormField extends FormField<AccountType> {
             return Padding(
               padding: const EdgeInsets.all(8),
               child: Row(
-              children: AccountType.values.map((type) {
-                final isSelected = state.value == type;
-                return Expanded(
-                  child: AppPillChip(
+                children: AccountType.values.map((type) {
+                  final isSelected = state.value == type;
+                  return AppPillChip(
                     isSelected: isSelected,
                     title: type.name,
                     onPressed: () {
@@ -160,10 +161,9 @@ class AccountTypeSelectionFormField extends FormField<AccountType> {
                         onChanged(type);
                       }
                     },
-                  ),
-                );
-              }).toList(),
-            ),
+                  );
+                }).toList(),
+              ),
             );
           },
         );
