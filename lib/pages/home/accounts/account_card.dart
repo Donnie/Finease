@@ -48,7 +48,7 @@ class AccountWidget extends StatelessWidget {
             Divider(color: green ? Colors.green : Colors.red),
             Flexible(
               child: Text(
-                '$symbol ${account.balance / 100}',
+                '$symbol ${account.balance}',
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
             ),

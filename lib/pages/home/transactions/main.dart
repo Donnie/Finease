@@ -1,4 +1,3 @@
-import 'package:finease/db/accounts.dart';
 import 'package:finease/db/currency.dart';
 import 'package:finease/db/entries.dart';
 import 'package:finease/parts/variable_fab_size.dart';
@@ -17,39 +16,66 @@ class EntriesPage extends StatefulWidget {
 
 class EntriesPageState extends State<EntriesPage> {
   List<Entry> entries = [];
-  List<Account> accounts = [];
 
   @override
   void initState() {
     super.initState();
-    loadAccounts();
     loadEntries();
   }
 
   Future<void> loadEntries() async {
     List<Entry> entriesList = await EntryService().getAllEntries();
+    entriesList.sort((a, b) => (b.date!.compareTo(a.date!)));
+
+    List<Entry> mergedEntries = [];
+    for (int i = 0; i < entriesList.length; i++) {
+      Entry creditEntry = entriesList[i];
+      bool merged = false;
+
+      // Check if the next entry exists and if it's within a 1-second interval
+      if (i < entriesList.length - 1) {
+        Entry debitEntry = entriesList[i + 1];
+
+        if (debitEntry.date!.difference(creditEntry.date!).inSeconds <= 1 &&
+            debitEntry.creditAccount!.name == creditEntry.debitAccount!.name) {
+          // Merge entries logic (e.g., sum amounts, adjust dates, etc.)
+          Entry mergedEntry = mergeEntries(debitEntry, creditEntry);
+          mergedEntries.add(mergedEntry);
+          i++; // Skip the next entry as it's merged
+          merged = true;
+        }
+      }
+
+      // Add the current entry if it's not merged
+      if (!merged) {
+        mergedEntries.add(creditEntry);
+      }
+    }
+
+    // Update state
     setState(() {
-      entries = entriesList;
+      entries = mergedEntries;
     });
   }
 
-  Future<void> loadAccounts() async {
-    List<Account> accountsList = await AccountService().getAllAccounts(true);
-    setState(() {
-      accounts = accountsList;
-    });
+  Entry mergeEntries(Entry entry1, Entry entry2) {
+    return Entry(
+      id: entry1.id,
+      debitAccountId: entry1.debitAccountId,
+      debitAccount: entry1.debitAccount,
+      creditAccountId: entry2.creditAccountId,
+      creditAccount: entry2.creditAccount,
+      amount: entry2.amount,
+      date: entry1.date,
+      notes: entry1.notes,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView(
-        children: entries
-            .map((e) => EntryCard(
-                  entry: e,
-                  accounts: accounts,
-                ))
-            .toList(),
+        children: entries.map((e) => EntryCard(entry: e)).toList(),
       ),
       floatingActionButton: VariableFABSize(
         onPressed: () async {
@@ -64,21 +90,15 @@ class EntriesPageState extends State<EntriesPage> {
 
 class EntryCard extends StatelessWidget {
   final Entry entry;
-  final List<Account> accounts;
 
   const EntryCard({
     Key? key,
     required this.entry,
-    required this.accounts,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Account creditAccount =
-        accounts.firstWhere((a) => a.id == entry.creditAccountId);
-    final debitAccount =
-        accounts.firstWhere((a) => (a.id! == entry.debitAccountId));
-    final String symbol = SupportedCurrency[debitAccount.currency]!;
+    final String symbol = SupportedCurrency[entry.creditAccount!.currency]!;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -89,8 +109,8 @@ class EntryCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text('Debit Account: ${debitAccount.name}'),
-                Text('Credit Account: ${creditAccount.name}'),
+                Text('Debit Account: ${entry.debitAccount!.name}'),
+                Text('Credit Account: ${entry.creditAccount!.name}'),
               ],
             ),
             Text('Amount: $symbol ${entry.amount}',

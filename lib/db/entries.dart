@@ -67,10 +67,23 @@ class EntryService {
   Future<List<Entry>> getAllEntries() async {
     final dbClient = await _databaseHelper.db;
 
-    final List<Map<String, dynamic>> entries = await dbClient.query(
-      'Entries',
-    );
-    return entries.map((json) => Entry.fromJson(json)).toList();
+    // Fetch all entries and all accounts in separate calls
+    final List<Map<String, dynamic>> entriesData =
+        await dbClient.query('Entries');
+    final List<Account> allAccounts = await AccountService().getAllAccounts(true);
+
+    // Create a map for quick account lookup by ID
+    var accountsMap = {for (var account in allAccounts) account.id: account};
+
+    // Map each entry to its corresponding debit and credit accounts
+    List<Entry> entries = entriesData.map((json) {
+      Entry entry = Entry.fromJson(json);
+      entry.creditAccount = accountsMap[json['credit_account_id']];
+      entry.debitAccount = accountsMap[json['debit_account_id']];
+      return entry;
+    }).toList();
+
+    return entries;
   }
 
   Future<int> updateEntry(Entry entry) async {
@@ -129,7 +142,9 @@ class Entry {
   DateTime? createdAt;
   DateTime? updatedAt;
   int debitAccountId;
+  Account? debitAccount;
   int creditAccountId;
+  Account? creditAccount;
   double amount;
   DateTime? date;
   String? notes;
@@ -139,7 +154,9 @@ class Entry {
     this.createdAt,
     this.updatedAt,
     required this.debitAccountId,
+    this.debitAccount,
     required this.creditAccountId,
+    this.creditAccount,
     required this.amount,
     this.date,
     this.notes,
