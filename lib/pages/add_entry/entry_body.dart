@@ -24,7 +24,7 @@ class AddEntryBody extends StatefulWidget {
 }
 
 class AddEntryBodyState extends State<AddEntryBody> {
-  DateTime? selectedDateTime;
+  DateTime selectedDateTime = DateTime.now();
 
   @override
   Widget build(BuildContext context) {

@@ -1,38 +1,38 @@
+import 'package:finease/core/common.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class DateTimePicker extends StatefulWidget {
   final Function(DateTime) onDateTimeChanged;
 
-  const DateTimePicker({Key? key, required this.onDateTimeChanged}) : super(key: key);
+  const DateTimePicker({
+    Key? key,
+    required this.onDateTimeChanged,
+  }) : super(key: key);
 
   @override
-  _DateTimePickerState createState() => _DateTimePickerState();
+  DateTimePickerState createState() => DateTimePickerState();
 }
 
-class _DateTimePickerState extends State<DateTimePicker> {
-  DateTime? selectedDateTime;
+class DateTimePickerState extends State<DateTimePicker> {
+  DateTime selectedDateTime = DateTime.now();
 
   void _pickDateTime() async {
-    final localContext = context;
-
-    // Pick date
-    final DateTime? pickedDate = await showDatePicker(
-      context: localContext,
-      initialDate: selectedDateTime ?? DateTime.now(),
+    final DateTime? pickedDateNullable = await showDatePicker(
+      context: context,
+      initialDate: selectedDateTime,
       firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
+      lastDate: DateTime.now(),
     );
+    final DateTime pickedDate = pickedDateNullable ?? selectedDateTime;
 
-    if (pickedDate == null) return;
-
-    // Pick time
-    final TimeOfDay? pickedTime = await showTimePicker(
-      context: localContext,
-      initialTime: selectedDateTime != null ? TimeOfDay.fromDateTime(selectedDateTime!) : TimeOfDay.now(),
+    final TimeOfDay? pickedTimeNullable = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(selectedDateTime),
     );
-
-    if (pickedTime == null) return;
+    final TimeOfDay pickedTime =
+        pickedTimeNullable ?? TimeOfDay.fromDateTime(selectedDateTime);
 
     // Combine date and time into a single DateTime object
     final combinedDateTime = DateTime(
@@ -57,15 +57,23 @@ class _DateTimePickerState extends State<DateTimePicker> {
       children: [
         ElevatedButton(
           onPressed: _pickDateTime,
-          child: Text(selectedDateTime == null
-              ? 'Select Date and Time'
-              : 'Selected: ${DateFormat('yyyy-MM-dd HH:mm').format(selectedDateTime!)}'),
-        ),
-        if (selectedDateTime != null)
-          Text(
-            'Selected: ${DateFormat('yyyy-MM-dd HH:mm').format(selectedDateTime!)}',
-            style: Theme.of(context).textTheme.bodyMedium,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 16,
+            ),
+            child: Row(
+              children: [
+                Icon(MdiIcons.calendar),
+                const SizedBox(width: 16),
+                Text(
+                  DateFormat('yyyy-MM-dd HH:mm').format(selectedDateTime),
+                  style: context.bodyLarge,
+                )
+              ],
+            ),
           ),
+        ),
       ],
     );
   }
