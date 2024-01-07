@@ -40,7 +40,7 @@ class SetupAccountsWidgetState extends State<SetupAccountsWidget>
   }
 
   Future<void> _fetchAccounts() async {
-    final accounts = await _accountService.getAllAccounts();
+    final accounts = await _accountService.getAllAccounts(false);
     setState(() {
       selectedAccounts = accounts;
       accountsNotifier.value = [...selectedAccounts];
@@ -116,15 +116,12 @@ class SetupAccountsWidgetState extends State<SetupAccountsWidget>
               spacing: 12.0,
               runSpacing: 12.0,
               children: [
-                ...egAccounts
-                    .map((model) => _buildAccountChip(model, isEGAccount: true)),
-                AddAccountChip(
-                  onSelected: () async {
-                    
-                    await context.pushNamed(RoutesName.addAccount.name);
-                    _fetchAccounts();
-                  }
-                ),
+                ...egAccounts.map(
+                    (model) => _buildAccountChip(model, isEGAccount: true)),
+                AddAccountChip(onSelected: () async {
+                  await context.pushNamed(RoutesName.addAccount.name);
+                  _fetchAccounts();
+                }),
               ],
             ),
           ),

@@ -9,6 +9,7 @@ Future<void> aInitialMigration(Database db) async {
       balance BIGINT NOT NULL DEFAULT 0,
       currency TEXT CHECK (length(currency) = 3),
       liquid BOOLEAN,
+      hidden BOOLEAN,
       name TEXT NOT NULL,
       type TEXT CHECK(type IN ('asset', 'liability', 'income', 'expense'))
     )
@@ -67,8 +68,8 @@ Future<void> aInitialMigration(Database db) async {
   ''');
 
   await db.execute('''
-    INSERT INTO Accounts (currency, liquid, name, type)
-    VALUES ('EUR', 1, 'Past', 'income');
+    INSERT INTO Accounts (currency, liquid, hidden, name, type)
+    VALUES ('EUR', 1, 1, 'Past', 'income');
   ''');
 
   await db.execute('''

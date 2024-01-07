@@ -1,7 +1,6 @@
 import 'package:finease/db/accounts.dart';
 import 'package:finease/db/currency.dart';
 import 'package:finease/db/db.dart';
-import 'package:finease/db/settings.dart';
 
 class EntryService {
   final DatabaseHelper _databaseHelper;
@@ -27,7 +26,9 @@ class EntryService {
 
     await _currencyBoxService.init();
     final rate = await _currencyBoxService.getSingleRate(
-        debitAccount!.currency, creditAccount!.currency);
+      creditAccount!.currency,
+      debitAccount!.currency,
+    );
     final debitAmount = entry.amount * rate;
 
     final forexAccountDebit = await AccountService()
@@ -65,12 +66,9 @@ class EntryService {
 
   Future<List<Entry>> getAllEntries() async {
     final dbClient = await _databaseHelper.db;
-    String pastAccountId =
-        await SettingService().getSetting(Setting.pastAccount);
+
     final List<Map<String, dynamic>> entries = await dbClient.query(
       'Entries',
-      where: 'debit_account_id != ? AND credit_account_id != ?',
-      whereArgs: [pastAccountId, pastAccountId],
     );
     return entries.map((json) => Entry.fromJson(json)).toList();
   }

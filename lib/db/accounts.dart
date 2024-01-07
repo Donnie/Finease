@@ -32,15 +32,15 @@ class AccountService {
     String currency, {
     int balance = 0,
     bool liquid = true,
-    name = "Forex3666",
+    name = "Forex",
     type = AccountType.expense,
   }) async {
     final dbClient = await _databaseHelper.db;
     // Check if the account already exists
     final List<Map<String, dynamic>> existingAccounts = await dbClient.query(
       Accounts,
-      where: 'currency = ? AND name = ?',
-      whereArgs: [currency, name],
+      where: 'currency = ? AND name = ? AND hidden = ?',
+      whereArgs: [currency, name, 1],
     );
     if (existingAccounts.isNotEmpty) {
       // Account already exists, return the existing account
@@ -51,6 +51,7 @@ class AccountService {
         balance: balance,
         currency: currency,
         name: name,
+        hidden: true,
         type: type,
         liquid: liquid,
       );
@@ -72,16 +73,16 @@ class AccountService {
     return null;
   }
 
-  Future<List<Account>> getAllAccounts() async {
+  Future<List<Account>> getAllAccounts(bool hidden) async {
     final dbClient = await _databaseHelper.db;
-    String pastAccountId =
-        await SettingService().getSetting(Setting.pastAccount);
+
+    String? whereClause = hidden ? null : "hidden = 0";
 
     final List<Map<String, dynamic>> accounts = await dbClient.query(
       Accounts,
-      where: 'id != ?',
-      whereArgs: [pastAccountId],
+      where: whereClause,
     );
+
     return accounts.map((json) => Account.fromJson(json)).toList();
   }
 
@@ -243,6 +244,7 @@ class Account {
   int balance;
   String currency;
   bool liquid;
+  bool hidden;
   String name;
   AccountType type;
 
@@ -253,6 +255,7 @@ class Account {
     required this.balance,
     required this.currency,
     required this.liquid,
+    this.hidden = false,
     required this.name,
     required this.type,
   });
@@ -265,6 +268,7 @@ class Account {
       balance: json['balance'],
       currency: json['currency'],
       liquid: json['liquid'] == 1,
+      hidden: json['hidden'] == 1,
       name: json['name'],
       type: AccountType.values
           .firstWhere((e) => e.toString().split('.').last == json['type']),
@@ -278,6 +282,7 @@ class Account {
       'balance': balance,
       'currency': currency,
       'liquid': liquid ? 1 : 0,
+      'hidden': hidden ? 1 : 0,
       'name': name,
       'type': type.toString().split('.').last,
     };

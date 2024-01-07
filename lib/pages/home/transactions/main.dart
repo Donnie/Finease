@@ -34,7 +34,7 @@ class EntriesPageState extends State<EntriesPage> {
   }
 
   Future<void> loadAccounts() async {
-    List<Account> accountsList = await AccountService().getAllAccounts();
+    List<Account> accountsList = await AccountService().getAllAccounts(true);
     setState(() {
       accounts = accountsList;
     });
