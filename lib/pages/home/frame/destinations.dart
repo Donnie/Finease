@@ -1,7 +1,7 @@
 import 'package:finease/pages/home/accounts/main.dart';
 import 'package:finease/pages/home/summary/main.dart';
 import 'package:finease/pages/home/months/main.dart';
-import 'package:finease/pages/home/transactions/main.dart';
+import 'package:finease/pages/home/entries/main.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 

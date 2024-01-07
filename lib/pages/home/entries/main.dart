@@ -79,8 +79,8 @@ class EntriesPageState extends State<EntriesPage> {
       ),
       floatingActionButton: VariableFABSize(
         onPressed: () async {
-          await context.pushNamed(RoutesName.addAccount.name);
-          loadEntries();
+          await context.pushNamed(RoutesName.addEntry.name);
+          await loadEntries();
         },
         icon: Icons.add,
       ),
