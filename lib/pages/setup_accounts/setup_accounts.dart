@@ -1,8 +1,8 @@
 import 'package:finease/core/common.dart';
 import 'package:finease/db/accounts.dart';
 import 'package:finease/db/settings.dart';
-import 'package:finease/pages/setup_accounts/add_account_chip.dart';
 import 'package:finease/pages/setup_accounts/default_account.dart';
+import 'package:finease/pages/setup_accounts/widgets.dart';
 import 'package:finease/parts/account_item.dart';
 import 'package:finease/parts/filled_card.dart';
 import 'package:finease/parts/intro_top.dart';
@@ -118,12 +118,12 @@ class SetupAccountsWidgetState extends State<SetupAccountsWidget>
               children: [
                 ...egAccounts.map(
                     (model) => _buildAccountChip(model, isEGAccount: true)),
-                AddAccountChip(onSelected: () async {
-                  await context.pushNamed(
+                AddNewAccount(
+                  onSelected: (val) => context.pushNamed(
                     RoutesName.addAccount.name,
                     extra: _fetchAccounts,
-                  );
-                }),
+                  ),
+                ),
               ],
             ),
           ),
@@ -167,23 +167,13 @@ class SetupAccountsWidgetState extends State<SetupAccountsWidget>
   }
 
   Widget _buildAccountChip(Account model, {required bool isEGAccount}) {
-    return FilterChip(
-      selected: false,
-      onSelected: (value) =>
-          isEGAccount ? selectAccount(model) : deselectAccount(model),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(28),
-        side: BorderSide(width: 1, color: context.primary),
-      ),
-      showCheckmark: false,
-      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      label: Text(model.name),
-      labelStyle: context.titleMedium,
-      padding: const EdgeInsets.all(12),
+    return AccountChip(
       avatar: Icon(
         Icons.add_rounded,
         color: context.primary,
       ),
+      label: Text(model.name),
+      onSelected: (val) => isEGAccount ? selectAccount(model) : deselectAccount(model),
     );
   }
 }

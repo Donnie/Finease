@@ -1,6 +1,10 @@
+import 'package:finease/pages/setup_accounts/default_account.dart';
+import 'package:finease/pages/setup_accounts/widgets.dart';
 import 'package:finease/parts/export.dart';
+import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 
 class AddEntryBody extends StatefulWidget {
   const AddEntryBody({
@@ -58,6 +62,24 @@ class AddEntryBodyState extends State<AddEntryBody> {
                 } else {
                   return 'Enter amount';
                 }
+              },
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Container(), // insert date and time picker
+            ),
+            AccountChoice(
+              title: "Debit Account",
+              accounts: defaultAccountsData("EUR"),
+              onSelected: (val) {
+                context.pushNamed(RoutesName.addAccount.name, extra: () => {});
+              },
+            ),
+            AccountChoice(
+              title: "Credit Account",
+              accounts: defaultAccountsData("EUR"),
+              onSelected: (val) {
+                context.pushNamed(RoutesName.addAccount.name, extra: () => {});
               },
             ),
           ],

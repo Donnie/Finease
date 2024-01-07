@@ -100,7 +100,3 @@ final Map<String, String> SupportedCurrency = {
   "USD": "\$", // United States Dollar
   "ZAR": "R", // South African Rand
 };
-
-String? get(String currencyCode) {
-  return SupportedCurrency[currencyCode];
-}

@@ -23,7 +23,6 @@ class AddEntryScreenState extends State<AddEntryScreen> {
   final _formState = GlobalKey<FormState>();
   final _entryNotes = TextEditingController();
   final _entryAmount = TextEditingController();
-  bool entryLiquid = true;
 
   @override
   Widget build(BuildContext context) {
@@ -61,8 +60,8 @@ class AddEntryScreenState extends State<AddEntryScreen> {
     // String entryNotes = _entryNotes.text;
     // String entryCurrency = _entryCurrency.text;
     // double balance = double.tryParse(_entryAmount.text) ?? 0;
-    // if (_formState.currentState?.validate() ?? false) {
-    //   _formState.currentState?.save();
+    if (_formState.currentState?.validate() ?? false) {
+      _formState.currentState?.save();
     //   Entry entry = Entry(
     //     name: entryNotes,
     //     currency: entryCurrency,
@@ -71,7 +70,7 @@ class AddEntryScreenState extends State<AddEntryScreen> {
     //     type: entryType,
     //   );
     //   await _entryService.createEntry(entry);
-    // }
+    }
   }
 }
 
