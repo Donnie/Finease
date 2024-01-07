@@ -1,3 +1,4 @@
+import 'package:finease/pages/add_entry/date_time.dart';
 import 'package:finease/pages/setup_accounts/default_account.dart';
 import 'package:finease/pages/setup_accounts/widgets.dart';
 import 'package:finease/parts/export.dart';
@@ -23,6 +24,8 @@ class AddEntryBody extends StatefulWidget {
 }
 
 class AddEntryBodyState extends State<AddEntryBody> {
+  DateTime? selectedDateTime;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -64,10 +67,15 @@ class AddEntryBodyState extends State<AddEntryBody> {
                 }
               },
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Container(), // insert date and time picker
+            const SizedBox(height: 16),
+            DateTimePicker(
+              onDateTimeChanged: (newDateTime) {
+                setState(() {
+                  selectedDateTime = newDateTime;
+                });
+              },
             ),
+            const SizedBox(height: 16),
             AccountChoice(
               title: "Debit Account",
               accounts: defaultAccountsData("EUR"),
@@ -77,10 +85,10 @@ class AddEntryBodyState extends State<AddEntryBody> {
                 }
               },
               onAddNew: () {
-                context.pushNamed(RoutesName.addAccount.name,
-                  extra: () => {});
+                context.pushNamed(RoutesName.addAccount.name, extra: () => {});
               },
             ),
+            const SizedBox(height: 16),
             AccountChoice(
               title: "Credit Account",
               accounts: defaultAccountsData("EUR"),
@@ -90,8 +98,7 @@ class AddEntryBodyState extends State<AddEntryBody> {
                 }
               },
               onAddNew: () {
-                context.pushNamed(RoutesName.addAccount.name,
-                  extra: () => {});
+                context.pushNamed(RoutesName.addAccount.name, extra: () => {});
               },
             ),
           ],
