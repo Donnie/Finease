@@ -71,15 +71,27 @@ class AddEntryBodyState extends State<AddEntryBody> {
             AccountChoice(
               title: "Debit Account",
               accounts: defaultAccountsData("EUR"),
-              onSelected: (val) {
-                context.pushNamed(RoutesName.addAccount.name, extra: () => {});
+              onAccountSelected: (account) {
+                if (account != null) {
+                  print("Account chosen ${account.name}");
+                }
+              },
+              onAddNew: () {
+                context.pushNamed(RoutesName.addAccount.name,
+                  extra: () => {});
               },
             ),
             AccountChoice(
               title: "Credit Account",
               accounts: defaultAccountsData("EUR"),
-              onSelected: (val) {
-                context.pushNamed(RoutesName.addAccount.name, extra: () => {});
+              onAccountSelected: (val) {
+                if (val != null) {
+                  print("Account chosen ${val.name}");
+                }
+              },
+              onAddNew: () {
+                context.pushNamed(RoutesName.addAccount.name,
+                  extra: () => {});
               },
             ),
           ],
