@@ -6,7 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class AddEntryScreen extends StatefulWidget {
-  const AddEntryScreen({super.key});
+  final Function onFormSubmitted;
+
+  const AddEntryScreen({
+    Key? key,
+    required this.onFormSubmitted,
+  }) : super(key: key);
 
   @override
   AddEntryScreenState createState() => AddEntryScreenState();
@@ -31,12 +36,12 @@ class AddEntryScreenState extends State<AddEntryScreen> {
           entryNotes: _entryNotes,
           entryAmount: _entryAmount,
         ),
-        bottomNavigationBar: _buildBottomBar(),
+        bottomNavigationBar: _buildBottomBar(context),
       ),
     );
   }
 
-  Widget _buildBottomBar() {
+  Widget _buildBottomBar(BuildContext context) {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -51,7 +56,8 @@ class AddEntryScreenState extends State<AddEntryScreen> {
     );
   }
 
-  void _submitForm() async {
+  Future<void> _submitForm() async {
+    widget.onFormSubmitted();
     // String entryNotes = _entryNotes.text;
     // String entryCurrency = _entryCurrency.text;
     // double balance = double.tryParse(_entryAmount.text) ?? 0;

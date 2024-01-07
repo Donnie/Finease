@@ -119,8 +119,10 @@ class SetupAccountsWidgetState extends State<SetupAccountsWidget>
                 ...egAccounts.map(
                     (model) => _buildAccountChip(model, isEGAccount: true)),
                 AddAccountChip(onSelected: () async {
-                  await context.pushNamed(RoutesName.addAccount.name);
-                  _fetchAccounts();
+                  await context.pushNamed(
+                    RoutesName.addAccount.name,
+                    extra: _fetchAccounts,
+                  );
                 }),
               ],
             ),

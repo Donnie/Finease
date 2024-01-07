@@ -38,8 +38,10 @@ class _AccountsPageState extends State<AccountsPage> {
       ),
       floatingActionButton: VariableFABSize(
         onPressed: () async {
-          await context.pushNamed(RoutesName.addAccount.name);
-          loadAccounts();
+          await context.pushNamed(
+            RoutesName.addAccount.name,
+            extra: loadAccounts,
+          );
         },
         icon: Icons.add,
       ),

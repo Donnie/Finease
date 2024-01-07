@@ -6,7 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class AddAccountScreen extends StatefulWidget {
-  const AddAccountScreen({super.key});
+  final Function onFormSubmitted;
+  const AddAccountScreen({
+    super.key,
+    required this.onFormSubmitted,
+  });
 
   @override
   AddAccountScreenState createState() => AddAccountScreenState();
@@ -83,6 +87,7 @@ class AddAccountScreenState extends State<AddAccountScreen> {
       );
       await _accountService.createAccount(account);
     }
+    widget.onFormSubmitted();
   }
 }
 
