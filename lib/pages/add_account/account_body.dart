@@ -48,12 +48,19 @@ class AddAccountBodyState extends State<AddAccountBody> {
                     [AccountType.asset, AccountType.liability].contains(value);
               }),
             ),
-            const SizedBox(height: 16),
-            SwitchFormField(
-              key: const Key('account_liquidity'),
-              title: const Text('Liquid Assets'),
-              onSaved: (bool? value) =>
-                  widget.onLiquidAssetsSaved?.call(value!),
+            Visibility(
+              visible: _trackBalance,
+              child: Column(
+                children: [
+                  const SizedBox(height: 16),
+                  SwitchFormField(
+                    key: const Key('account_liquidity'),
+                    title: const Text('Liquid Assets'),
+                    onSaved: (bool? value) =>
+                        widget.onLiquidAssetsSaved?.call(value!),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 16),
             AppTextFormField(
