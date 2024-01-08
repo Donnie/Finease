@@ -3,6 +3,7 @@ enum RoutesName {
   addName,
   setupAccounts,
   addAccount,
+  addEntry,
   home,
   settings,
 }

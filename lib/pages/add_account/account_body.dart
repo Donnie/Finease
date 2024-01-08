@@ -30,6 +30,7 @@ class AddAccountBody extends StatefulWidget {
 
 class AddAccountBodyState extends State<AddAccountBody> {
   bool _trackBalance = true;
+  bool _isLiability = false;
 
   @override
   Widget build(BuildContext context) {
@@ -41,17 +42,27 @@ class AddAccountBodyState extends State<AddAccountBody> {
           children: [
             AccountTypeSelectionFormField(
               key: const Key('account_type'),
-              onSaved: (AccountType? value) => widget.onAccountType?.call(value!),
+              onSaved: (AccountType? value) =>
+                  widget.onAccountType?.call(value!),
               onChanged: (AccountType? value) => setState(() {
-                _trackBalance = [AccountType.asset, AccountType.liability].contains(value);
+                _trackBalance =
+                    [AccountType.asset, AccountType.liability].contains(value);
+                _isLiability = [AccountType.liability].contains(value);
               }),
             ),
-            const SizedBox(height: 16),
-            SwitchFormField(
-              key: const Key('account_liquidity'),
-              title: const Text('Liquid Assets'),
-              onSaved: (bool? value) =>
-                  widget.onLiquidAssetsSaved?.call(value!),
+            Visibility(
+              visible: _trackBalance,
+              child: Column(
+                children: [
+                  const SizedBox(height: 16),
+                  SwitchFormField(
+                    key: const Key('account_liquidity'),
+                    title: const Text('Liquid Assets'),
+                    onSaved: (bool? value) =>
+                        widget.onLiquidAssetsSaved?.call(value!),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 16),
             AppTextFormField(
@@ -73,20 +84,18 @@ class AddAccountBodyState extends State<AddAccountBody> {
               child: Column(
                 children: [
                   const SizedBox(height: 16),
+                  Visibility(
+                    visible: _isLiability,
+                    child: const ListTile(
+                      title: Text("Liabilities should be accounted in negative"),
+                    ),
+                  ),
                   AppTextFormField(
                     key: const Key('account_balance'),
                     controller: widget.accountBalance,
                     hintText: 'Enter current balance',
                     inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r"[0-9.]")),
-                      TextInputFormatter.withFunction((oldValue, newValue) {
-                        try {
-                          final text = newValue.text;
-                          if (text.isNotEmpty) double.parse(text);
-                          return newValue;
-                        } catch (_) {}
-                        return oldValue;
-                      }),
+                      FilteringTextInputFormatter.allow(RegExp("[0-9.-]")),
                     ],
                     label: 'Enter current balance',
                     keyboardType: TextInputType.number,
@@ -148,10 +157,9 @@ class AccountTypeSelectionFormField extends FormField<AccountType> {
             return Padding(
               padding: const EdgeInsets.all(8),
               child: Row(
-              children: AccountType.values.map((type) {
-                final isSelected = state.value == type;
-                return Expanded(
-                  child: AppPillChip(
+                children: AccountType.values.map((type) {
+                  final isSelected = state.value == type;
+                  return AppPillChip(
                     isSelected: isSelected,
                     title: type.name,
                     onPressed: () {
@@ -160,10 +168,9 @@ class AccountTypeSelectionFormField extends FormField<AccountType> {
                         onChanged(type);
                       }
                     },
-                  ),
-                );
-              }).toList(),
-            ),
+                  );
+                }).toList(),
+              ),
             );
           },
         );

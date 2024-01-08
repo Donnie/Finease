@@ -18,12 +18,6 @@ class SetupAccountsPage extends StatefulWidget {
 
 class _SetupAccountsPageState extends State<SetupAccountsPage> {
   final SettingService _settingService = SettingService();
-
-  @override
-  void initState() {
-    super.initState();
-  }
-  
   @override
   Widget build(BuildContext context) {
     return AppAnnotatedRegionWidget(

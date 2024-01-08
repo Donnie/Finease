@@ -5,11 +5,18 @@ List<Account> defaultAccountsData(
 ) {
   return [
     Account(
-      name: 'N26',
+      name: 'Job',
       balance: 0,
       currency: prefCurrency,
-      liquid: true,
-      type: AccountType.asset,
+      liquid: false,
+      type: AccountType.income,
+    ),
+    Account(
+      name: 'Capital Gains',
+      balance: 0,
+      currency: prefCurrency,
+      liquid: false,
+      type: AccountType.income,
     ),
     Account(
       name: 'Groceries',
@@ -19,11 +26,18 @@ List<Account> defaultAccountsData(
       type: AccountType.expense,
     ),
     Account(
-      name: 'Friend',
+      name: 'Travel',
       balance: 0,
       currency: prefCurrency,
       liquid: false,
-      type: AccountType.asset,
+      type: AccountType.expense,
+    ),
+    Account(
+      name: 'Rent',
+      balance: 0,
+      currency: prefCurrency,
+      liquid: false,
+      type: AccountType.expense,
     ),
   ];
 }

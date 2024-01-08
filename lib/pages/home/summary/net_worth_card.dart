@@ -6,39 +6,39 @@ import 'package:finease/parts/card.dart';
 import 'package:flutter/material.dart';
 import 'package:finease/core/common.dart';
 
-class BalanceCard extends StatefulWidget {
-  const BalanceCard({super.key});
+class NetWorthCard extends StatefulWidget {
+  const NetWorthCard({super.key});
 
   @override
-  State<BalanceCard> createState() => _BalanceCardState();
+  State<NetWorthCard> createState() => _NetWorthCardState();
 }
 
-class _BalanceCardState extends State<BalanceCard> {
+class _NetWorthCardState extends State<NetWorthCard> {
   final AccountService accountService = AccountService();
   final SettingService _settingService = SettingService();
-  double balanceAmount = 0.0;
-  double debitAmount = 0.0;
-  double creditAmount = 0.0;
+  double networthAmount = 0.0;
+  double assetAmount = 0.0;
+  double liabilitiesAmount = 0.0;
   double liquidAmount = 0.0;
   String currency = "USD";
 
   @override
   void initState() {
     super.initState();
-    _fetchBalance();
+    _fetchNetWorth();
   }
 
-  Future<void> _fetchBalance() async {
+  Future<void> _fetchNetWorth() async {
     String prefCurrency =
         await _settingService.getSetting(Setting.prefCurrency);
-    double debit = await accountService.getTotalBalanceByType(AccountType.asset);
-    double credit = await accountService.getTotalBalanceByType(AccountType.liability);
-    double liquid = await accountService.getTotalLiquidBalance();
+    double asset = await accountService.getTotalBalance(type: AccountType.asset);
+    double liabilities = await accountService.getTotalBalance(type: AccountType.liability);
+    double liquid = await accountService.getTotalBalance(liquid: true);
     setState(() {
       currency = prefCurrency;
-      balanceAmount = (debit - credit);
-      creditAmount = credit;
-      debitAmount = debit;
+      networthAmount = (asset + liabilities);
+      liabilitiesAmount = liabilities;
+      assetAmount = asset;
       liquidAmount = liquid;
     });
   }
@@ -55,16 +55,16 @@ class _BalanceCardState extends State<BalanceCard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            TotalBalanceWidget(
+            TotalNetWorthWidget(
               currency: currency,
-              amount: balanceAmount,
+              amount: networthAmount,
               liquid: liquidAmount,
             ),
             const SizedBox(height: 24),
-            TotalCreditDebit(
+            TotalLiabilitiesAsset(
               currency: currency,
-              credit: creditAmount,
-              debit: debitAmount,
+              liabilities: liabilitiesAmount,
+              asset: assetAmount,
             ),
           ],
         ),
@@ -73,8 +73,8 @@ class _BalanceCardState extends State<BalanceCard> {
   }
 }
 
-class TotalBalanceWidget extends StatelessWidget {
-  const TotalBalanceWidget({
+class TotalNetWorthWidget extends StatelessWidget {
+  const TotalNetWorthWidget({
     super.key,
     required this.currency,
     required this.amount,
@@ -98,14 +98,14 @@ class TotalBalanceWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    language["totalBalance"],
+                    "Net Worth",
                     style: context.titleMedium?.copyWith(
                       color: context.onPrimaryContainer.withOpacity(0.85),
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    "$symbol ${amount.toStringAsFixed(2)}",
+                    "$symbol $amount",
                     style: context.headlineMedium?.copyWith(
                       color: context.onPrimaryContainer,
                       fontWeight: FontWeight.w700,
@@ -126,7 +126,7 @@ class TotalBalanceWidget extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    "$symbol ${liquid.toStringAsFixed(2)}",
+                    "$symbol $liquid",
                     style: context.headlineMedium?.copyWith(
                       color: context.onPrimaryContainer,
                       fontWeight: FontWeight.w700,
@@ -142,17 +142,17 @@ class TotalBalanceWidget extends StatelessWidget {
   }
 }
 
-class TotalCreditDebit extends StatelessWidget {
-  const TotalCreditDebit({
+class TotalLiabilitiesAsset extends StatelessWidget {
+  const TotalLiabilitiesAsset({
     super.key,
     required this.currency,
-    required this.debit,
-    required this.credit,
+    required this.asset,
+    required this.liabilities,
   });
 
   final String currency;
-  final double debit;
-  final double credit;
+  final double asset;
+  final double liabilities;
 
   @override
   Widget build(BuildContext context) {
@@ -176,7 +176,7 @@ class TotalCreditDebit extends StatelessWidget {
                       ),
                       children: [
                         TextSpan(
-                          text: "Debit",
+                          text: "Assets",
                           style: context.labelLarge?.copyWith(
                             color: context.onPrimaryContainer.withOpacity(0.75),
                           ),
@@ -185,7 +185,7 @@ class TotalCreditDebit extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '$symbol ${debit.toStringAsFixed(2)}',
+                    '$symbol $asset',
                     style: context.titleLarge?.copyWith(
                       color: context.onPrimaryContainer,
                     ),
@@ -205,7 +205,7 @@ class TotalCreditDebit extends StatelessWidget {
                       ),
                       children: [
                         TextSpan(
-                          text: "Credit",
+                          text: "Liabilities",
                           style: context.labelLarge?.copyWith(
                             color: context.onPrimaryContainer.withOpacity(0.75),
                           ),
@@ -214,7 +214,7 @@ class TotalCreditDebit extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '$symbol ${credit.toStringAsFixed(2)}',
+                    '$symbol ${(liabilities * -1)}',
                     style: context.titleLarge?.copyWith(
                       color: context.onPrimaryContainer,
                     ),

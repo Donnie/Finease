@@ -24,7 +24,7 @@ class _AccountsPageState extends State<AccountsPage> {
   }
 
   Future<void> loadAccounts() async {
-    List<Account> accountsList = await AccountService().getAllAccounts();
+    List<Account> accountsList = await AccountService().getAllAccounts(false);
     setState(() {
       accounts = accountsList;
     });
@@ -33,13 +33,15 @@ class _AccountsPageState extends State<AccountsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: AccountCard(
-        accounts: accounts,
+      body: ListView(
+        children: accounts.map((a) => AccountWidget(account: a)).toList(),
       ),
       floatingActionButton: VariableFABSize(
         onPressed: () async {
-          await context.pushNamed(RoutesName.addAccount.name);
-          loadAccounts();
+          await context.pushNamed(
+            RoutesName.addAccount.name,
+            extra: loadAccounts,
+          );
         },
         icon: Icons.add,
       ),

@@ -16,12 +16,48 @@ class AccountService {
 
   Future<Account?> createAccount(Account account) async {
     final dbClient = await _databaseHelper.db;
-    int balance = account.balance;
+    double balance = account.balance;
     account.balance = 0;
     final id = await dbClient.insert(Accounts, account.toJson());
     account.id = id;
-    await EntryService().adjustFirstBalance(id, balance);
+    if (account.currency == 'EUR') {
+      await EntryService().adjustFirstBalance(id, balance);
+    } else {
+      await EntryService().adjustFirstForexBalance(id, balance);
+    }
     return account;
+  }
+
+  Future<Account?> createForexAccountIfNotExist(
+    String currency, {
+    double balance = 0,
+    bool liquid = true,
+    name = "Forex",
+    type = AccountType.expense,
+  }) async {
+    final dbClient = await _databaseHelper.db;
+    // Check if the account already exists
+    final List<Map<String, dynamic>> existingAccounts = await dbClient.query(
+      Accounts,
+      where: 'currency = ? AND name = ? AND hidden = ?',
+      whereArgs: [currency, name, 1],
+    );
+    if (existingAccounts.isNotEmpty) {
+      // Account already exists, return the existing account
+      return Account.fromJson(existingAccounts.first);
+    } else {
+      // Account does not exist, create a new one
+      Account newAccount = Account(
+        balance: balance,
+        currency: currency,
+        name: name,
+        hidden: true,
+        type: type,
+        liquid: liquid,
+      );
+      // Persist the new account and return it
+      return await createAccount(newAccount);
+    }
   }
 
   Future<Account?> getAccount(int id) async {
@@ -37,16 +73,16 @@ class AccountService {
     return null;
   }
 
-  Future<List<Account>> getAllAccounts() async {
+  Future<List<Account>> getAllAccounts(bool hidden) async {
     final dbClient = await _databaseHelper.db;
-    String pastAccountId =
-        await SettingService().getSetting(Setting.pastAccount);
+
+    String? whereClause = hidden ? null : "hidden = 0";
 
     final List<Map<String, dynamic>> accounts = await dbClient.query(
       Accounts,
-      where: 'id != ?',
-      whereArgs: [pastAccountId],
+      where: whereClause,
     );
+
     return accounts.map((json) => Account.fromJson(json)).toList();
   }
 
@@ -69,112 +105,51 @@ class AccountService {
     );
   }
 
-  Future<double> getTotalLiquidBalance() async {
+  Future<double> getTotalBalance({
+    bool liquid = false,
+    AccountType? type,
+  }) async {
     final dbClient = await _databaseHelper.db;
+    List<String> conditions = ['hidden = 0'];
 
-    String sql = '''
-      SELECT 
-        (
-          SUM(CASE WHEN type = 'asset' THEN balance ELSE 0 END) - 
-          SUM(CASE WHEN type = 'liability' THEN balance ELSE 0 END)
-        ) as total_balance,
-        currency
-      FROM Accounts
-      WHERE
-        liquid = 1
-      GROUP BY currency;
-    ''';
-
-    // Execute the query
-    List<Map<String, dynamic>> result = await dbClient.rawQuery(sql);
-
-    double totalBalance = 0;
-
-    String prefCurrency =
-        await _settingService.getSetting(Setting.prefCurrency);
-
-    // Loop through each currency and convert the balance to preferred currency
-    await currencyBoxService.init();
-    for (var row in result) {
-      String currency = row['currency'];
-      int balance = row['total_balance'];
-
-      // Convert balance to preferred currency
-      double convertedBalance = await _convertCurrency(currency, balance, prefCurrency);
-      totalBalance += convertedBalance;
+    if (liquid) {
+      conditions.add('liquid = 1');
     }
 
-    return totalBalance / 100;
-  }
-
-  Future<double> getTotalBalance() async {
-    final dbClient = await _databaseHelper.db;
-
-    String sql = '''
-      SELECT 
-        (
-          SUM(CASE WHEN type = 'asset' THEN balance ELSE 0 END) - 
-          SUM(CASE WHEN type = 'liability' THEN balance ELSE 0 END)
-        ) as total_balance,
-        currency
-      FROM Accounts
-      GROUP BY currency;
-    ''';
-
-    // Execute the query
-    List<Map<String, dynamic>> result = await dbClient.rawQuery(sql);
-
-    double totalBalance = 0;
-
-    String prefCurrency =
-        await _settingService.getSetting(Setting.prefCurrency);
-
-    // Loop through each currency and convert the balance to preferred currency
-    await currencyBoxService.init();
-    for (var row in result) {
-      String currency = row['currency'];
-      int balance = row['total_balance'];
-
-      // Convert balance to preferred currency
-      double convertedBalance = await _convertCurrency(currency, balance, prefCurrency);
-      totalBalance += convertedBalance;
+    if (type != null) {
+      conditions.add("type = '${type.name}'");
     }
 
-    return totalBalance / 100;
-  }
+    String whereClause = conditions.join(' AND ');
 
-  Future<double> getTotalBalanceByType(AccountType type) async {
-    final dbClient = await _databaseHelper.db;
-    String prefCurrency =
-        await _settingService.getSetting(Setting.prefCurrency);
-
-    // Adjust the WHERE clause based on the type value
-    String accountType = type.name;
-
-    // SQL query to calculate the total balance based on the debit flag
     String sql = '''
       SELECT 
         SUM(balance) as total_balance,
         currency
       FROM Accounts
-      WHERE
-        type = '$accountType'
+      WHERE $whereClause
+        AND type NOT IN ('income', 'expense')
       GROUP BY currency;
     ''';
 
     // Execute the query
     List<Map<String, dynamic>> result = await dbClient.rawQuery(sql);
 
-    double totalBalance = 0;
+    int totalBalance = 0;
 
+    String prefCurrency =
+        await _settingService.getSetting(Setting.prefCurrency);
+
+    // Loop through each currency and convert the balance to preferred currency
     await currencyBoxService.init();
     for (var row in result) {
       String currency = row['currency'];
       int balance = row['total_balance'];
 
       // Convert balance to preferred currency
-      double convertedBalance = await _convertCurrency(currency, balance, prefCurrency);
-      totalBalance += convertedBalance;
+      double convertedBalance =
+          await _convertCurrency(currency, balance, prefCurrency);
+      totalBalance += convertedBalance.round();
     }
 
     return totalBalance / 100;
@@ -202,9 +177,10 @@ class Account {
   int? id;
   DateTime? createdAt;
   DateTime? updatedAt;
-  int balance;
+  double balance;
   String currency;
   bool liquid;
+  bool hidden;
   String name;
   AccountType type;
 
@@ -215,22 +191,24 @@ class Account {
     required this.balance,
     required this.currency,
     required this.liquid,
+    this.hidden = false,
     required this.name,
     required this.type,
   });
 
   factory Account.fromJson(Map<String, dynamic> json) {
+    AccountType type = AccountType.values
+        .firstWhere((e) => e.toString().split('.').last == json['type']);
     return Account(
       id: json['id'],
       createdAt: DateTime.tryParse(json['created_at'] ?? ''),
       updatedAt: DateTime.tryParse(json['updated_at'] ?? ''),
-      balance: json['balance'],
+      balance: json['balance'] / 100,
       currency: json['currency'],
       liquid: json['liquid'] == 1,
+      hidden: json['hidden'] == 1,
       name: json['name'],
-      type: AccountType.values.firstWhere(
-        (e) => e.toString().split('.').last == json['type']
-      ),
+      type: type,
     );
   }
 
@@ -238,9 +216,10 @@ class Account {
     return {
       'id': id,
       'updated_at': DateTime.now().toIso8601String(),
-      'balance': balance,
+      'balance': (balance * 100).round().toInt(),
       'currency': currency,
       'liquid': liquid ? 1 : 0,
+      'hidden': hidden ? 1 : 0,
       'name': name,
       'type': type.toString().split('.').last,
     };

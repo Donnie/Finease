@@ -1,4 +1,5 @@
 import 'package:finease/pages/add_account/main.dart';
+import 'package:finease/pages/add_entry/main.dart';
 import 'package:finease/pages/home/frame/main.dart';
 import 'package:finease/pages/settings/main.dart';
 import 'package:finease/routes/routes_name.dart';
@@ -46,7 +47,16 @@ final GoRouter goRouter = GoRouter(
       name: RoutesName.addAccount.name,
       path: RoutesName.addAccount.path,
       builder: (BuildContext context, GoRouterState state) {
-        return const AddAccountScreen();
+        final Function onFormSubmitted = state.extra as Function;
+        return AddAccountScreen(onFormSubmitted: onFormSubmitted);
+      },
+    ),
+    GoRoute(
+      name: RoutesName.addEntry.name,
+      path: RoutesName.addEntry.path,
+      builder: (BuildContext context, GoRouterState state) {
+        final Function onFormSubmitted = state.extra as Function;
+        return AddEntryScreen(onFormSubmitted: onFormSubmitted);
       },
     ),
     GoRoute(

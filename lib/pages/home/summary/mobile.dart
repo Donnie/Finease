@@ -1,4 +1,4 @@
-import 'package:finease/pages/home/summary/balance_card.dart';
+import 'package:finease/pages/home/summary/net_worth_card.dart';
 import 'package:flutter/material.dart';
 
 class SummaryMobileWidget extends StatelessWidget {
@@ -16,7 +16,7 @@ class SummaryMobileWidget extends StatelessWidget {
       itemBuilder: (context, index) {
         return const Padding(
           padding: EdgeInsets.only(bottom: 8, left: 8, right: 8),
-          child: BalanceCard(),
+          child: NetWorthCard(),
         );
       },
     );
