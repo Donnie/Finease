@@ -4,10 +4,12 @@ import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class DateTimePicker extends StatefulWidget {
+  final DateTime? dateTime;
   final Function(DateTime) onDateTimeChanged;
 
   const DateTimePicker({
     Key? key,
+    this.dateTime,
     required this.onDateTimeChanged,
   }) : super(key: key);
 
@@ -16,7 +18,13 @@ class DateTimePicker extends StatefulWidget {
 }
 
 class DateTimePickerState extends State<DateTimePicker> {
-  DateTime selectedDateTime = DateTime.now();
+  late DateTime selectedDateTime;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedDateTime = widget.dateTime ?? DateTime.now();
+  }
 
   void _pickDateTime() async {
     final DateTime? pickedDateNullable = await showDatePicker(

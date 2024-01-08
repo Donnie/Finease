@@ -9,31 +9,39 @@ import 'package:go_router/go_router.dart';
 class AddEntryBody extends StatefulWidget {
   const AddEntryBody({
     super.key,
-    required this.formState,
-    required this.entryNotes,
-    required this.entryAmount,
     required this.accounts,
+    required this.addNewRoute,
+    this.dateTime,
+    required this.entryAmount,
+    required this.entryNotes,
+    required this.formState,
     required this.onCreditAccountSelected,
     required this.onDebitAccountSelected,
-    required this.addNewRoute,
     required this.routeArg,
   });
 
+  final DateTime? dateTime;
   final GlobalKey<FormState> formState;
-  final TextEditingController entryNotes;
-  final TextEditingController entryAmount;
   final List<Account> accounts;
+  final Object routeArg;
+  final String addNewRoute;
+  final TextEditingController entryAmount;
+  final TextEditingController entryNotes;
   final ValueChanged<Account?> onCreditAccountSelected;
   final ValueChanged<Account?> onDebitAccountSelected;
-  final String addNewRoute;
-  final Object routeArg;
 
   @override
   AddEntryBodyState createState() => AddEntryBodyState();
 }
 
 class AddEntryBodyState extends State<AddEntryBody> {
-  DateTime selectedDateTime = DateTime.now();
+  late DateTime selectedDateTime;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedDateTime = widget.dateTime ?? DateTime.now();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,6 +86,7 @@ class AddEntryBodyState extends State<AddEntryBody> {
             ),
             const SizedBox(height: 16),
             DateTimePicker(
+              dateTime: selectedDateTime,
               onDateTimeChanged: (newDateTime) {
                 setState(() {
                   selectedDateTime = newDateTime;
