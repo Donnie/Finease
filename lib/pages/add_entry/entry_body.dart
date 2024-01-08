@@ -12,14 +12,19 @@ class AddEntryBody extends StatefulWidget {
     required this.accounts,
     required this.addNewRoute,
     this.dateTime,
+    this.creditAccount,
+    this.debitAccount,
     required this.entryAmount,
     required this.entryNotes,
     required this.formState,
     required this.onCreditAccountSelected,
+    required this.onDateTimeChanged,
     required this.onDebitAccountSelected,
     required this.routeArg,
   });
 
+  final Account? creditAccount;
+  final Account? debitAccount;
   final DateTime? dateTime;
   final GlobalKey<FormState> formState;
   final List<Account> accounts;
@@ -27,6 +32,7 @@ class AddEntryBody extends StatefulWidget {
   final String addNewRoute;
   final TextEditingController entryAmount;
   final TextEditingController entryNotes;
+  final ValueChanged<DateTime> onDateTimeChanged;
   final ValueChanged<Account?> onCreditAccountSelected;
   final ValueChanged<Account?> onDebitAccountSelected;
 
@@ -35,14 +41,6 @@ class AddEntryBody extends StatefulWidget {
 }
 
 class AddEntryBodyState extends State<AddEntryBody> {
-  late DateTime selectedDateTime;
-
-  @override
-  void initState() {
-    super.initState();
-    selectedDateTime = widget.dateTime ?? DateTime.now();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -77,41 +75,56 @@ class AddEntryBodyState extends State<AddEntryBody> {
               label: 'Enter amount',
               keyboardType: TextInputType.number,
               validator: (val) {
-                if (val!.isNotEmpty) {
-                  return null;
-                } else {
-                  return 'Enter amount';
+                if (val == null) {
+                  return 'Enter an amount';
                 }
+                if (val.isEmpty) {
+                  return 'Enter an amount';
+                }
+                if (double.tryParse(val) == 0) {
+                  return 'Enter an amount';
+                }
+                return null;
               },
             ),
             const SizedBox(height: 16),
             DateTimePicker(
-              dateTime: selectedDateTime,
-              onDateTimeChanged: (newDateTime) {
-                setState(() {
-                  selectedDateTime = newDateTime;
-                });
-              },
+              dateTime: widget.dateTime,
+              onDateTimeChanged: widget.onDateTimeChanged,
             ),
             const SizedBox(height: 16),
-            AccountChoice(
+            AccountChoiceFormField(
               title: "Debit Account",
               accounts: widget.accounts,
+              initialValue: widget.debitAccount,
               onAccountSelected: widget.onDebitAccountSelected,
               onAddNew: () => context.pushNamed(
                 widget.addNewRoute,
                 extra: widget.routeArg,
               ),
+              validator: (Account? account) {
+                if (account == null) {
+                  return 'Please select an account';
+                }
+                return null;
+              },
             ),
             const SizedBox(height: 16),
-            AccountChoice(
+            AccountChoiceFormField(
               title: "Credit Account",
               accounts: widget.accounts,
+              initialValue: widget.creditAccount,
               onAccountSelected: widget.onCreditAccountSelected,
               onAddNew: () => context.pushNamed(
                 widget.addNewRoute,
                 extra: widget.routeArg,
               ),
+              validator: (Account? account) {
+                if (account == null) {
+                  return 'Please select an account';
+                }
+                return null;
+              },
             ),
           ],
         ),

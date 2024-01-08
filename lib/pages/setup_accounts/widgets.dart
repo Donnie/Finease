@@ -4,18 +4,55 @@ import 'package:finease/db/currency.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
+class AccountChoiceFormField extends FormField<Account> {
+  AccountChoiceFormField({
+    Key? key,
+    required List<Account> accounts,
+    Account? initialValue,
+    FormFieldSetter<Account>? onSaved,
+    FormFieldValidator<Account>? validator,
+    ValueChanged<Account?>? onAccountSelected,
+    Function? onAddNew,
+    required String title,
+  }) : super(
+          key: key,
+          initialValue: initialValue,
+          onSaved: onSaved,
+          validator: validator,
+          builder: (FormFieldState<Account> state) {
+            return AccountChoice(
+              accounts: accounts,
+              errorMessage: state.errorText,
+              onAccountSelected: (Account? account) {
+                state.didChange(account);
+                if (onAccountSelected != null) {
+                  onAccountSelected(account);
+                }
+              },
+              onAddNew: onAddNew,
+              selectedAccount: state.value,
+              title: title,
+            );
+          },
+        );
+}
+
 class AccountChoice extends StatefulWidget {
-  final String title;
-  final List<Account> accounts;
-  final ValueChanged<Account?>? onAccountSelected;
+  final Account? selectedAccount;
   final Function? onAddNew;
+  final List<Account> accounts;
+  final String title;
+  final String? errorMessage;
+  final ValueChanged<Account?>? onAccountSelected;
 
   const AccountChoice({
     super.key,
-    required this.title,
     required this.accounts,
+    required this.title,
+    this.errorMessage,
     this.onAccountSelected,
     this.onAddNew,
+    this.selectedAccount,
   });
 
   @override
@@ -25,15 +62,15 @@ class AccountChoice extends StatefulWidget {
 class _AccountChoiceState extends State<AccountChoice> {
   Account? selectedAccount;
 
+  @override
+  void initState() {
+    super.initState();
+    selectedAccount = widget.selectedAccount;
+  }
+
   void _handleAccountSelection(Account account, bool isSelected) {
     setState(() {
-      if (isSelected) {
-        selectedAccount = account;
-      } else {
-        if (selectedAccount == account) {
-          selectedAccount = null;
-        }
-      }
+      selectedAccount = isSelected ? account : null;
     });
 
     widget.onAccountSelected?.call(selectedAccount);
@@ -80,6 +117,13 @@ class _AccountChoiceState extends State<AccountChoice> {
               AddNewAccount(onSelected: (val) => _handleAddNew()),
             ],
           ),
+          if (widget.errorMessage != null)
+            ListTile(
+              title: Text(
+                widget.errorMessage!,
+                style: TextStyle(color: context.error),
+              ),
+            ),
         ],
       ),
     );
