@@ -1,8 +1,7 @@
+import 'package:finease/db/accounts.dart';
 import 'package:finease/pages/add_entry/date_time.dart';
-import 'package:finease/pages/setup_accounts/default_account.dart';
 import 'package:finease/pages/setup_accounts/widgets.dart';
 import 'package:finease/parts/export.dart';
-import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -13,11 +12,21 @@ class AddEntryBody extends StatefulWidget {
     required this.formState,
     required this.entryNotes,
     required this.entryAmount,
+    required this.accounts,
+    required this.onCreditAccountSelected,
+    required this.onDebitAccountSelected,
+    required this.addNewRoute,
+    required this.routeArg,
   });
 
   final GlobalKey<FormState> formState;
   final TextEditingController entryNotes;
   final TextEditingController entryAmount;
+  final List<Account> accounts;
+  final ValueChanged<Account?> onCreditAccountSelected;
+  final ValueChanged<Account?> onDebitAccountSelected;
+  final String addNewRoute;
+  final Object routeArg;
 
   @override
   AddEntryBodyState createState() => AddEntryBodyState();
@@ -78,28 +87,22 @@ class AddEntryBodyState extends State<AddEntryBody> {
             const SizedBox(height: 16),
             AccountChoice(
               title: "Debit Account",
-              accounts: defaultAccountsData("EUR"),
-              onAccountSelected: (account) {
-                if (account != null) {
-                  print("Account chosen ${account.name}");
-                }
-              },
-              onAddNew: () {
-                context.pushNamed(RoutesName.addAccount.name, extra: () => {});
-              },
+              accounts: widget.accounts,
+              onAccountSelected: widget.onDebitAccountSelected,
+              onAddNew: () => context.pushNamed(
+                widget.addNewRoute,
+                extra: widget.routeArg,
+              ),
             ),
             const SizedBox(height: 16),
             AccountChoice(
               title: "Credit Account",
-              accounts: defaultAccountsData("EUR"),
-              onAccountSelected: (val) {
-                if (val != null) {
-                  print("Account chosen ${val.name}");
-                }
-              },
-              onAddNew: () {
-                context.pushNamed(RoutesName.addAccount.name, extra: () => {});
-              },
+              accounts: widget.accounts,
+              onAccountSelected: widget.onCreditAccountSelected,
+              onAddNew: () => context.pushNamed(
+                widget.addNewRoute,
+                extra: widget.routeArg,
+              ),
             ),
           ],
         ),

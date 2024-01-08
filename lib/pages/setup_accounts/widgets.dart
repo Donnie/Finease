@@ -7,7 +7,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 class AccountChoice extends StatefulWidget {
   final String title;
   final List<Account> accounts;
-  final Function(Account? selectedAccount)? onAccountSelected;
+  final ValueChanged<Account?>? onAccountSelected;
   final Function? onAddNew;
 
   const AccountChoice({

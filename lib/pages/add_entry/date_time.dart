@@ -27,6 +27,7 @@ class DateTimePickerState extends State<DateTimePicker> {
     );
     final DateTime pickedDate = pickedDateNullable ?? selectedDateTime;
 
+    // ignore: use_build_context_synchronously
     final TimeOfDay? pickedTimeNullable = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.fromDateTime(selectedDateTime),
