@@ -40,14 +40,14 @@ class EntryService {
       debitAccountId: entry.debitAccountId,
       creditAccountId: forexAccountDebit!.id!,
       amount: debitAmount,
-      notes: "Auto Adjusted by App",
+      notes: "Forex transaction by App",
     ));
 
     await createEntry(Entry(
       debitAccountId: forexAccountCredit!.id!,
       creditAccountId: entry.creditAccountId,
       amount: entry.amount,
-      notes: "Auto Adjusted by App",
+      notes: entry.notes,
     ));
   }
 
@@ -115,7 +115,7 @@ class EntryService {
       debitAccountId: 1,
       creditAccountId: accountId,
       amount: balance,
-      notes: "Auto Adjusted by App",
+      notes: "Carry In By App",
     );
 
     await dbClient.insert('Entries', entry.toJson());
@@ -130,7 +130,7 @@ class EntryService {
       debitAccountId: 1,
       creditAccountId: accountId,
       amount: balance,
-      notes: "Auto Adjusted by App",
+      notes: "Carry In By App",
     );
 
     await createForexEntry(entry);

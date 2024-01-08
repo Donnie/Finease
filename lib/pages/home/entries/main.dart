@@ -35,10 +35,9 @@ class EntriesPageState extends State<EntriesPage> {
       // Check if the next entry exists and if it's within a 1-second interval
       if (i < entriesList.length - 1) {
         Entry debitEntry = entriesList[i + 1];
-
-        if (debitEntry.date!.difference(creditEntry.date!).inSeconds <= 1 &&
+        if (creditEntry.date!.difference(debitEntry.date!).inSeconds <= 0.5 &&
+            // name because in multi currency trans only name is same, ids are diff.
             debitEntry.creditAccount!.name == creditEntry.debitAccount!.name) {
-          // Merge entries logic (e.g., sum amounts, adjust dates, etc.)
           Entry mergedEntry = mergeEntries(debitEntry, creditEntry);
           mergedEntries.add(mergedEntry);
           i++; // Skip the next entry as it's merged
@@ -67,7 +66,7 @@ class EntriesPageState extends State<EntriesPage> {
       creditAccount: entry2.creditAccount,
       amount: entry2.amount,
       date: entry1.date,
-      notes: entry1.notes,
+      notes: entry2.notes,
     );
   }
 

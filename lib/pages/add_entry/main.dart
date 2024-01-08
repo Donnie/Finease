@@ -108,7 +108,11 @@ class AddEntryScreenState extends State<AddEntryScreen> {
         notes: entryNotes,
         date: _dateTime,
       );
-      await _entryService.createEntry(entry);
+      if (_debitAccount!.currency != _creditAccount!.currency) {
+        await _entryService.createForexEntry(entry);
+      } else {
+        await _entryService.createEntry(entry);
+      }
       widget.onFormSubmitted();
     }
   }
