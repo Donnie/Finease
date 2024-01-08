@@ -1,6 +1,6 @@
 import 'package:finease/pages/home/accounts/main.dart';
 import 'package:finease/pages/home/summary/main.dart';
-import 'package:finease/pages/home/months/main.dart';
+// import 'package:finease/pages/home/months/main.dart';
 import 'package:finease/pages/home/entries/main.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -18,12 +18,12 @@ List<Destination> destinations = [
     icon: const Icon(Icons.credit_card_outlined),
     selectedIcon: const Icon(Icons.credit_card),
   ),
-  Destination(
-    body: const MonthsPage(),
-    pageType: PageType.months,
-    icon: Icon(MdiIcons.calendarMonthOutline),
-    selectedIcon: Icon(MdiIcons.calendarMonth),
-  ),
+  // Destination(
+  //   body: const MonthsPage(),
+  //   pageType: PageType.months,
+  //   icon: Icon(MdiIcons.calendarMonthOutline),
+  //   selectedIcon: Icon(MdiIcons.calendarMonth),
+  // ),
   Destination(
     body: const EntriesPage(),
     pageType: PageType.transactions,
@@ -50,7 +50,8 @@ enum PageType {
   home,
   accounts,
   transactions,
-  months;
+  // months,
+  ;
 
   int get toIndex => index;
   String get name => toString().split('.').last;
