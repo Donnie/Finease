@@ -46,6 +46,21 @@ Future<void> aInitialMigration(Database db) async {
   ''');
 
   await db.execute('''
+    CREATE TRIGGER UpdateAccountBalanceAfterDelete
+    BEFORE DELETE ON Entries
+    WHEN (SELECT currency FROM Accounts WHERE id = OLD.debit_account_id) = 
+        (SELECT currency FROM Accounts WHERE id = OLD.credit_account_id)
+    BEGIN
+      UPDATE Accounts
+      SET balance = balance - OLD.amount
+      WHERE id = OLD.credit_account_id;
+      UPDATE Accounts
+      SET balance = balance + OLD.amount
+      WHERE id = OLD.debit_account_id;
+    END;
+  ''');
+
+  await db.execute('''
     CREATE TRIGGER PreventDifferentCurrencyInsert
     BEFORE INSERT ON Entries
     FOR EACH ROW
