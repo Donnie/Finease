@@ -2,7 +2,6 @@ import 'package:finease/core/common.dart';
 import 'package:finease/db/accounts.dart';
 import 'package:finease/db/entries.dart';
 import 'package:finease/pages/add_entry/entry_body.dart';
-import 'package:finease/pages/setup_accounts/default_account.dart';
 import 'package:finease/parts/export.dart';
 import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
@@ -22,13 +21,29 @@ class AddEntryScreen extends StatefulWidget {
 
 class AddEntryScreenState extends State<AddEntryScreen> {
   final EntryService _entryService = EntryService();
+  final AccountService _accountService = AccountService();
 
   final _formState = GlobalKey<FormState>();
   final _entryNotes = TextEditingController();
   final _entryAmount = TextEditingController();
-  final _accounts = defaultAccountsData("EUR");
+  List<Account> _accounts = [];
+
   Account? _creditAccount;
   Account? _debitAccount;
+  DateTime? _dateTime;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchAccounts();
+  }
+
+  Future<void> _fetchAccounts() async {
+    final accounts = await _accountService.getAllAccounts(false);
+    setState(() {
+      _accounts = accounts;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,84 +51,65 @@ class AddEntryScreenState extends State<AddEntryScreen> {
       color: context.background,
       child: Scaffold(
         appBar: AppBar(title: const Text('Add Entry')),
-        body: AddEntryForm(
-          formState: _formState,
-          entryNotes: _entryNotes,
-          entryAmount: _entryAmount,
+        body: AddEntryBody(
           accounts: _accounts,
+          creditAccount: _creditAccount,
+          dateTime: _dateTime,
+          debitAccount: _debitAccount,
+          entryAmount: _entryAmount,
+          entryNotes: _entryNotes,
+          formState: _formState,
+          onCreditAccountSelected: _onCreditAccountSelected,
+          onDateTimeChanged: _onDateTimeChanged,
+          onDebitAccountSelected: _onDebitAccountSelected,
+          addNewRoute: RoutesName.addAccount.name,
+          routeArg: _fetchAccounts,
         ),
-        bottomNavigationBar: _buildBottomBar(context),
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: AppBigButton(
+            onPressed: () {
+              _submitForm();
+            },
+            title: "Add",
+          ),
+        ),
       ),
     );
   }
 
-  Widget _buildBottomBar(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: AppBigButton(
-          onPressed: () {
-            _submitForm();
-            context.pop();
-          },
-          title: "Add",
-        ),
-      ),
-    );
+  Future<void> _onDateTimeChanged(DateTime dateTime) async {
+    setState(() {
+      _dateTime = dateTime;
+    });
+  }
+
+  Future<void> _onDebitAccountSelected(Account? account) async {
+    setState(() {
+      _debitAccount = account;
+    });
+  }
+
+  Future<void> _onCreditAccountSelected(Account? account) async {
+    setState(() {
+      _creditAccount = account;
+    });
   }
 
   Future<void> _submitForm() async {
-    widget.onFormSubmitted();
-    // String entryNotes = _entryNotes.text;
-    // String entryCurrency = _entryCurrency.text;
-    // double balance = double.tryParse(_entryAmount.text) ?? 0;
+    String entryNotes = _entryNotes.text;
+    double amount = double.tryParse(_entryAmount.text) ?? 0;
     if (_formState.currentState?.validate() ?? false) {
-      _formState.currentState?.save();
-      //   Entry entry = Entry(
-      //     name: entryNotes,
-      //     currency: entryCurrency,
-      //     balance: balance,
-      //     liquid: entryLiquid,
-      //     type: entryType,
-      //   );
-      //   await _entryService.createEntry(entry);
+      context.pop();
+      Entry entry = Entry(
+        debitAccountId: _debitAccount!.id!,
+        creditAccountId: _creditAccount!.id!,
+        amount: amount,
+        notes: entryNotes,
+        date: _dateTime,
+      );
+      await _entryService.createEntry(entry);
+      widget.onFormSubmitted();
     }
-  }
-}
-
-class AddEntryForm extends StatelessWidget {
-  final GlobalKey<FormState> formState;
-  final TextEditingController entryNotes;
-  final TextEditingController entryAmount;
-  final List<Account> accounts;
-
-  const AddEntryForm({
-    super.key,
-    required this.formState,
-    required this.entryNotes,
-    required this.entryAmount,
-    required this.accounts,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return AddEntryBody(
-      formState: formState,
-      entryNotes: entryNotes,
-      entryAmount: entryAmount,
-      accounts: accounts,
-      onDebitAccountSelected: (account) {
-        if (account != null) {
-          print("Account chosen ${account.name}");
-        }
-      },
-      onCreditAccountSelected: (account) {
-        if (account != null) {
-          print("Account chosen ${account.name}");
-        }
-      },
-      addNewRoute: RoutesName.addAccount.name,
-      routeArg: () => {},
-    );
   }
 }
