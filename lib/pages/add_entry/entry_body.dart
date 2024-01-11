@@ -104,9 +104,10 @@ class AddEntryBodyState extends State<AddEntryBody> {
             ),
             const SizedBox(height: 16),
             AccountChoiceFormField(
+              key: ValueKey(widget.debitAccount),
               title: "From Account",
               accounts: widget.accounts,
-              initialValue: widget.debitAccount,
+              selectedAccount: widget.debitAccount,
               onAccountSelected: widget.onDebitAccountSelected,
               onAddNew: () => context.pushNamed(
                 widget.addNewRoute,
@@ -121,9 +122,10 @@ class AddEntryBodyState extends State<AddEntryBody> {
             ),
             const SizedBox(height: 16),
             AccountChoiceFormField(
+              key: ValueKey(widget.creditAccount),
               title: "To Account",
               accounts: widget.accounts,
-              initialValue: widget.creditAccount,
+              selectedAccount: widget.creditAccount,
               onAccountSelected: widget.onCreditAccountSelected,
               onAddNew: () => context.pushNamed(
                 widget.addNewRoute,
