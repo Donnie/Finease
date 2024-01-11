@@ -28,7 +28,7 @@ class AddEntryBody extends StatefulWidget {
   final DateTime? dateTime;
   final GlobalKey<FormState> formState;
   final List<Account> accounts;
-  final Object routeArg;
+  final Function routeArg;
   final String addNewRoute;
   final TextEditingController entryAmount;
   final TextEditingController entryNotes;
@@ -41,6 +41,16 @@ class AddEntryBody extends StatefulWidget {
 }
 
 class AddEntryBodyState extends State<AddEntryBody> {
+  creditRouteArg(Account account) async {
+    await widget.routeArg();
+    widget.onCreditAccountSelected(account);
+  }
+
+  debitRouteArg(Account account) async {
+    await widget.routeArg();
+    widget.onDebitAccountSelected(account);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -100,7 +110,7 @@ class AddEntryBodyState extends State<AddEntryBody> {
               onAccountSelected: widget.onDebitAccountSelected,
               onAddNew: () => context.pushNamed(
                 widget.addNewRoute,
-                extra: widget.routeArg,
+                extra: debitRouteArg,
               ),
               validator: (Account? account) {
                 if (account == null) {
@@ -117,7 +127,7 @@ class AddEntryBodyState extends State<AddEntryBody> {
               onAccountSelected: widget.onCreditAccountSelected,
               onAddNew: () => context.pushNamed(
                 widget.addNewRoute,
-                extra: widget.routeArg,
+                extra: creditRouteArg,
               ),
               validator: (Account? account) {
                 if (account == null) {

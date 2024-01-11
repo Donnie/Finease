@@ -1,3 +1,4 @@
+import 'package:finease/db/accounts.dart';
 import 'package:finease/pages/add_account/main.dart';
 import 'package:finease/pages/add_entry/main.dart';
 import 'package:finease/pages/home/frame/main.dart';
@@ -47,7 +48,7 @@ final GoRouter goRouter = GoRouter(
       name: RoutesName.addAccount.name,
       path: RoutesName.addAccount.path,
       builder: (BuildContext context, GoRouterState state) {
-        final Function onFormSubmitted = state.extra as Function;
+        dynamic Function(Account) onFormSubmitted = state.extra as dynamic Function(Account);
         return AddAccountScreen(onFormSubmitted: onFormSubmitted);
       },
     ),

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class AddAccountScreen extends StatefulWidget {
-  final Function onFormSubmitted;
+  final Function(Account) onFormSubmitted;
   const AddAccountScreen({
     super.key,
     required this.onFormSubmitted,
@@ -76,18 +76,20 @@ class AddAccountScreenState extends State<AddAccountScreen> {
     String accountName = _accountName.text;
     String accountCurrency = _accountCurrency.text;
     double balance = double.tryParse(_accountBalance.text) ?? 0;
+
+    Account account = Account(
+      name: accountName,
+      currency: accountCurrency,
+      balance: balance,
+      liquid: accountLiquid,
+      type: accountType,
+    );
+
     if (_formState.currentState?.validate() ?? false) {
       _formState.currentState?.save();
-      Account account = Account(
-        name: accountName,
-        currency: accountCurrency,
-        balance: balance,
-        liquid: accountLiquid,
-        type: accountType,
-      );
-      await _accountService.createAccount(account);
+      account = await _accountService.createAccount(account);
     }
-    widget.onFormSubmitted();
+    widget.onFormSubmitted(account);
   }
 }
 
