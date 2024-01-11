@@ -93,9 +93,9 @@ class EntryCard extends StatelessWidget {
   final Entry entry;
 
   const EntryCard({
-    Key? key,
+    super.key,
     required this.entry,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

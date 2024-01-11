@@ -6,11 +6,11 @@ class ChatDrawer extends StatelessWidget {
   final Function(bool) onToggleDarkMode;
 
   const ChatDrawer({
-    Key? key,
+    super.key,
     required this.onClearDatabase,
     required this.isDarkModeEnabled,
     required this.onToggleDarkMode,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

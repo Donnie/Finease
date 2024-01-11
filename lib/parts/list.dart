@@ -4,7 +4,7 @@ import 'package:finease/db/messages.dart';
 class MessagesListView extends StatelessWidget {
   final List<Message> messages;
 
-  const MessagesListView({Key? key, required this.messages}) : super(key: key);
+  const MessagesListView({super.key, required this.messages});
 
   @override
   Widget build(BuildContext context) {

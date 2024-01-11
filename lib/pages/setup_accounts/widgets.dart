@@ -6,28 +6,23 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 
 class AccountChoiceFormField extends FormField<Account> {
   AccountChoiceFormField({
-    Key? key,
+    super.key,
     required List<Account> accounts,
-    Account? initialValue,
-    FormFieldSetter<Account>? onSaved,
-    FormFieldValidator<Account>? validator,
+    Account? selectedAccount,
+    super.onSaved,
+    super.validator,
     ValueChanged<Account?>? onAccountSelected,
-    Function? onAddNew,
+    VoidCallback? onAddNew,
     required String title,
   }) : super(
-          key: key,
-          initialValue: initialValue,
-          onSaved: onSaved,
-          validator: validator,
-          builder: (FormFieldState<Account> state) {
+          initialValue: selectedAccount,
+          builder: (FormFieldState<Account?> state) {
             return AccountChoice(
               accounts: accounts,
               errorMessage: state.errorText,
               onAccountSelected: (Account? account) {
                 state.didChange(account);
-                if (onAccountSelected != null) {
-                  onAccountSelected(account);
-                }
+                onAccountSelected?.call(account);
               },
               onAddNew: onAddNew,
               selectedAccount: state.value,
@@ -37,7 +32,7 @@ class AccountChoiceFormField extends FormField<Account> {
         );
 }
 
-class AccountChoice extends StatefulWidget {
+class AccountChoice extends StatelessWidget {
   final Account? selectedAccount;
   final Function? onAddNew;
   final List<Account> accounts;
@@ -55,33 +50,14 @@ class AccountChoice extends StatefulWidget {
     this.selectedAccount,
   });
 
-  @override
-  State<AccountChoice> createState() => _AccountChoiceState();
-}
-
-class _AccountChoiceState extends State<AccountChoice> {
-  Account? selectedAccount;
-
-  @override
-  void initState() {
-    super.initState();
-    selectedAccount = widget.selectedAccount;
-  }
-
   void _handleAccountSelection(Account account, bool isSelected) {
-    setState(() {
-      selectedAccount = isSelected ? account : null;
-    });
+    Account? selectedAccount = isSelected ? account : null;
 
-    widget.onAccountSelected?.call(selectedAccount);
+    onAccountSelected?.call(selectedAccount);
   }
 
   void _handleAddNew() {
-    setState(() {
-      selectedAccount = null;
-    });
-
-    widget.onAddNew?.call();
+    onAddNew?.call();
   }
 
   @override
@@ -92,7 +68,7 @@ class _AccountChoiceState extends State<AccountChoice> {
         children: [
           ListTile(
             title: Text(
-              widget.title,
+              title,
               style: context.titleMedium,
             ),
           ),
@@ -100,9 +76,9 @@ class _AccountChoiceState extends State<AccountChoice> {
             spacing: 12.0,
             runSpacing: 12.0,
             children: [
-              ...widget.accounts.map(
+              ...accounts.map(
                 (account) => AccountChip(
-                  selected: selectedAccount == account,
+                  selected: selectedAccount?.id == account.id,
                   avatar: Text(
                     SupportedCurrency[account.currency]!,
                     style: context.bodyLarge,
@@ -117,10 +93,10 @@ class _AccountChoiceState extends State<AccountChoice> {
               AddNewAccount(onSelected: (val) => _handleAddNew()),
             ],
           ),
-          if (widget.errorMessage != null)
+          if (errorMessage != null)
             ListTile(
               title: Text(
-                widget.errorMessage!,
+                errorMessage!,
                 style: TextStyle(color: context.error),
               ),
             ),
@@ -170,7 +146,7 @@ class AccountChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FilterChip(
+    return ChoiceChip(
       selected: selected ?? false,
       onSelected: onSelected,
       avatar: avatar,

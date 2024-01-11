@@ -145,13 +145,11 @@ class AddAccountBodyState extends State<AddAccountBody> {
 
 class AccountTypeSelectionFormField extends FormField<AccountType> {
   AccountTypeSelectionFormField({
-    Key? key,
-    FormFieldSetter<AccountType>? onSaved,
+    super.key,
+    super.onSaved,
     FormFieldSetter<AccountType>? onChanged,
     AccountType initialValue = AccountType.asset,
   }) : super(
-          key: key,
-          onSaved: onSaved,
           initialValue: AccountType.asset,
           builder: (FormFieldState<AccountType> state) {
             return Padding(
@@ -178,15 +176,12 @@ class AccountTypeSelectionFormField extends FormField<AccountType> {
 
 class SwitchFormField extends FormField<bool> {
   SwitchFormField({
-    Key? key,
+    super.key,
     Widget? title,
-    FormFieldSetter<bool>? onSaved,
+    super.onSaved,
     ValueChanged<bool>? onChanged,
-    bool initialValue = true,
+    bool super.initialValue = true,
   }) : super(
-          key: key,
-          onSaved: onSaved,
-          initialValue: initialValue,
           builder: (FormFieldState<bool> state) {
             final value = state.value ?? initialValue;
             return SwitchListTile(

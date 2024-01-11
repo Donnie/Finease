@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 final GlobalKey<ScaffoldState> _scaffoldStateKey = GlobalKey<ScaffoldState>();
 class HomePageMobile extends StatefulWidget {
   const HomePageMobile({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   HomePageMobileState createState() => HomePageMobileState();

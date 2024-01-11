@@ -6,11 +6,11 @@ class ChatInputArea extends StatelessWidget {
   final Function(String) onSubmitted;
 
   const ChatInputArea({
-    Key? key,
+    super.key,
     required this.controller,
     required this.focusNode,
     required this.onSubmitted,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
