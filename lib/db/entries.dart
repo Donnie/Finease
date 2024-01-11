@@ -38,13 +38,13 @@ class EntryService {
 
     await createEntry(Entry(
       debitAccountId: entry.debitAccountId,
-      creditAccountId: forexAccountDebit!.id!,
+      creditAccountId: forexAccountDebit.id!,
       amount: debitAmount,
       notes: "Forex transaction by App",
     ));
 
     await createEntry(Entry(
-      debitAccountId: forexAccountCredit!.id!,
+      debitAccountId: forexAccountCredit.id!,
       creditAccountId: entry.creditAccountId,
       amount: entry.amount,
       notes: entry.notes,
