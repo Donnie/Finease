@@ -56,13 +56,11 @@ class SetupAccountsWidgetState extends State<SetupAccountsWidget>
 
   void selectAccount(Account model) async {
     var account = await _accountService.createAccount(model);
-    if (account != null) {
-      setState(() {
-        egAccounts.remove(model);
-        selectedAccounts.add(account);
-        accountsNotifier.value = [...selectedAccounts];
-      });
-    }
+    setState(() {
+      egAccounts.remove(model);
+      selectedAccounts.add(account);
+      accountsNotifier.value = [...selectedAccounts];
+    });
   }
 
   void deselectAccount(Account model) async {
@@ -173,7 +171,8 @@ class SetupAccountsWidgetState extends State<SetupAccountsWidget>
         color: context.primary,
       ),
       label: Text(model.name),
-      onSelected: (val) => isEGAccount ? selectAccount(model) : deselectAccount(model),
+      onSelected: (val) =>
+          isEGAccount ? selectAccount(model) : deselectAccount(model),
     );
   }
 }
