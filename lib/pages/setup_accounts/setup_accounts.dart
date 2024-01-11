@@ -119,7 +119,7 @@ class SetupAccountsWidgetState extends State<SetupAccountsWidget>
                 AddNewAccount(
                   onSelected: (val) => context.pushNamed(
                     RoutesName.addAccount.name,
-                    extra: (Account account) => _fetchAccounts,
+                    extra: (Account account) => _fetchAccounts(),
                   ),
                 ),
               ],
