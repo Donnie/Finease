@@ -40,7 +40,7 @@ class _AccountsPageState extends State<AccountsPage> {
         onPressed: () async {
           await context.pushNamed(
             RoutesName.addAccount.name,
-            extra: loadAccounts,
+            extra: (Account ac) => loadAccounts(),
           );
         },
         icon: Icons.add,

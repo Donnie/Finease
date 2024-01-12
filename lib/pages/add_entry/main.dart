@@ -1,4 +1,3 @@
-import 'package:finease/core/common.dart';
 import 'package:finease/db/accounts.dart';
 import 'package:finease/db/entries.dart';
 import 'package:finease/pages/add_entry/entry_body.dart';
@@ -47,32 +46,29 @@ class AddEntryScreenState extends State<AddEntryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return AppAnnotatedRegionWidget(
-      color: context.background,
-      child: Scaffold(
-        appBar: AppBar(title: const Text('Add Entry')),
-        body: AddEntryBody(
-          accounts: _accounts,
-          creditAccount: _creditAccount,
-          dateTime: _dateTime,
-          debitAccount: _debitAccount,
-          entryAmount: _entryAmount,
-          entryNotes: _entryNotes,
-          formState: _formState,
-          onCreditAccountSelected: _onCreditAccountSelected,
-          onDateTimeChanged: _onDateTimeChanged,
-          onDebitAccountSelected: _onDebitAccountSelected,
-          addNewRoute: RoutesName.addAccount.name,
-          routeArg: _fetchAccounts,
-        ),
-        bottomNavigationBar: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: AppBigButton(
-            onPressed: () {
-              _submitForm();
-            },
-            title: "Add",
-          ),
+    return Scaffold(
+      appBar: AppBar(title: const Text('Add Entry')),
+      body: AddEntryBody(
+        accounts: _accounts,
+        creditAccount: _creditAccount,
+        dateTime: _dateTime,
+        debitAccount: _debitAccount,
+        entryAmount: _entryAmount,
+        entryNotes: _entryNotes,
+        formState: _formState,
+        onCreditAccountSelected: _onCreditAccountSelected,
+        onDateTimeChanged: _onDateTimeChanged,
+        onDebitAccountSelected: _onDebitAccountSelected,
+        addNewRoute: RoutesName.addAccount.name,
+        routeArg: _fetchAccounts,
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: AppBigButton(
+          onPressed: () {
+            _submitForm();
+          },
+          title: "Add",
         ),
       ),
     );
