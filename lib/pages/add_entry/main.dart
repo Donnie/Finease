@@ -11,9 +11,9 @@ class AddEntryScreen extends StatefulWidget {
   final Function onFormSubmitted;
 
   const AddEntryScreen({
-    Key? key,
+    super.key,
     required this.onFormSubmitted,
-  }) : super(key: key);
+  });
 
   @override
   AddEntryScreenState createState() => AddEntryScreenState();

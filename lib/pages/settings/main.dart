@@ -17,27 +17,27 @@ class SettingsPage extends StatelessWidget {
       color: Colors.transparent,
       child: Scaffold(
         appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(toolbarHeight),
-        child: SafeArea(
-          top: true,
-          child: Container(
-            margin: const EdgeInsets.only(top: 8, bottom: 8),
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(32),
-              clipBehavior: Clip.antiAlias,
-              child: AppBar(
-                backgroundColor: context.secondaryContainer.withOpacity(0.5),
-                scrolledUnderElevation: 0,
-                title: Text(
-                  "Settings",
-                  style: context.titleMedium,
+          preferredSize: const Size.fromHeight(toolbarHeight),
+          child: SafeArea(
+            top: true,
+            child: Container(
+              margin: const EdgeInsets.only(top: 8, bottom: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(32),
+                clipBehavior: Clip.antiAlias,
+                child: AppBar(
+                  backgroundColor: context.secondaryContainer.withOpacity(0.5),
+                  scrolledUnderElevation: 0,
+                  title: Text(
+                    "Settings",
+                    style: context.titleMedium,
+                  ),
                 ),
               ),
             ),
           ),
         ),
-      ),
         body: ListView(
           padding: EdgeInsets.zero,
           shrinkWrap: true,

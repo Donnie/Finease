@@ -14,7 +14,7 @@ class AccountService {
   AccountService({DatabaseHelper? databaseHelper})
       : _databaseHelper = databaseHelper ?? DatabaseHelper();
 
-  Future<Account?> createAccount(Account account) async {
+  Future<Account> createAccount(Account account) async {
     final dbClient = await _databaseHelper.db;
     double balance = account.balance;
     account.balance = 0;
@@ -28,7 +28,7 @@ class AccountService {
     return account;
   }
 
-  Future<Account?> createForexAccountIfNotExist(
+  Future<Account> createForexAccountIfNotExist(
     String currency, {
     double balance = 0,
     bool liquid = true,

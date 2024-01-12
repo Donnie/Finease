@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:finease/core/common.dart';
 
 class FeatureList extends StatelessWidget {
-  const FeatureList({Key? key}) : super(key: key);
+  const FeatureList({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class FeatureList extends StatelessWidget {
 class FeatureListItem extends StatelessWidget {
   final String title;
 
-  const FeatureListItem({Key? key, required this.title}) : super(key: key);
+  const FeatureListItem({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
