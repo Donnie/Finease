@@ -2,7 +2,9 @@ import 'package:finease/core/common.dart';
 import 'package:finease/pages/home/frame/destinations.dart';
 import 'package:finease/parts/export.dart';
 import 'package:finease/parts/user_widget.dart';
+import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class HomePageTablet extends StatefulWidget {
@@ -53,13 +55,18 @@ class HomePageTabletState extends State<HomePageTablet> {
                   selectedIcon: e.selectedIcon,
                   label: Text(e.pageType.name),
                 )),
-            NavigationRailDestination(
-              icon: Icon(MdiIcons.cog),
-              label: Text(
-                language["settings"],
-              ),
-            )
           ],
+          trailing: Column(children: [
+            IconButton(
+              onPressed: () => context.pushNamed(RoutesName.settings.name),
+              icon: Icon(MdiIcons.cog),
+              color: context.onSurface.withOpacity(0.75),
+            ),
+            Text(
+              "Settings",
+              style: TextStyle(color: context.onSurface.withOpacity(0.75)),
+            ),
+          ]),
         ),
         VerticalDivider(
           thickness: 1,

@@ -29,10 +29,7 @@ class SettingsPage extends StatelessWidget {
                 child: AppBar(
                   backgroundColor: context.secondaryContainer.withOpacity(0.5),
                   scrolledUnderElevation: 0,
-                  title: Text(
-                    "Settings",
-                    style: context.titleMedium,
-                  ),
+                  title: Text("settings", style: context.titleMedium),
                 ),
               ),
             ),
