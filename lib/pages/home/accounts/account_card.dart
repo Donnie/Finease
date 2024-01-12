@@ -1,56 +1,79 @@
 import 'package:finease/core/extensions/color_extension.dart';
+import 'package:finease/core/extensions/text_style_extension.dart';
 import 'package:finease/db/accounts.dart';
 import 'package:finease/db/currency.dart';
-import 'package:finease/parts/card.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-class AccountWidget extends StatelessWidget {
-  const AccountWidget({
-    super.key,
-    required this.account,
-  });
-
+class BankAccountCard extends StatelessWidget {
   final Account account;
+
+  const BankAccountCard({super.key, required this.account});
 
   @override
   Widget build(BuildContext context) {
     final String symbol = SupportedCurrency[account.currency]!;
     final bool green =
         [AccountType.asset, AccountType.income].contains(account.type);
-
-    return AppCard(
-      elevation: 0,
-      color: context.primaryContainer,
-      child: Padding(
-        padding: const EdgeInsets.all(8),
+    
+    return Card(
+      elevation: 4.0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      child: Container(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: Icon(
-                green ? MdiIcons.arrowBottomLeft : MdiIcons.arrowTopRight,
-                color: green ? Colors.green : Colors.red,
-              ),
-              title: Text(
-                account.name,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              trailing: Icon(
-                account.liquid ? Icons.invert_colors : Icons.invert_colors_off,
-              ),
+          children: <Widget>[
+            Flex(
+              direction: Axis.horizontal,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(account.name),
+                Row(
+                  children: [
+                    Icon(
+                      green ? MdiIcons.arrowBottomLeft : MdiIcons.arrowTopRight,
+                      color: green ? Colors.green : Colors.red,
+                    ),
+                    const SizedBox(width: 16),
+                    Text(account.currency),
+                  ],
+                )
+              ],
             ),
-            Divider(color: green ? Colors.green : Colors.red),
-            Flexible(
-              child: Text(
-                '$symbol ${account.balance}',
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
+            const SizedBox(height: 16.0),
+            Flex(
+              direction: Axis.horizontal,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "$symbol ${account.balance.toStringAsFixed(2)}",
+                  style: context.titleLarge,
+                ),
+                Row(
+                  children: [
+                    Chip(
+                      label: Text(account.type.name),
+                      backgroundColor: context.secondaryContainer.withOpacity(0.5),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(28),
+                        side: BorderSide(
+                          width: 1,
+                          color: context.primary,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16.0),
+                    Icon(
+                      account.liquid
+                          ? Icons.invert_colors
+                          : Icons.invert_colors_off,
+                    ),
+                  ],
+                ),
+              ],
             ),
           ],
         ),
