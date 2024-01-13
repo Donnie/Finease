@@ -104,7 +104,7 @@ class AddEntryBodyState extends State<AddEntryBody> {
             ),
             const SizedBox(height: 16),
             AccountChoiceFormField(
-              key: ValueKey(widget.debitAccount),
+              key: UniqueKey(),
               title: "From Account",
               accounts: widget.accounts,
               selectedAccount: widget.debitAccount,
@@ -122,7 +122,7 @@ class AddEntryBodyState extends State<AddEntryBody> {
             ),
             const SizedBox(height: 16),
             AccountChoiceFormField(
-              key: ValueKey(widget.creditAccount),
+              key: UniqueKey(),
               title: "To Account",
               accounts: widget.accounts,
               selectedAccount: widget.creditAccount,

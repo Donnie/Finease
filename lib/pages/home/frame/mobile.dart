@@ -4,6 +4,7 @@ import 'package:finease/pages/home/frame/destinations.dart';
 import 'package:flutter/material.dart';
 
 final GlobalKey<ScaffoldState> _scaffoldStateKey = GlobalKey<ScaffoldState>();
+
 class HomePageMobile extends StatefulWidget {
   const HomePageMobile({
     super.key,

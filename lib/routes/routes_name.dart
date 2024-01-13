@@ -3,6 +3,7 @@ enum RoutesName {
   addName,
   setupAccounts,
   addAccount,
+  editAccount,
   addEntry,
   home,
   settings,
@@ -11,4 +12,6 @@ enum RoutesName {
 extension RoutesNameHelper on RoutesName {
   String get name => toString().split('.').last;
   String get path => '/$name';
+  String get param => 'id';
+  String get pathWparam => '$path/:$param';
 }

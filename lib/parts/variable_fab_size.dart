@@ -16,7 +16,7 @@ class VariableFABSize extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScreenTypeLayout.builder(
       tablet: (context) {
-        return FloatingActionButton(
+        return FloatingActionButton.large(
           backgroundColor: context.secondaryContainer,
           onPressed: onPressed,
           child: Icon(

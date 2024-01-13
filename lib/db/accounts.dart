@@ -20,7 +20,9 @@ class AccountService {
     account.balance = 0;
     final id = await dbClient.insert(Accounts, account.toJson());
     account.id = id;
-    if (account.currency == 'EUR') {
+    String prefCurrency =
+        await _settingService.getSetting(Setting.prefCurrency);
+    if (account.currency == prefCurrency) {
       await EntryService().adjustFirstBalance(id, balance);
     } else {
       await EntryService().adjustFirstForexBalance(id, balance);
