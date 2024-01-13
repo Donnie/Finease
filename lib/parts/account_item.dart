@@ -1,6 +1,7 @@
 import 'package:finease/core/common.dart';
 import 'package:finease/db/accounts.dart';
 import 'package:finease/parts/card.dart';
+import 'package:finease/parts/pill_chip.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -82,4 +83,53 @@ class AccountItemWidget extends StatelessWidget {
       ),
     );
   }
+}
+
+class AccountTypeSelectionFormField extends FormField<AccountType> {
+  AccountTypeSelectionFormField({
+    super.key,
+    FormFieldSetter<AccountType>? onChanged,
+    AccountType initialValue = AccountType.asset,
+  }) : super(
+          initialValue: AccountType.asset,
+          builder: (FormFieldState<AccountType> state) {
+            return Padding(
+              padding: const EdgeInsets.all(8),
+              child: Row(
+                children: AccountType.values.map((type) {
+                  final isSelected = state.value == type;
+                  return AppPillChip(
+                    isSelected: isSelected,
+                    title: type.name,
+                    onPressed: () {
+                      state.didChange(type);
+                      onChanged?.call(type);
+                    },
+                  );
+                }).toList(),
+              ),
+            );
+          },
+        );
+}
+
+class SwitchFormField extends FormField<bool> {
+  SwitchFormField({
+    super.key,
+    Widget? title,
+    ValueChanged<bool>? onChanged,
+    bool initialValue = true,
+  }) : super(
+          builder: (FormFieldState<bool> state) {
+            final value = state.value ?? initialValue;
+            return SwitchListTile(
+              title: title,
+              value: value,
+              onChanged: (bool newValue) {
+                state.didChange(newValue);
+                onChanged?.call(newValue);
+              },
+            );
+          },
+        );
 }

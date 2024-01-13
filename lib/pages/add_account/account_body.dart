@@ -1,8 +1,8 @@
 import 'package:currency_picker/currency_picker.dart';
 import 'package:finease/db/accounts.dart';
 import 'package:finease/db/currency.dart';
+import 'package:finease/parts/account_item.dart';
 import 'package:finease/parts/export.dart';
-import 'package:finease/parts/pill_chip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -142,53 +142,4 @@ class AddAccountBodyState extends State<AddAccountBody> {
       ),
     );
   }
-}
-
-class AccountTypeSelectionFormField extends FormField<AccountType> {
-  AccountTypeSelectionFormField({
-    super.key,
-    FormFieldSetter<AccountType>? onChanged,
-    AccountType initialValue = AccountType.asset,
-  }) : super(
-          initialValue: AccountType.asset,
-          builder: (FormFieldState<AccountType> state) {
-            return Padding(
-              padding: const EdgeInsets.all(8),
-              child: Row(
-                children: AccountType.values.map((type) {
-                  final isSelected = state.value == type;
-                  return AppPillChip(
-                    isSelected: isSelected,
-                    title: type.name,
-                    onPressed: () {
-                      state.didChange(type);
-                      onChanged?.call(type);
-                    },
-                  );
-                }).toList(),
-              ),
-            );
-          },
-        );
-}
-
-class SwitchFormField extends FormField<bool> {
-  SwitchFormField({
-    super.key,
-    Widget? title,
-    ValueChanged<bool>? onChanged,
-    bool super.initialValue = true,
-  }) : super(
-          builder: (FormFieldState<bool> state) {
-            final value = state.value ?? initialValue;
-            return SwitchListTile(
-              title: title,
-              value: value,
-              onChanged: (bool newValue) {
-                state.didChange(newValue);
-                onChanged?.call(newValue);
-              },
-            );
-          },
-        );
 }
