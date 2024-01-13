@@ -35,7 +35,10 @@ class _AccountsPageState extends State<AccountsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BankAccounts(accounts: accounts),
+      body: BankAccounts(
+        accounts: accounts,
+        onEdit: loadAccounts,
+      ),
       floatingActionButton: VariableFABSize(
         onPressed: () async {
           await context.pushNamed(

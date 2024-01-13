@@ -11,9 +11,11 @@ class BankAccounts extends StatelessWidget {
   const BankAccounts({
     super.key,
     required this.accounts,
+    required this.onEdit,
   });
 
   final List<Account> accounts;
+  final Future<void> Function() onEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +41,7 @@ class BankAccounts extends StatelessWidget {
             onTap: () => context.pushNamed(
               RoutesName.editAccount.name,
               pathParameters: {'id': a.id.toString()},
+              extra: onEdit,
             ),
           ),
         ),
@@ -55,6 +58,7 @@ class BankAccounts extends StatelessWidget {
                   onTap: () => context.pushNamed(
                     RoutesName.editAccount.name,
                     pathParameters: {'id': a.id.toString()},
+                    extra: onEdit,
                   ),
                 ),
               ),

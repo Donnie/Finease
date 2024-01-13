@@ -61,7 +61,12 @@ final GoRouter goRouter = GoRouter(
         final int accountID = int.parse(
           state.pathParameters[RoutesName.editAccount.param]!,
         );
-        return EditAccountScreen(accountID: accountID);
+        dynamic Function() onFormSubmitted =
+            state.extra as dynamic Function();
+        return EditAccountScreen(
+          accountID: accountID,
+          onFormSubmitted: onFormSubmitted,
+        );
       },
     ),
     GoRoute(
