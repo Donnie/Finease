@@ -66,9 +66,7 @@ class AddEntryScreenState extends State<AddEntryScreen> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: AppBigButton(
-            onPressed: () {
-              _submitForm();
-            },
+            onPressed: _submitForm,
             title: "Add",
           ),
         ),

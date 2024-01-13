@@ -44,10 +44,7 @@ class AddAccountScreenState extends State<AddAccountScreen> {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: AppBigButton(
-              onPressed: () {
-                _submitForm();
-                context.pop();
-              },
+              onPressed: _submitForm,
               title: "Add",
             ),
           ),
@@ -75,6 +72,7 @@ class AddAccountScreenState extends State<AddAccountScreen> {
 
     if (_formState.currentState?.validate() ?? false) {
       _formState.currentState?.save();
+      context.pop();
       Account account = Account(
         name: accountName,
         currency: accountCurrency,
