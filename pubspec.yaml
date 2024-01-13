@@ -20,6 +20,7 @@ dependencies:
   package_info_plus: 5.0.1
   path_provider: 2.1.2
   responsive_builder: 0.7.0
+  share_plus: 7.0.2
   sqflite: 2.3.0
   xml: 6.5.0
 

@@ -18,6 +18,10 @@ class DatabaseHelper {
     return "${documentDirectory.path}/$_databaseName";
   }
 
+  Future<String> getDatabasePath() async {
+    return await _databasePath;
+  }
+
   Future<Database> get db async {
     if (_db != null) {
       return _db!;

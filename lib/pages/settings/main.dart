@@ -1,3 +1,4 @@
+import 'package:finease/pages/settings/export_db.dart';
 import 'package:finease/pages/settings/reset_app.dart';
 import 'package:finease/pages/settings/settings_group_card.dart';
 import 'package:finease/pages/settings/version_widget.dart';
@@ -42,6 +43,7 @@ class SettingsPage extends StatelessWidget {
             SettingsGroup(
               title: language["devInfo"],
               options: const [
+                ExportDatabaseWidget(),
                 VersionWidget(),
                 ResetAppWidget(),
               ],
