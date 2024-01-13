@@ -162,9 +162,7 @@ class AccountTypeSelectionFormField extends FormField<AccountType> {
                     title: type.name,
                     onPressed: () {
                       state.didChange(type);
-                      if (onChanged != null) {
-                        onChanged(type);
-                      }
+                      onChanged?.call(type);
                     },
                   );
                 }).toList(),

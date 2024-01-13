@@ -32,7 +32,7 @@ class AddAccountScreenState extends State<AddAccountScreen> {
       color: context.background,
       child: Scaffold(
         appBar: AppBar(title: const Text('Add Account')),
-        body: AddAccountForm(
+        body: AddAccountBody(
           formState: _formState,
           accountName: _accountName,
           accountBalance: _accountBalance,
@@ -40,21 +40,17 @@ class AddAccountScreenState extends State<AddAccountScreen> {
           onAccountType: _accountType,
           onLiquidAssetsSaved: _accountLiquid,
         ),
-        bottomNavigationBar: _buildBottomBar(),
-      ),
-    );
-  }
-
-  Widget _buildBottomBar() {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: AppBigButton(
-          onPressed: () {
-            _submitForm();
-            context.pop();
-          },
-          title: "Add",
+        bottomNavigationBar: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: AppBigButton(
+              onPressed: () {
+                _submitForm();
+                context.pop();
+              },
+              title: "Add",
+            ),
+          ),
         ),
       ),
     );
@@ -77,49 +73,17 @@ class AddAccountScreenState extends State<AddAccountScreen> {
     String accountCurrency = _accountCurrency.text;
     double balance = double.tryParse(_accountBalance.text) ?? 0;
 
-    Account account = Account(
-      name: accountName,
-      currency: accountCurrency,
-      balance: balance,
-      liquid: accountLiquid,
-      type: accountType,
-    );
-
     if (_formState.currentState?.validate() ?? false) {
       _formState.currentState?.save();
+      Account account = Account(
+        name: accountName,
+        currency: accountCurrency,
+        balance: balance,
+        liquid: accountLiquid,
+        type: accountType,
+      );
       account = await _accountService.createAccount(account);
+      widget.onFormSubmitted(account);
     }
-    widget.onFormSubmitted(account);
-  }
-}
-
-class AddAccountForm extends StatelessWidget {
-  final GlobalKey<FormState> formState;
-  final TextEditingController accountName;
-  final TextEditingController accountBalance;
-  final TextEditingController accountCurrency;
-  final Function(AccountType) onAccountType;
-  final Function(bool) onLiquidAssetsSaved;
-
-  const AddAccountForm({
-    super.key,
-    required this.formState,
-    required this.accountName,
-    required this.accountBalance,
-    required this.accountCurrency,
-    required this.onAccountType,
-    required this.onLiquidAssetsSaved,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return AddAccountBody(
-      formState: formState,
-      accountName: accountName,
-      accountBalance: accountBalance,
-      accountCurrency: accountCurrency,
-      onAccountType: onAccountType,
-      onLiquidAssetsSaved: onLiquidAssetsSaved,
-    );
   }
 }

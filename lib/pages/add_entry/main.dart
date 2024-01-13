@@ -62,13 +62,15 @@ class AddEntryScreenState extends State<AddEntryScreen> {
         addNewRoute: RoutesName.addAccount.name,
         routeArg: _fetchAccounts,
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: AppBigButton(
-          onPressed: () {
-            _submitForm();
-          },
-          title: "Add",
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: AppBigButton(
+            onPressed: () {
+              _submitForm();
+            },
+            title: "Add",
+          ),
         ),
       ),
     );
