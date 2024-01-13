@@ -2,7 +2,9 @@ import 'package:finease/core/extensions/color_extension.dart';
 import 'package:finease/core/extensions/text_style_extension.dart';
 import 'package:finease/db/accounts.dart';
 import 'package:finease/db/currency.dart';
+import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class BankAccounts extends StatelessWidget {
@@ -31,7 +33,15 @@ class BankAccounts extends StatelessWidget {
 
     return ListView(
       children: [
-        ...mainAccounts.map((a) => BankAccountCard(account: a)),
+        ...mainAccounts.map(
+          (a) => BankAccountCardClickable(
+            account: a,
+            onTap: () => context.pushNamed(
+              RoutesName.editAccount.name,
+              pathParameters: {'id': a.id.toString()},
+            ),
+          ),
+        ),
         const Divider(),
         Padding(
           padding: const EdgeInsets.all(16.0),
@@ -40,19 +50,11 @@ class BankAccounts extends StatelessWidget {
             runSpacing: 12.0,
             children: [
               ...extAccounts.map(
-                (account) => Chip(
-                  padding: const EdgeInsets.all(12.0),
-                  avatar: Text(
-                    SupportedCurrency[account.currency]!,
-                    style: context.bodyLarge,
-                  ),
-                  label: Text(account.name, style: context.bodyLarge),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(28),
-                    side: BorderSide(
-                      width: 1,
-                      color: context.primary,
-                    ),
+                (a) => BankAccountChipClickable(
+                  account: a,
+                  onTap: () => context.pushNamed(
+                    RoutesName.editAccount.name,
+                    pathParameters: {'id': a.id.toString()},
                   ),
                 ),
               ),
@@ -64,10 +66,32 @@ class BankAccounts extends StatelessWidget {
   }
 }
 
+class BankAccountCardClickable extends StatelessWidget {
+  final Account account;
+  final VoidCallback? onTap;
+
+  const BankAccountCardClickable({
+    super.key,
+    required this.account,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: BankAccountCard(account: account),
+    );
+  }
+}
+
 class BankAccountCard extends StatelessWidget {
   final Account account;
 
-  const BankAccountCard({super.key, required this.account});
+  const BankAccountCard({
+    super.key,
+    required this.account,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -136,6 +160,53 @@ class BankAccountCard extends StatelessWidget {
               ],
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class BankAccountChipClickable extends StatelessWidget {
+  final Account account;
+  final VoidCallback? onTap;
+
+  const BankAccountChipClickable({
+    super.key,
+    required this.account,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: BankAccountChip(account: account),
+    );
+  }
+}
+
+class BankAccountChip extends StatelessWidget {
+  final Account account;
+
+  const BankAccountChip({
+    super.key,
+    required this.account,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Chip(
+      padding: const EdgeInsets.all(12.0),
+      avatar: Text(
+        SupportedCurrency[account.currency]!,
+        style: context.bodyLarge,
+      ),
+      label: Text(account.name, style: context.bodyLarge),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(28),
+        side: BorderSide(
+          width: 1,
+          color: context.primary,
         ),
       ),
     );
