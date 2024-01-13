@@ -31,7 +31,7 @@ class AddAccountScreenState extends State<AddAccountScreen> {
     return AppAnnotatedRegionWidget(
       color: context.background,
       child: Scaffold(
-        appBar: AppBar(title: const Text('Add Account')),
+        appBar: AppBar(title: const Text('add Account')),
         body: AddAccountBody(
           formState: _formState,
           accountName: _accountName,
