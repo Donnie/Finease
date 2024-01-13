@@ -81,14 +81,4 @@ Future<void> aInitialMigration(Database db) async {
       value TEXT NOT NULL
     )
   ''');
-
-  await db.execute('''
-    INSERT INTO Accounts (currency, liquid, hidden, name, type)
-    VALUES ('EUR', 1, 1, 'Past', 'income');
-  ''');
-
-  await db.execute('''
-    INSERT INTO Settings (key, value)
-    VALUES ('pastAccount', '1');
-  ''');
 }

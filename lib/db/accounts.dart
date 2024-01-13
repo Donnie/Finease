@@ -20,12 +20,20 @@ class AccountService {
     account.balance = 0;
     final id = await dbClient.insert(Accounts, account.toJson());
     account.id = id;
+
+    if (balance == 0) {
+      return account;
+    }
+
+    // adjustments for new account with non zero balance
     String prefCurrency =
         await _settingService.getSetting(Setting.prefCurrency);
+    String pastAccount = await _settingService.getSetting(Setting.pastAccount);
+    int pastAccountId = int.parse(pastAccount);
     if (account.currency == prefCurrency) {
-      await EntryService().adjustFirstBalance(id, balance);
+      await EntryService().adjustFirstBalance(id, pastAccountId, balance);
     } else {
-      await EntryService().adjustFirstForexBalance(id, balance);
+      await EntryService().adjustFirstForexBalance(id, pastAccountId, balance);
     }
     return account;
   }

@@ -105,15 +105,15 @@ class EntryService {
     );
   }
 
-  Future adjustFirstBalance(int accountId, double balance) async {
+  Future adjustFirstBalance(int toAccountId, int fromAccountId, double balance) async {
     if (balance == 0) {
       return;
     }
 
     final dbClient = await _databaseHelper.db;
     Entry entry = Entry(
-      debitAccountId: 1,
-      creditAccountId: accountId,
+      debitAccountId: fromAccountId,
+      creditAccountId: toAccountId,
       amount: balance,
       notes: "Carry In By App",
     );
@@ -121,14 +121,14 @@ class EntryService {
     await dbClient.insert('Entries', entry.toJson());
   }
 
-  Future adjustFirstForexBalance(int accountId, double balance) async {
+  Future adjustFirstForexBalance(int toAccountId, int fromAccountId, double balance) async {
     if (balance == 0) {
       return;
     }
 
     Entry entry = Entry(
-      debitAccountId: 1,
-      creditAccountId: accountId,
+      debitAccountId: fromAccountId,
+      creditAccountId: toAccountId,
       amount: balance,
       notes: "Carry In By App",
     );
