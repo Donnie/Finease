@@ -1,6 +1,7 @@
 import 'package:finease/db/currency.dart';
 import 'package:finease/db/entries.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class EntryCard extends StatelessWidget {
@@ -18,16 +19,16 @@ class EntryCard extends StatelessWidget {
     final String symbol = SupportedCurrency[entry.creditAccount!.currency]!;
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Entry ID: ${entry.id}', style: const TextStyle(fontSize: 12)),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Debit Account: ${entry.debitAccount!.name}'),
-                Text('Credit Account: ${entry.creditAccount!.name}'),
+                Text('From: ${entry.debitAccount!.name}'),
+                Text(getFormattedDate(entry.date!)),
+                Text('To: ${entry.creditAccount!.name}'),
               ],
             ),
             Flex(
@@ -37,20 +38,15 @@ class EntryCard extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Align(
-                      alignment: Alignment.bottomLeft,
-                      child: Text(
-                        'Amount: $symbol ${entry.amount}',
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    Text(
+                      '$symbol ${entry.amount}',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Text('Date: ${entry.date}'),
-                    const SizedBox(height: 4),
                     Text(
-                      'Notes: ${entry.notes}',
+                      entry.notes!,
                       style: const TextStyle(
                         fontSize: 14,
                         fontStyle: FontStyle.italic,
@@ -60,7 +56,7 @@ class EntryCard extends StatelessWidget {
                 ),
                 InkWell(
                   onTap: () async {
-                    final bool? confirm = await showDialog(
+                    final bool confirm = await showDialog(
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
@@ -81,23 +77,43 @@ class EntryCard extends StatelessWidget {
                       },
                     );
 
-                    if (confirm == true) {
+                    if (confirm) {
                       onDelete?.call(entry.id!);
                     }
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 12,
+                      horizontal: 12,
+                      vertical: 0,
                     ),
                     child: Icon(MdiIcons.delete),
                   ),
                 )
               ],
-            )
+            ),
           ],
         ),
       ),
     );
+  }
+}
+
+String getFormattedDate(DateTime entryDate) {
+  final now = DateTime.now();
+  final difference = now.difference(entryDate);
+
+  if (difference.inDays < 1) {
+    // Less than a day
+    if (difference.inHours < 1) {
+      // Less than a day
+      return 'moments ago';
+    }
+    return '${difference.inHours} hours ago';
+  } else if (difference.inDays < 7) {
+    // Less than a week
+    return '${difference.inDays} days ago';
+  } else {
+    // More than a week - show absolute time
+    return DateFormat('yyyy-MM-dd HH:mm').format(entryDate);
   }
 }
