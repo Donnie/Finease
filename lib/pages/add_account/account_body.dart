@@ -42,13 +42,14 @@ class AddAccountBodyState extends State<AddAccountBody> {
           children: [
             AccountTypeSelectionFormField(
               key: const Key('account_type'),
-              onSaved: (AccountType? value) =>
-                  widget.onAccountType?.call(value!),
-              onChanged: (AccountType? value) => setState(() {
-                _trackBalance =
-                    [AccountType.asset, AccountType.liability].contains(value);
-                _isLiability = [AccountType.liability].contains(value);
-              }),
+              onChanged: (AccountType? value) {
+                widget.onAccountType?.call(value!);
+                setState(() {
+                  _trackBalance = [AccountType.asset, AccountType.liability]
+                      .contains(value);
+                  _isLiability = [AccountType.liability].contains(value);
+                });
+              },
             ),
             Visibility(
               visible: _trackBalance,
@@ -58,7 +59,7 @@ class AddAccountBodyState extends State<AddAccountBody> {
                   SwitchFormField(
                     key: const Key('account_liquidity'),
                     title: const Text('Liquid Assets'),
-                    onSaved: (bool? value) =>
+                    onChanged: (bool? value) =>
                         widget.onLiquidAssetsSaved?.call(value!),
                   ),
                 ],
@@ -87,7 +88,7 @@ class AddAccountBodyState extends State<AddAccountBody> {
                   Visibility(
                     visible: _isLiability,
                     child: const ListTile(
-                      title: Text("Liabilities should be accounted in negative"),
+                      title: Text("Liabilities should be input in negative"),
                     ),
                   ),
                   AppTextFormField(
@@ -146,7 +147,6 @@ class AddAccountBodyState extends State<AddAccountBody> {
 class AccountTypeSelectionFormField extends FormField<AccountType> {
   AccountTypeSelectionFormField({
     super.key,
-    super.onSaved,
     FormFieldSetter<AccountType>? onChanged,
     AccountType initialValue = AccountType.asset,
   }) : super(
@@ -176,7 +176,6 @@ class SwitchFormField extends FormField<bool> {
   SwitchFormField({
     super.key,
     Widget? title,
-    super.onSaved,
     ValueChanged<bool>? onChanged,
     bool super.initialValue = true,
   }) : super(
@@ -187,9 +186,7 @@ class SwitchFormField extends FormField<bool> {
               value: value,
               onChanged: (bool newValue) {
                 state.didChange(newValue);
-                if (onChanged != null) {
-                  onChanged(newValue);
-                }
+                onChanged?.call(newValue);
               },
             );
           },

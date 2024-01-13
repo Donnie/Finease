@@ -71,7 +71,6 @@ class AddAccountScreenState extends State<AddAccountScreen> {
     double balance = double.tryParse(_accountBalance.text) ?? 0;
 
     if (_formState.currentState?.validate() ?? false) {
-      _formState.currentState?.save();
       context.pop();
       Account account = Account(
         name: accountName,

@@ -46,7 +46,7 @@ class BankAccounts extends StatelessWidget {
                     SupportedCurrency[account.currency]!,
                     style: context.bodyLarge,
                   ),
-                  label: Text(account.name),
+                  label: Text(account.name, style: context.bodyLarge),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(28),
                     side: BorderSide(
