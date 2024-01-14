@@ -9,16 +9,16 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-class AddNamePage extends StatefulWidget {
-  const AddNamePage({
+class AddInfoPage extends StatefulWidget {
+  const AddInfoPage({
     super.key,
   });
 
   @override
-  State<AddNamePage> createState() => _AddNamePageState();
+  State<AddInfoPage> createState() => _AddInfoPageState();
 }
 
-class _AddNamePageState extends State<AddNamePage> {
+class _AddInfoPageState extends State<AddInfoPage> {
   final GlobalKey<FormState> _formState = GlobalKey<FormState>();
   final TextEditingController _name = TextEditingController();
   final TextEditingController _currency = TextEditingController();
@@ -110,7 +110,7 @@ class _AddNamePageState extends State<AddNamePage> {
         body: IndexedStack(
           children: [
             Center(
-              child: IntroSetNameWidget(
+              child: AddInfoBody(
                 formState: _formState,
                 name: _name,
                 currency: _currency,

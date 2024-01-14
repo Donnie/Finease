@@ -66,7 +66,7 @@ class HomePageTabletState extends State<HomePageTablet> {
               color: context.onSurface.withOpacity(0.75),
             ),
             Text(
-              "Settings",
+              "settings",
               style: TextStyle(color: context.onSurface.withOpacity(0.75)),
             ),
           ]),

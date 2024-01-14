@@ -2,18 +2,14 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:finease/routes/routes.dart';
 import 'package:finease/core/constants/constants.dart';
 import 'package:finease/core/theme/app_theme.dart';
-import 'package:finease/db/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MainApp extends StatefulWidget {
   const MainApp({
-    super.key,
-    required this.settings,
+    super.key
   });
-
-  final Settings settings;
 
   @override
   State<MainApp> createState() => _MainAppState();
@@ -25,7 +21,7 @@ class _MainAppState extends State<MainApp> {
 
   @override
   Widget build(BuildContext context) {
-    const ThemeMode themeMode = ThemeMode.dark;
+    const ThemeMode themeMode = ThemeMode.system;
     const int color = 0xFF795548;
     const Color primaryColor = Color(color);
     const Locale locale = Locale('en');

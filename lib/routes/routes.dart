@@ -28,7 +28,7 @@ final GoRouter goRouter = GoRouter(
       name: RoutesName.addName.name,
       path: RoutesName.addName.path,
       builder: (BuildContext context, GoRouterState state) {
-        return const AddNamePage();
+        return const AddInfoPage();
       },
     ),
     GoRoute(
