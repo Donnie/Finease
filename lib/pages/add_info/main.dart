@@ -46,7 +46,6 @@ class _AddInfoPageState extends State<AddInfoPage> {
     if (_formState.currentState!.validate()) {
       context.go(RoutesName.setupAccounts.path);
       await _settingService.setSetting(Setting.userName, _name.text);
-      await _settingService.setSetting(Setting.prefCurrency, _currency.text);
       Account account = await _accountService.createAccount(Account(
         balance: 0,
         currency: _currency.text,
@@ -87,7 +86,11 @@ class _AddInfoPageState extends State<AddInfoPage> {
               const Spacer(),
               FloatingActionButton.extended(
                 heroTag: 'next',
-                onPressed: () {
+                onPressed: () async {
+                  // to avoid race condition with next page
+                  // next page needs the currency
+                  await _settingService.setSetting(
+                      Setting.prefCurrency, _currency.text);
                   saveForm();
                 },
                 extendedPadding: const EdgeInsets.symmetric(horizontal: 24),
