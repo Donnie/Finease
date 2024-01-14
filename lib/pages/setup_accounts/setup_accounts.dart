@@ -1,8 +1,7 @@
 import 'package:finease/core/common.dart';
 import 'package:finease/db/accounts.dart';
 import 'package:finease/db/settings.dart';
-import 'package:finease/pages/setup_accounts/default_account.dart';
-import 'package:finease/pages/setup_accounts/widgets.dart';
+import 'package:finease/pages/export.dart';
 import 'package:finease/parts/account_item.dart';
 import 'package:finease/parts/filled_card.dart';
 import 'package:finease/parts/intro_top.dart';

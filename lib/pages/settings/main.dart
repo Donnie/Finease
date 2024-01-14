@@ -1,13 +1,13 @@
-import 'package:finease/pages/settings/reset_app.dart';
-import 'package:finease/pages/settings/settings_group_card.dart';
-import 'package:finease/pages/settings/version_widget.dart';
+import 'package:finease/pages/export.dart';
 import 'package:finease/parts/export.dart';
 import 'package:flutter/material.dart';
 import 'package:finease/core/common.dart';
 
 class SettingsPage extends StatelessWidget {
+  final Function onFormSubmitted;
   const SettingsPage({
     super.key,
+    required this.onFormSubmitted,
   });
 
   @override
@@ -40,10 +40,17 @@ class SettingsPage extends StatelessWidget {
           shrinkWrap: true,
           children: [
             SettingsGroup(
-              title: language["devInfo"],
-              options: const [
+              title: "Database",
+              options: [
+                const ExportDatabaseWidget(),
+                ImportDatabaseWidget(onImport: onFormSubmitted),
+                const ResetAppWidget(),
+              ],
+            ),
+            const SettingsGroup(
+              title: "Dev Info",
+              options: [
                 VersionWidget(),
-                ResetAppWidget(),
               ],
             ),
             SafeArea(

@@ -18,16 +18,24 @@ class DatabaseHelper {
     return "${documentDirectory.path}/$_databaseName";
   }
 
+  Future<String> getDatabasePath() async {
+    return await _databasePath;
+  }
+
   Future<Database> get db async {
-    if (_db != null) {
-      return _db!;
-    }
-    _db = await initDb();
+    _db ??= await ensureDatabaseOpened();
     return _db!;
   }
 
-  Future<Database> initDb() async {
-    String path = await _databasePath;
+  Future<Database> ensureDatabaseOpened() async {
+    if (_db == null) {
+      String path = await _databasePath;
+      _db = await initDb(path);
+    }
+    return _db!;
+  }
+
+  Future<Database> initDb(String path) async {
     var ourDb = await openDatabase(
       path,
       version: 1,
@@ -54,12 +62,25 @@ class DatabaseHelper {
   Future<void> clearDatabase() async {
     var dbClient = await db;
     await dbClient.close(); // Close the database connection
-
     String path = await _databasePath;
 
     await deleteDatabase(path); // Delete the database file
-
     _db = null; // Reset the _db variable
-    await initDb(); // Reinitialize the database
+    await ensureDatabaseOpened(); // Reinitialize the database
+  }
+
+  Future<void> closeDatabase() async {
+    if (_db != null) {
+      await _db!.close();
+      _db = null;
+    }
+  }
+
+  Future<void> importNewDatabase(String newDbPath) async {
+    final currentDbPath = await getDatabasePath();
+    await clearDatabase();
+    await File(newDbPath).copy(currentDbPath);
+    await closeDatabase();
+    await ensureDatabaseOpened();
   }
 }

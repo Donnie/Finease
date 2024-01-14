@@ -1,5 +1,5 @@
 import 'package:finease/db/db.dart';
-import 'package:finease/pages/settings/setting_option.dart';
+import 'package:finease/pages/export.dart';
 import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 import 'package:finease/core/common.dart';

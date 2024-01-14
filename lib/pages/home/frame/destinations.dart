@@ -1,32 +1,20 @@
-import 'package:finease/pages/home/accounts/main.dart';
-import 'package:finease/pages/home/summary/main.dart';
-// import 'package:finease/pages/home/months/main.dart';
-import 'package:finease/pages/home/entries/main.dart';
+import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 List<Destination> destinations = [
   Destination(
-    pageType: PageType.home,
-    body: const SummaryPage(),
+    routeName: RoutesName.home,
     icon: const Icon(Icons.home_outlined),
     selectedIcon: const Icon(Icons.home),
   ),
   Destination(
-    body: const AccountsPage(),
-    pageType: PageType.accounts,
+    routeName: RoutesName.accounts,
     icon: const Icon(Icons.credit_card_outlined),
     selectedIcon: const Icon(Icons.credit_card),
   ),
-  // Destination(
-  //   body: const MonthsPage(),
-  //   pageType: PageType.months,
-  //   icon: Icon(MdiIcons.calendarMonthOutline),
-  //   selectedIcon: Icon(MdiIcons.calendarMonth),
-  // ),
   Destination(
-    body: const EntriesPage(),
-    pageType: PageType.transactions,
+    routeName: RoutesName.transactions,
     icon: Icon(MdiIcons.swapVerticalCircleOutline),
     selectedIcon: Icon(MdiIcons.swapVertical),
   ),
@@ -34,25 +22,12 @@ List<Destination> destinations = [
 
 class Destination {
   Destination({
-    required this.pageType,
+    required this.routeName,
     required this.icon,
     required this.selectedIcon,
-    required this.body,
   });
 
+  final RoutesName routeName;
   final Icon icon;
-  final PageType pageType;
   final Icon selectedIcon;
-  final Widget body;
-}
-
-enum PageType {
-  home,
-  accounts,
-  transactions,
-  // months,
-  ;
-
-  int get toIndex => index;
-  String get name => toString().split('.').last;
 }

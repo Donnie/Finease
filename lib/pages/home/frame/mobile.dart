@@ -1,45 +1,91 @@
-import 'package:finease/pages/home/frame/app_drawer.dart';
-import 'package:finease/pages/home/frame/app_top_bar.dart';
-import 'package:finease/pages/home/frame/destinations.dart';
+import 'package:finease/pages/export.dart';
+import 'package:finease/parts/export.dart';
+import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:finease/db/accounts.dart';
+import 'package:finease/db/settings.dart';
 
-final GlobalKey<ScaffoldState> _scaffoldStateKey = GlobalKey<ScaffoldState>();
-
-class HomePageMobile extends StatefulWidget {
-  const HomePageMobile({
-    super.key,
-  });
+class SummaryPage extends StatefulWidget {
+  const SummaryPage({super.key});
 
   @override
-  HomePageMobileState createState() => HomePageMobileState();
+  SummaryPageState createState() => SummaryPageState();
 }
 
-class HomePageMobileState extends State<HomePageMobile> {
+class SummaryPageState extends State<SummaryPage> {
+  final GlobalKey<ScaffoldState> _scaffoldStateKey = GlobalKey<ScaffoldState>();
+  final AccountService _accountService = AccountService();
+  final SettingService _settingService = SettingService();
+
   int destIndex = 0;
+  double networthAmount = 0.0;
+  double assetAmount = 0.0;
+  double liabilitiesAmount = 0.0;
+  double liquidAmount = 0.0;
+  String currency = "USD";
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchNetWorth();
+  }
+
+  Future<void> _fetchNetWorth() async {
+    String prefCurrency =
+        await _settingService.getSetting(Setting.prefCurrency);
+    double asset =
+        await _accountService.getTotalBalance(type: AccountType.asset);
+    double liabilities =
+        await _accountService.getTotalBalance(type: AccountType.liability);
+    double liquid = await _accountService.getTotalBalance(liquid: true);
+    setState(() {
+      currency = prefCurrency;
+      networthAmount = asset - liabilities;
+      liabilitiesAmount = liabilities;
+      assetAmount = asset;
+      liquidAmount = liquid;
+    });
+  }
 
   void _updateBody(int index) {
     setState(() {
       destIndex = index;
     });
+    context.goNamed(
+      destinations[destIndex].routeName.name,
+      extra: () => {},
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    const double toolbarHeight = kToolbarHeight + 8;
     return Scaffold(
       key: _scaffoldStateKey,
       resizeToAvoidBottomInset: true,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(toolbarHeight),
-        child: TopBar(title: destinations[destIndex].pageType.name),
+      appBar: appBar(
+        context,
+        "home",
       ),
       drawer: AppDrawer(
+        onRefresh: _fetchNetWorth,
         scaffoldKey: _scaffoldStateKey,
         selectedIndex: destIndex,
         destinations: destinations,
         onDestinationSelected: _updateBody,
       ),
-      body: destinations[destIndex].body,
+      body: SummaryBody(
+        networthAmount: networthAmount,
+        assetAmount: assetAmount,
+        liabilitiesAmount: liabilitiesAmount,
+        liquidAmount: liquidAmount,
+        currency: currency,
+      ),
+      floatingActionButton: VariableFABSize(
+        onPressed: () =>
+            context.pushNamed(RoutesName.addEntry.name, extra: _fetchNetWorth),
+        icon: Icons.add,
+      ),
     );
   }
 }

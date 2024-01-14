@@ -1,4 +1,5 @@
 import 'package:currency_picker/currency_picker.dart';
+import 'package:finease/core/extensions/color_extension.dart';
 import 'package:finease/db/accounts.dart';
 import 'package:finease/db/currency.dart';
 import 'package:finease/parts/account_item.dart';
@@ -87,8 +88,11 @@ class AddAccountBodyState extends State<AddAccountBody> {
                   const SizedBox(height: 16),
                   Visibility(
                     visible: _isLiability,
-                    child: const ListTile(
-                      title: Text("Liabilities should be input in negative"),
+                    child: ListTile(
+                      title: Text(
+                        "Liabilities should be input in negative",
+                        style: TextStyle(color: context.error),
+                      ),
                     ),
                   ),
                   AppTextFormField(

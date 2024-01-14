@@ -75,6 +75,19 @@ Future<void> aInitialMigration(Database db) async {
   ''');
 
   await db.execute('''
+    CREATE TRIGGER PreventAccountDeletionWithNonZeroBalance
+    BEFORE DELETE ON Accounts
+    FOR EACH ROW
+    BEGIN
+      SELECT
+        CASE
+          WHEN OLD.balance != 0 THEN
+            RAISE(FAIL, 'Cannot delete account with non-zero balance')
+        END;
+    END;
+  ''');
+
+  await db.execute('''
     CREATE TABLE Settings (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       key TEXT NOT NULL UNIQUE,

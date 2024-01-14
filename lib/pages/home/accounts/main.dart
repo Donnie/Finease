@@ -1,6 +1,6 @@
 import 'package:finease/db/accounts.dart';
-import 'package:finease/pages/home/accounts/account_card.dart';
-import 'package:finease/parts/variable_fab_size.dart';
+import 'package:finease/pages/export.dart';
+import 'package:finease/parts/export.dart';
 import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -34,18 +34,39 @@ class _AccountsPageState extends State<AccountsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final GlobalKey<ScaffoldState> scaffoldStateKey =
+        GlobalKey<ScaffoldState>();
+    int destIndex = 0;
+
+    void updateBody(int index) {
+      setState(() {
+        destIndex = index;
+      });
+      context.goNamed(
+        destinations[destIndex].routeName.name,
+        extra: () => {},
+      );
+    }
+
     return Scaffold(
+      key: scaffoldStateKey,
+      appBar: appBar(context, "accounts"),
       body: BankAccounts(
         accounts: accounts,
         onEdit: loadAccounts,
       ),
+      drawer: AppDrawer(
+        onRefresh: loadAccounts,
+        scaffoldKey: scaffoldStateKey,
+        selectedIndex: 1,
+        destinations: destinations,
+        onDestinationSelected: updateBody,
+      ),
       floatingActionButton: VariableFABSize(
-        onPressed: () async {
-          await context.pushNamed(
-            RoutesName.addAccount.name,
-            extra: (Account ac) => loadAccounts(),
-          );
-        },
+        onPressed: () => context.pushNamed(
+          RoutesName.addAccount.name,
+          extra: (Account ac) => loadAccounts(),
+        ),
         icon: Icons.add,
       ),
     );

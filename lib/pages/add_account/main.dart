@@ -1,6 +1,6 @@
 import 'package:finease/core/common.dart';
 import 'package:finease/db/accounts.dart';
-import 'package:finease/pages/add_account/account_body.dart';
+import 'package:finease/pages/export.dart';
 import 'package:finease/parts/export.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -31,7 +31,7 @@ class AddAccountScreenState extends State<AddAccountScreen> {
     return AppAnnotatedRegionWidget(
       color: context.background,
       child: Scaffold(
-        appBar: AppBar(title: const Text('add Account')),
+        appBar: AppBar(title: const Text('add account')),
         body: AddAccountBody(
           formState: _formState,
           accountName: _accountName,

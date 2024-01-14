@@ -1,13 +1,6 @@
 import 'package:finease/db/accounts.dart';
 import 'package:finease/db/settings.dart';
-import 'package:finease/pages/add_account/main.dart';
-import 'package:finease/pages/add_entry/main.dart';
-import 'package:finease/pages/add_name/main.dart';
-import 'package:finease/pages/edit_account/main.dart';
-import 'package:finease/pages/home/frame/main.dart';
-import 'package:finease/pages/intro/intro_page.dart';
-import 'package:finease/pages/settings/main.dart';
-import 'package:finease/pages/setup_accounts/main.dart';
+import 'package:finease/pages/export.dart';
 import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -35,7 +28,21 @@ final GoRouter goRouter = GoRouter(
       name: RoutesName.addName.name,
       path: RoutesName.addName.path,
       builder: (BuildContext context, GoRouterState state) {
-        return const AddNamePage();
+        return const AddInfoPage();
+      },
+    ),
+    GoRoute(
+      name: RoutesName.accounts.name,
+      path: RoutesName.accounts.path,
+      builder: (BuildContext context, GoRouterState state) {
+        return const AccountsPage();
+      },
+    ),
+    GoRoute(
+      name: RoutesName.transactions.name,
+      path: RoutesName.transactions.path,
+      builder: (BuildContext context, GoRouterState state) {
+        return const EntriesPage();
       },
     ),
     GoRoute(
@@ -88,7 +95,8 @@ final GoRouter goRouter = GoRouter(
       name: RoutesName.settings.name,
       path: RoutesName.settings.path,
       builder: (BuildContext context, GoRouterState state) {
-        return const SettingsPage();
+        final Function onFormSubmitted = state.extra as Function;
+        return SettingsPage(onFormSubmitted: onFormSubmitted);
       },
     ),
   ],

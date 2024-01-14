@@ -1,6 +1,6 @@
 import 'package:finease/db/accounts.dart';
 import 'package:finease/db/entries.dart';
-import 'package:finease/pages/add_entry/entry_body.dart';
+import 'package:finease/pages/export.dart';
 import 'package:finease/parts/export.dart';
 import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';

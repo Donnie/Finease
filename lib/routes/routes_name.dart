@@ -1,6 +1,8 @@
 enum RoutesName {
   intro,
   addName,
+  transactions,
+  accounts,
   setupAccounts,
   addAccount,
   editAccount,
