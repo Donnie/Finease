@@ -30,7 +30,8 @@ class SummaryMobileWidgetState extends State<SummaryMobileWidget> {
   }
 
   Future<void> _fetchNetWorth() async {
-    String prefCurrency = await _settingService.getSetting(Setting.prefCurrency);
+    String prefCurrency =
+        await _settingService.getSetting(Setting.prefCurrency);
     double asset =
         await _accountService.getTotalBalance(type: AccountType.asset);
     double liabilities =
@@ -67,12 +68,8 @@ class SummaryMobileWidgetState extends State<SummaryMobileWidget> {
         },
       ),
       floatingActionButton: VariableFABSize(
-        onPressed: () async {
-          await context.pushNamed(
-            RoutesName.addEntry.name,
-            extra: () => {},
-          );
-        },
+        onPressed: () =>
+            context.pushNamed(RoutesName.addEntry.name, extra: _fetchNetWorth),
         icon: Icons.add,
       ),
     );
