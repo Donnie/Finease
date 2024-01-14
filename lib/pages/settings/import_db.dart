@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:finease/db/db.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -14,7 +13,7 @@ class ImportDatabaseWidget extends StatelessWidget {
             return AlertDialog(
               title: const Text("Import Database"),
               content: const Text(
-                  "Are you sure you want to import a new database? This will replace the current database."),
+                  "Are you sure you want to import a new database? This will replace the current database!"),
               actions: <Widget>[
                 TextButton(
                   child: const Text("Cancel"),
@@ -40,28 +39,13 @@ class ImportDatabaseWidget extends StatelessWidget {
       return false;
     }
 
-    try {
-      // Prompt the user to pick a file
-      FilePickerResult? result = await FilePicker.platform.pickFiles();
-      if (result != null && result.files.single.path != null) {
-        String filePath = result.files.single.path!;
-        File newDbFile = File(filePath);
-
-        // Get the current database path
-        final databasePath = await DatabaseHelper().getDatabasePath();
-        File currentDbFile = File(databasePath);
-
-        // Replace the current database with the new one
-        await currentDbFile.delete();
-        await newDbFile.copy(databasePath);
-
-        return true;
-      }
-      return false;
-    } catch (e) {
-      // Handle exceptions
-      return false;
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    if (result != null && result.files.single.path != null) {
+      String filePath = result.files.single.path!;
+      await DatabaseHelper().importNewDatabase(filePath);
+      return true;
     }
+    return false;
   }
 
   @override
