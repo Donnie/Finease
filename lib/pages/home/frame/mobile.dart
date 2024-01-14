@@ -41,7 +41,7 @@ class SummaryPageState extends State<SummaryPage> {
     double liquid = await _accountService.getTotalBalance(liquid: true);
     setState(() {
       currency = prefCurrency;
-      networthAmount = asset - liabilities;
+      networthAmount = asset + liabilities;
       liabilitiesAmount = liabilities;
       assetAmount = asset;
       liquidAmount = liquid;
