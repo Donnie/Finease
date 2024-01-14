@@ -2,7 +2,7 @@ import 'package:finease/routes/routes_name.dart';
 import 'package:finease/core/common.dart';
 import 'package:finease/parts/export.dart';
 import 'package:finease/db/settings.dart';
-import 'package:finease/pages/setup_accounts/setup_accounts.dart';
+import 'package:finease/pages/export.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';

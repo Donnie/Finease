@@ -1,9 +1,7 @@
-import 'package:finease/pages/home/frame/app_drawer.dart';
-import 'package:finease/pages/home/frame/app_top_bar.dart';
-import 'package:finease/pages/home/frame/destinations.dart';
+import 'package:finease/pages/export.dart';
+import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
-
-final GlobalKey<ScaffoldState> _scaffoldStateKey = GlobalKey<ScaffoldState>();
+import 'package:go_router/go_router.dart';
 
 class HomePageMobile extends StatefulWidget {
   const HomePageMobile({
@@ -15,23 +13,27 @@ class HomePageMobile extends StatefulWidget {
 }
 
 class HomePageMobileState extends State<HomePageMobile> {
+  final GlobalKey<ScaffoldState> _scaffoldStateKey = GlobalKey<ScaffoldState>();
   int destIndex = 0;
 
   void _updateBody(int index) {
     setState(() {
       destIndex = index;
     });
+    context.goNamed(
+      destinations[destIndex].routeName.name,
+      extra: () => {},
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    const double toolbarHeight = kToolbarHeight + 8;
     return Scaffold(
       key: _scaffoldStateKey,
       resizeToAvoidBottomInset: true,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(toolbarHeight),
-        child: TopBar(title: destinations[destIndex].pageType.name),
+      appBar: appBar(
+        context,
+        "home",
       ),
       drawer: AppDrawer(
         onRefresh: () => {},
@@ -40,7 +42,7 @@ class HomePageMobileState extends State<HomePageMobile> {
         destinations: destinations,
         onDestinationSelected: _updateBody,
       ),
-      body: destinations[destIndex].body,
+      body: const SummaryPage(),
     );
   }
 }

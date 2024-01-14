@@ -1,5 +1,5 @@
 import 'package:finease/core/common.dart';
-import 'package:finease/pages/home/frame/destinations.dart';
+import 'package:finease/pages/export.dart';
 import 'package:finease/parts/export.dart';
 import 'package:finease/parts/user_widget.dart';
 import 'package:finease/routes/routes_name.dart';
@@ -53,7 +53,7 @@ class HomePageTabletState extends State<HomePageTablet> {
             ...destinations.map((e) => NavigationRailDestination(
                   icon: e.icon,
                   selectedIcon: e.selectedIcon,
-                  label: Text(e.pageType.name),
+                  label: Text(e.routeName.name),
                 )),
           ],
           trailing: Column(children: [
@@ -84,7 +84,7 @@ class HomePageTabletState extends State<HomePageTablet> {
                 child: AppIconTitle(),
               ),
               leadingWidth: 180,
-              title: Text(destinations[destIndex].pageType.name),
+              title: Text(destinations[destIndex].routeName.name),
               actions: const [
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8.0),
@@ -92,7 +92,7 @@ class HomePageTabletState extends State<HomePageTablet> {
                 )
               ],
             ),
-            body: destinations[destIndex].body,
+            body: Container(),
           ),
         ),
       ],

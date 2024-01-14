@@ -1,5 +1,5 @@
 import 'package:finease/core/common.dart';
-import 'package:finease/pages/home/frame/destinations.dart';
+import 'package:finease/pages/export.dart';
 import 'package:finease/parts/export.dart';
 import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +38,7 @@ class AppDrawer extends StatelessWidget {
         ...destinations.map((e) => NavigationDrawerDestination(
               icon: e.icon,
               selectedIcon: e.selectedIcon,
-              label: Text(e.pageType.name),
+              label: Text(e.routeName.name),
             )),
         const Divider(),
         Padding(

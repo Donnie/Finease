@@ -1,5 +1,5 @@
 import 'package:finease/db/entries.dart';
-import 'package:finease/pages/home/entries/entry_card.dart';
+import 'package:finease/pages/export.dart';
 import 'package:finease/parts/variable_fab_size.dart';
 import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
@@ -73,17 +73,41 @@ class EntriesPageState extends State<EntriesPage> {
 
   @override
   Widget build(BuildContext context) {
+    final GlobalKey<ScaffoldState> scaffoldStateKey =
+        GlobalKey<ScaffoldState>();
+    int destIndex = 0;
+
+    void updateBody(int index) {
+      setState(() {
+        destIndex = index;
+      });
+      context.goNamed(
+        destinations[destIndex].routeName.name,
+        extra: () => {},
+      );
+    }
+
+    void entryOnDelete(int id) {
+      _entryService.deleteEntry(id);
+      loadEntries();
+    }
+
     return Scaffold(
-      body: ListView(
-        children: entries
-            .map((e) => EntryCard(
-                  entry: e,
-                  onDelete: (int id) {
-                    _entryService.deleteEntry(id);
-                    loadEntries();
-                  },
-                ))
-            .toList(),
+      key: scaffoldStateKey,
+      appBar: appBar(
+        context,
+        "transactions",
+      ),
+      body: EntriesListView(
+        entries: entries,
+        onDelete: entryOnDelete,
+      ),
+      drawer: AppDrawer(
+        onRefresh: loadEntries,
+        scaffoldKey: scaffoldStateKey,
+        selectedIndex: 2,
+        destinations: destinations,
+        onDestinationSelected: updateBody,
       ),
       floatingActionButton: VariableFABSize(
         onPressed: () async {

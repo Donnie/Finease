@@ -4,7 +4,7 @@ import 'package:finease/core/common.dart';
 import 'package:finease/db/db.dart';
 import 'package:finease/parts/export.dart';
 import 'package:finease/db/settings.dart';
-import 'package:finease/pages/add_name/intro_set_name_widget.dart';
+import 'package:finease/pages/export.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';

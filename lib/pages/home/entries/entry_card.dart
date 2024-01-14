@@ -4,6 +4,29 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
+class EntriesListView extends StatelessWidget {
+  final List<Entry> entries;
+  final Function(int)? onDelete;
+
+  const EntriesListView({
+    super.key,
+    required this.entries,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      children: entries
+          .map((e) => EntryCard(
+                entry: e,
+                onDelete: onDelete,
+              ))
+          .toList(),
+    );
+  }
+}
+
 class EntryCard extends StatelessWidget {
   final Entry entry;
   final Function(int)? onDelete;

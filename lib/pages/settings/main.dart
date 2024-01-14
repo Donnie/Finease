@@ -1,8 +1,4 @@
-import 'package:finease/pages/settings/export_db.dart';
-import 'package:finease/pages/settings/import_db.dart';
-import 'package:finease/pages/settings/reset_app.dart';
-import 'package:finease/pages/settings/settings_group_card.dart';
-import 'package:finease/pages/settings/version_widget.dart';
+import 'package:finease/pages/export.dart';
 import 'package:finease/parts/export.dart';
 import 'package:flutter/material.dart';
 import 'package:finease/core/common.dart';

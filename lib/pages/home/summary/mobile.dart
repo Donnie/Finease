@@ -1,4 +1,4 @@
-import 'package:finease/pages/home/summary/net_worth_card.dart';
+import 'package:finease/pages/export.dart';
 import 'package:finease/parts/variable_fab_size.dart';
 import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';

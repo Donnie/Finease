@@ -48,6 +48,7 @@ class ImportDatabaseWidget extends StatelessWidget {
     if (result != null && result.files.single.path != null) {
       String filePath = result.files.single.path!;
       await DatabaseHelper().importNewDatabase(filePath);
+      // ignore: use_build_context_synchronously
       context.pop();
       onImport();
       return true;
