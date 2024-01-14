@@ -60,13 +60,13 @@ class DatabaseHelper {
   }
 
   Future<void> clearDatabase() async {
-    await closeDatabase();
-
+    var dbClient = await db;
+    await dbClient.close(); // Close the database connection
     String path = await _databasePath;
-    await deleteDatabase(path);
 
-    _db = null;
-    await ensureDatabaseOpened();
+    await deleteDatabase(path); // Delete the database file
+    _db = null; // Reset the _db variable
+    await ensureDatabaseOpened(); // Reinitialize the database
   }
 
   Future<void> closeDatabase() async {

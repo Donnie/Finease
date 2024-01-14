@@ -19,6 +19,7 @@ dependencies:
   intl: 0.19.0
   material_design_icons_flutter: 7.0.7296
   package_info_plus: 5.0.1
+  path: 1.8.3
   path_provider: 2.1.2
   responsive_builder: 0.7.0
   share_plus: 7.0.2
@@ -26,8 +27,6 @@ dependencies:
   xml: 6.5.0
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
   flutter_lints: ^3.0.1
 
 flutter:

@@ -2,7 +2,6 @@ import 'package:finease/db/accounts.dart';
 import 'package:finease/routes/routes_name.dart';
 import 'package:finease/core/common.dart';
 import 'package:finease/db/db.dart';
-import 'package:finease/parts/export.dart';
 import 'package:finease/db/settings.dart';
 import 'package:finease/pages/export.dart';
 import 'package:flutter/material.dart';
@@ -62,62 +61,59 @@ class _AddInfoPageState extends State<AddInfoPage> {
 
   @override
   Widget build(BuildContext context) {
-    return AppAnnotatedRegionWidget(
-      color: context.background,
-      child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        bottomNavigationBar: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              children: [
-                FloatingActionButton.extended(
-                  heroTag: 'backButton',
-                  onPressed: () {
-                    context.go(RoutesName.intro.path);
-                    DatabaseHelper().clearDatabase();
-                  },
-                  extendedPadding: const EdgeInsets.symmetric(horizontal: 24),
-                  label: Text(
-                    language["back"],
-                    style: context.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1,
-                    ),
-                  ),
-                  icon: Icon(MdiIcons.arrowLeft),
-                ),
-                const Spacer(),
-                FloatingActionButton.extended(
-                  heroTag: 'next',
-                  onPressed: () {
-                    saveForm();
-                  },
-                  extendedPadding: const EdgeInsets.symmetric(horizontal: 24),
-                  label: Icon(MdiIcons.arrowRight),
-                  icon: Text(
-                    language["next"],
-                    style: context.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1,
-                    ),
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            children: [
+              FloatingActionButton.extended(
+                heroTag: 'backButton',
+                onPressed: () {
+                  context.go(RoutesName.intro.path);
+                  DatabaseHelper().clearDatabase();
+                },
+                extendedPadding: const EdgeInsets.symmetric(horizontal: 24),
+                label: Text(
+                  language["back"],
+                  style: context.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1,
                   ),
                 ),
-              ],
-            ),
+                icon: Icon(MdiIcons.arrowLeft),
+              ),
+              const Spacer(),
+              FloatingActionButton.extended(
+                heroTag: 'next',
+                onPressed: () {
+                  saveForm();
+                },
+                extendedPadding: const EdgeInsets.symmetric(horizontal: 24),
+                label: Icon(MdiIcons.arrowRight),
+                icon: Text(
+                  language["next"],
+                  style: context.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
-        body: IndexedStack(
-          children: [
-            Center(
-              child: AddInfoBody(
-                formState: _formState,
-                name: _name,
-                currency: _currency,
-              ),
+      ),
+      body: IndexedStack(
+        children: [
+          Center(
+            child: AddInfoBody(
+              formState: _formState,
+              name: _name,
+              currency: _currency,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
