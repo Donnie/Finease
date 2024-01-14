@@ -1,47 +1,24 @@
+import 'package:finease/core/common.dart';
 import 'package:finease/core/theme/custom_color.dart';
-import 'package:finease/db/accounts.dart';
 import 'package:finease/db/currency.dart';
-import 'package:finease/db/settings.dart';
 import 'package:finease/parts/card.dart';
 import 'package:flutter/material.dart';
-import 'package:finease/core/common.dart';
 
-class NetWorthCard extends StatefulWidget {
-  const NetWorthCard({super.key});
+class NetWorthCard extends StatelessWidget {
+  final double networthAmount;
+  final double assetAmount;
+  final double liabilitiesAmount;
+  final double liquidAmount;
+  final String currency;
 
-  @override
-  State<NetWorthCard> createState() => _NetWorthCardState();
-}
-
-class _NetWorthCardState extends State<NetWorthCard> {
-  final AccountService accountService = AccountService();
-  final SettingService _settingService = SettingService();
-  double networthAmount = 0.0;
-  double assetAmount = 0.0;
-  double liabilitiesAmount = 0.0;
-  double liquidAmount = 0.0;
-  String currency = "USD";
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchNetWorth();
-  }
-
-  Future<void> _fetchNetWorth() async {
-    String prefCurrency =
-        await _settingService.getSetting(Setting.prefCurrency);
-    double asset = await accountService.getTotalBalance(type: AccountType.asset);
-    double liabilities = await accountService.getTotalBalance(type: AccountType.liability);
-    double liquid = await accountService.getTotalBalance(liquid: true);
-    setState(() {
-      currency = prefCurrency;
-      networthAmount = (asset + liabilities);
-      liabilitiesAmount = liabilities;
-      assetAmount = asset;
-      liquidAmount = liquid;
-    });
-  }
+  const NetWorthCard({
+    super.key,
+    required this.networthAmount,
+    required this.assetAmount,
+    required this.liabilitiesAmount,
+    required this.liquidAmount,
+    required this.currency,
+  });
 
   @override
   Widget build(BuildContext context) {
