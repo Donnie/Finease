@@ -14,7 +14,7 @@ class HomePage extends StatelessWidget {
     return AppAnnotatedRegionWidget(
       color: context.background,
       child: ScreenTypeLayout.builder(
-        mobile: (p0) => const HomePageMobile(),
+        mobile: (p0) => const SummaryPage(),
         tablet: (p0) => const HomePageTablet(),
         desktop: (p0) => const HomePageTablet(),
       ),

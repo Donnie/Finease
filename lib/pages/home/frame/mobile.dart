@@ -1,20 +1,52 @@
 import 'package:finease/pages/export.dart';
+import 'package:finease/parts/export.dart';
 import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:finease/db/accounts.dart';
+import 'package:finease/db/settings.dart';
 
-class HomePageMobile extends StatefulWidget {
-  const HomePageMobile({
-    super.key,
-  });
+class SummaryPage extends StatefulWidget {
+  const SummaryPage({super.key});
 
   @override
-  HomePageMobileState createState() => HomePageMobileState();
+  SummaryPageState createState() => SummaryPageState();
 }
 
-class HomePageMobileState extends State<HomePageMobile> {
+class SummaryPageState extends State<SummaryPage> {
   final GlobalKey<ScaffoldState> _scaffoldStateKey = GlobalKey<ScaffoldState>();
+  final AccountService _accountService = AccountService();
+  final SettingService _settingService = SettingService();
+
   int destIndex = 0;
+  double networthAmount = 0.0;
+  double assetAmount = 0.0;
+  double liabilitiesAmount = 0.0;
+  double liquidAmount = 0.0;
+  String currency = "USD";
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchNetWorth();
+  }
+
+  Future<void> _fetchNetWorth() async {
+    String prefCurrency =
+        await _settingService.getSetting(Setting.prefCurrency);
+    double asset =
+        await _accountService.getTotalBalance(type: AccountType.asset);
+    double liabilities =
+        await _accountService.getTotalBalance(type: AccountType.liability);
+    double liquid = await _accountService.getTotalBalance(liquid: true);
+    setState(() {
+      currency = prefCurrency;
+      networthAmount = asset - liabilities;
+      liabilitiesAmount = liabilities;
+      assetAmount = asset;
+      liquidAmount = liquid;
+    });
+  }
 
   void _updateBody(int index) {
     setState(() {
@@ -36,13 +68,24 @@ class HomePageMobileState extends State<HomePageMobile> {
         "home",
       ),
       drawer: AppDrawer(
-        onRefresh: () => {},
+        onRefresh: _fetchNetWorth,
         scaffoldKey: _scaffoldStateKey,
         selectedIndex: destIndex,
         destinations: destinations,
         onDestinationSelected: _updateBody,
       ),
-      body: const SummaryPage(),
+      body: SummaryBody(
+        networthAmount: networthAmount,
+        assetAmount: assetAmount,
+        liabilitiesAmount: liabilitiesAmount,
+        liquidAmount: liquidAmount,
+        currency: currency,
+      ),
+      floatingActionButton: VariableFABSize(
+        onPressed: () =>
+            context.pushNamed(RoutesName.addEntry.name, extra: _fetchNetWorth),
+        icon: Icons.add,
+      ),
     );
   }
 }
