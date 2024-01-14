@@ -1,17 +1,17 @@
 <p align="center">
-  <img src="assets\images\icon.png" height="128">
-  <h1 align="center">Finease - Expense Tracker</h1>
+  <h2>Finease - Expense Tracker</h2>
 </p>
+
 <p align="center">
- <a href="https://flutter.dev/" style="text-decoration:none" area-label="flutter">
+  <a href="https://flutter.dev/" style="text-decoration:none" area-label="flutter">
     <img src="https://img.shields.io/badge/Platform-Flutter%203.16.5-blue">
   </a>
-  <a href="https://github.com/Donnie/Finease/releases/tag/v0.0.3" style="text-decoration:none" area-label="flutter">
-    <img src="https://img.shields.io/badge/Version-0.0.3-orange">
+  <a href="https://github.com/Donnie/Finease/releases/tag/v1.0.15" style="text-decoration:none" area-label="flutter">
+    <img src="https://img.shields.io/badge/Version-1.0.15-orange">
   </a>
-</p>
-<p  align="center">
-    <h2> Material design expense manager</h2>
+  <a href="https://github.com/Donnie/Finease/actions/workflows/android_release.yml" style="text-decoration:none" area-label="flutter">
+    <img src="https://github.com/Donnie/Finease/actions/workflows/android_release.yml/badge.svg">
+  </a>
 </p>
 
 ### Screen shots
