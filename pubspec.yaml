@@ -27,7 +27,7 @@ dependencies:
   xml: 6.5.0
 
 dev_dependencies:
-  flutter_lints: ^3.0.1
+  flutter_lints: 3.0.1
 
 flutter:
   uses-material-design: true

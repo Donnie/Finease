@@ -1,0 +1,36 @@
+name: Release Android ARM64
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-release:
+    name: Build and Release Android ARM64
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Flutter environment
+        uses: subosito/flutter-action@v3
+        with:
+          flutter-version: '3.2.3'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run tests (optional)
+        run: flutter test
+
+      - name: Build APK for android-arm64
+        run: flutter build apk --target-platform android-arm64
+
+      - name: Upload Release APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: finease
+          path: build/app/outputs/apk/release/app-release.apk
+          if-no-files-found: error
