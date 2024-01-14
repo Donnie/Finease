@@ -39,8 +39,8 @@ final GoRouter goRouter = GoRouter(
       },
     ),
     GoRoute(
-      name: RoutesName.entries.name,
-      path: RoutesName.entries.path,
+      name: RoutesName.transactions.name,
+      path: RoutesName.transactions.path,
       builder: (BuildContext context, GoRouterState state) {
         return const EntriesPage();
       },

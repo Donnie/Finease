@@ -13,14 +13,8 @@ List<Destination> destinations = [
     icon: const Icon(Icons.credit_card_outlined),
     selectedIcon: const Icon(Icons.credit_card),
   ),
-  // Destination(
-  //   body: const MonthsPage(),
-  //   pageType: PageType.months,
-  //   icon: Icon(MdiIcons.calendarMonthOutline),
-  //   selectedIcon: Icon(MdiIcons.calendarMonth),
-  // ),
   Destination(
-    routeName: RoutesName.entries,
+    routeName: RoutesName.transactions,
     icon: Icon(MdiIcons.swapVerticalCircleOutline),
     selectedIcon: Icon(MdiIcons.swapVertical),
   ),
