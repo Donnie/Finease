@@ -88,7 +88,8 @@ final GoRouter goRouter = GoRouter(
       name: RoutesName.settings.name,
       path: RoutesName.settings.path,
       builder: (BuildContext context, GoRouterState state) {
-        return const SettingsPage();
+        final Function onFormSubmitted = state.extra as Function;
+        return SettingsPage(onFormSubmitted: onFormSubmitted);
       },
     ),
   ],

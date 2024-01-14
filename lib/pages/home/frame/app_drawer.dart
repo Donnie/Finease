@@ -6,11 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class AppDrawer extends StatelessWidget {
+  final Function onRefresh;
   const AppDrawer({
     super.key,
     required this.destinations,
     required this.scaffoldKey,
     required this.onDestinationSelected,
+    required this.onRefresh,
     this.selectedIndex = 0,
   });
 
@@ -43,14 +45,14 @@ class AppDrawer extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: ListTile(
             onTap: () async {
-              await context.pushNamed(RoutesName.settings.name);
+              await context.pushNamed(
+                RoutesName.settings.name,
+                extra: onRefresh,
+              );
               scaffoldKey.currentState?.closeDrawer();
             },
             leading: const Icon(Icons.settings),
-            title: Text(
-              language["settings"],
-              style: context.bodyLarge,
-            ),
+            title: Text("settings", style: context.bodyLarge),
           ),
         ),
       ],

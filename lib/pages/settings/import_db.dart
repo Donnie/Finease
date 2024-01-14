@@ -1,10 +1,15 @@
 import 'package:finease/db/db.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:file_picker/file_picker.dart';
 
 class ImportDatabaseWidget extends StatelessWidget {
-  const ImportDatabaseWidget({super.key});
+  final Function onImport;
+  const ImportDatabaseWidget({
+    super.key,
+    required this.onImport,
+  });
 
   Future<bool> _importDatabase(BuildContext context) async {
     bool confirmed = await showDialog(
@@ -43,6 +48,8 @@ class ImportDatabaseWidget extends StatelessWidget {
     if (result != null && result.files.single.path != null) {
       String filePath = result.files.single.path!;
       await DatabaseHelper().importNewDatabase(filePath);
+      context.pop();
+      onImport();
       return true;
     }
     return false;

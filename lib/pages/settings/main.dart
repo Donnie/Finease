@@ -8,8 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:finease/core/common.dart';
 
 class SettingsPage extends StatelessWidget {
+  final Function onFormSubmitted;
   const SettingsPage({
     super.key,
+    required this.onFormSubmitted,
   });
 
   @override
@@ -41,12 +43,12 @@ class SettingsPage extends StatelessWidget {
           padding: EdgeInsets.zero,
           shrinkWrap: true,
           children: [
-            const SettingsGroup(
+            SettingsGroup(
               title: "Database",
               options: [
-                ExportDatabaseWidget(),
-                ImportDatabaseWidget(),
-                ResetAppWidget(),
+                const ExportDatabaseWidget(),
+                ImportDatabaseWidget(onImport: onFormSubmitted),
+                const ResetAppWidget(),
               ],
             ),
             const SettingsGroup(

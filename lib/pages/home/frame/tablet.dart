@@ -58,7 +58,10 @@ class HomePageTabletState extends State<HomePageTablet> {
           ],
           trailing: Column(children: [
             IconButton(
-              onPressed: () => context.pushNamed(RoutesName.settings.name),
+              onPressed: () => context.pushNamed(
+                RoutesName.settings.name,
+                extra: () => {},
+              ),
               icon: Icon(MdiIcons.cog),
               color: context.onSurface.withOpacity(0.75),
             ),

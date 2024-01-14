@@ -34,6 +34,7 @@ class HomePageMobileState extends State<HomePageMobile> {
         child: TopBar(title: destinations[destIndex].pageType.name),
       ),
       drawer: AppDrawer(
+        onRefresh: () => {},
         scaffoldKey: _scaffoldStateKey,
         selectedIndex: destIndex,
         destinations: destinations,
