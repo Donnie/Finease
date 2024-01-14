@@ -34,13 +34,6 @@ jobs:
       - name: Build APK for android-arm64
         run: flutter build apk --target-platform android-arm64
 
-      - name: Upload Release APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: finease
-          path: build/app/outputs/apk/release/app-release.apk
-          if-no-files-found: error
-
       - name: Create release
         id: create-release
         uses: softprops/action-gh-release@v1
