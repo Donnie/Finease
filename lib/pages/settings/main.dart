@@ -1,4 +1,5 @@
 import 'package:finease/pages/export.dart';
+import 'package:finease/pages/settings/about.dart';
 import 'package:finease/parts/export.dart';
 import 'package:flutter/material.dart';
 import 'package:finease/core/common.dart';
@@ -50,16 +51,15 @@ class SettingsPage extends StatelessWidget {
             const SettingsGroup(
               title: "Dev Info",
               options: [
+                AboutWidget(),
                 VersionWidget(),
               ],
             ),
-            SafeArea(
+            const SafeArea(
               top: false,
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  language["madeWithLoveInBerlin"],
-                ),
+                padding: EdgeInsets.all(16.0),
+                child: Text("Made with ♥ in Berlin"),
               ),
             ),
           ],
