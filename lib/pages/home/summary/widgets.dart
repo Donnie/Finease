@@ -82,7 +82,7 @@ class TotalNetWorthWidget extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    "$symbol ${amount.toStringAsFixed(2)}",
+                    "$symbol${amount.toStringAsFixed(2)}",
                     style: context.headlineMedium?.copyWith(
                       color: context.onPrimaryContainer,
                       fontWeight: FontWeight.w700,
@@ -103,7 +103,7 @@ class TotalNetWorthWidget extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    "$symbol $liquid",
+                    "$symbol$liquid",
                     style: context.headlineMedium?.copyWith(
                       color: context.onPrimaryContainer,
                       fontWeight: FontWeight.w700,
@@ -162,7 +162,7 @@ class TotalLiabilitiesAsset extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '$symbol $asset',
+                    '$symbol$asset',
                     style: context.titleLarge?.copyWith(
                       color: context.onPrimaryContainer,
                     ),
@@ -191,7 +191,7 @@ class TotalLiabilitiesAsset extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '$symbol ${(liabilities * -1)}',
+                    '$symbol${(liabilities * -1)}',
                     style: context.titleLarge?.copyWith(
                       color: context.onPrimaryContainer,
                     ),
