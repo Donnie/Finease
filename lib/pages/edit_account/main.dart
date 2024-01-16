@@ -25,7 +25,6 @@ class EditAccountScreenState extends State<EditAccountScreen> {
   final _formState = GlobalKey<FormState>();
   final _accountName = TextEditingController();
   final _accountCurrency = TextEditingController();
-  double _accountBalance = 0;
   bool accountHidden = false;
   Account? _account;
 
@@ -39,7 +38,6 @@ class EditAccountScreenState extends State<EditAccountScreen> {
     Account? account = await _accountService.getAccount(id);
     setState(() {
       _account = account!;
-      _accountBalance = account.balance;
       _accountName.text = _account?.name ?? "";
       _accountCurrency.text = _account?.currency ?? "";
     });
@@ -54,6 +52,12 @@ class EditAccountScreenState extends State<EditAccountScreen> {
   void _accountHidden(bool value) {
     setState(() {
       _account!.hidden = value;
+    });
+  }
+
+  void _accountType(AccountType value) {
+    setState(() {
+      _account!.type = value;
     });
   }
 
@@ -77,20 +81,21 @@ class EditAccountScreenState extends State<EditAccountScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (_account == null) {
+      return Container();
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text("edit account", style: context.titleMedium),
       ),
       body: EditAccountBody(
-        accountType: _account?.type ?? AccountType.asset,
         formState: _formState,
         accountName: _accountName,
-        accountBalance: _accountBalance,
+        account: _account!,
         accountCurrency: _accountCurrency,
-        accountLiquid: _account?.liquid ?? true,
-        accountHidden: _account?.hidden ?? false,
         onChangeLiquid: _accountLiquid,
         onChangeHidden: _accountHidden,
+        onChangeAccountType: _accountType,
         onDelete: _onDelete,
       ),
       bottomNavigationBar: SafeArea(
