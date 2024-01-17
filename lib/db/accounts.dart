@@ -95,10 +95,10 @@ class AccountService {
   Future<List<Account>> getAllAccounts(bool hidden) async {
     final dbClient = await _databaseHelper.db;
 
-    String? whereClause = hidden ? null : "hidden = 0";
+    var whereClause = hidden ? '' : 'WHERE hidden = 0';
 
-    final List<Map<String, dynamic>> accounts = await dbClient.rawQuery('''
-      SELECT 
+    String rawQuery = '''
+      SELECT
         Accounts.*,
         CASE
           WHEN (SELECT COUNT(*) FROM Entries 
@@ -107,8 +107,11 @@ class AccountService {
           ELSE 0
         END AS deletable
       FROM Accounts
-      WHERE $whereClause
-    ''');
+      $whereClause
+    ''';
+
+    final List<Map<String, dynamic>> accounts =
+        await dbClient.rawQuery(rawQuery);
 
     return accounts.map((json) => Account.fromJson(json)).toList();
   }
