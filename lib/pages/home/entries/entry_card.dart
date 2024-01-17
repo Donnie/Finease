@@ -16,13 +16,14 @@ class EntriesListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: entries
-          .map((e) => EntryCard(
-                entry: e,
-                onDelete: onDelete,
-              ))
-          .toList(),
+    return ListView.builder(
+      itemCount: entries.length,
+      itemBuilder: (context, index) {
+        return EntryCard(
+          entry: entries[index],
+          onDelete: onDelete,
+        );
+      },
     );
   }
 }
