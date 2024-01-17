@@ -1,4 +1,5 @@
 import 'package:finease/db/db.dart';
+import 'package:finease/db/settings.dart';
 
 class MonthService {
   final DatabaseHelper _databaseHelper;
@@ -7,6 +8,9 @@ class MonthService {
       : _databaseHelper = databaseHelper ?? DatabaseHelper();
 
   Future<List<Month>> getAllMonthsInsights() async {
+    String prefCurrency =
+        await SettingService().getSetting(Setting.prefCurrency);
+
     final dbClient = await _databaseHelper.db;
     final results = await dbClient.rawQuery('''
       WITH RECURSIVE MonthDates(monthDate) AS (
@@ -29,8 +33,8 @@ class MonthService {
             WHERE
               ac.type IN ('asset', 'liability') AND ad.type IN ('income', 'expense')
               AND e.date BETWEEN months.startDate AND months.endDate
-              AND ac.currency = 'EUR'
-              AND ad.currency = 'EUR'
+              AND ac.currency = '$prefCurrency'
+              AND ad.currency = '$prefCurrency'
           ), 0) AS income,
           COALESCE((
             SELECT
@@ -41,8 +45,8 @@ class MonthService {
             WHERE
               ad.type IN ('asset', 'liability') AND ac.type IN ('income', 'expense')
               AND e.date BETWEEN months.startDate AND months.endDate
-              AND ac.currency = 'EUR'
-              AND ad.currency = 'EUR'
+              AND ac.currency = '$prefCurrency'
+              AND ad.currency = '$prefCurrency'
           ), 0) AS expense
         FROM (
           SELECT 
