@@ -1,14 +1,15 @@
 enum RoutesName {
-  intro,
-  addName,
-  transactions,
   accounts,
-  setupAccounts,
   addAccount,
-  editAccount,
   addEntry,
+  addName,
+  editAccount,
   home,
+  intro,
+  months,
   settings,
+  setupAccounts,
+  transactions,
 }
 
 extension RoutesNameHelper on RoutesName {
