@@ -35,15 +35,10 @@ class MonthCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colorScheme =
-        ColorScheme.fromSeed(seedColor: const Color(0xFF795548));
-    final Color color = colorScheme.primaryContainer;
-
     return AppCard(
       elevation: 4,
-      color: color,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        padding: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -53,9 +48,7 @@ class MonthCard extends StatelessWidget {
               children: [
                 Text(
                   formatter.format(month.date!),
-                  style: context.titleSmall?.copyWith(
-                    color: context.primaryContainer,
-                  ),
+                  style: context.titleSmall,
                 )
               ],
             ),
@@ -117,17 +110,10 @@ class MonthWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: TextStyle(
-            color: context.primaryContainer,
-          ),
-        ),
+        Text(title),
         Text(
           content,
-          style: context.titleLarge?.copyWith(
-            color: context.primaryContainer,
-          ),
+          style: context.titleLarge,
         ),
       ],
     );
