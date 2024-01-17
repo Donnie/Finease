@@ -136,7 +136,7 @@ class BankAccountCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "$symbol ${account.balance.toStringAsFixed(2)}",
+                  "$symbol${account.balance.toStringAsFixed(2)}",
                   style: context.titleLarge,
                 ),
                 Row(

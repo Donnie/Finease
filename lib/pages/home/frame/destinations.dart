@@ -18,6 +18,11 @@ List<Destination> destinations = [
     icon: Icon(MdiIcons.swapVerticalCircleOutline),
     selectedIcon: Icon(MdiIcons.swapVertical),
   ),
+  Destination(
+    routeName: RoutesName.months,
+    icon: Icon(MdiIcons.calendarOutline),
+    selectedIcon: Icon(MdiIcons.calendar),
+  ),
 ];
 
 class Destination {

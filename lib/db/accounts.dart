@@ -72,11 +72,20 @@ class AccountService {
 
   Future<Account?> getAccount(int id) async {
     final dbClient = await _databaseHelper.db;
-    final List<Map<String, dynamic>> accounts = await dbClient.query(
-      Accounts,
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+
+    final List<Map<String, dynamic>> accounts = await dbClient.rawQuery('''
+      SELECT 
+        Accounts.*,
+        CASE
+          WHEN (SELECT COUNT(*) FROM Entries 
+                WHERE Entries.debit_account_id = Accounts.id 
+                OR Entries.credit_account_id = Accounts.id) = 0 THEN 1
+          ELSE 0
+        END AS deletable
+      FROM Accounts
+      WHERE Accounts.id = ?
+    ''', [id]);
+
     if (accounts.isNotEmpty) {
       return Account.fromJson(accounts.first);
     }
@@ -86,12 +95,23 @@ class AccountService {
   Future<List<Account>> getAllAccounts(bool hidden) async {
     final dbClient = await _databaseHelper.db;
 
-    String? whereClause = hidden ? null : "hidden = 0";
+    var whereClause = hidden ? '' : 'WHERE hidden = 0';
 
-    final List<Map<String, dynamic>> accounts = await dbClient.query(
-      Accounts,
-      where: whereClause,
-    );
+    String rawQuery = '''
+      SELECT
+        Accounts.*,
+        CASE
+          WHEN (SELECT COUNT(*) FROM Entries 
+                WHERE Entries.debit_account_id = Accounts.id 
+                OR Entries.credit_account_id = Accounts.id) = 0 THEN 1
+          ELSE 0
+        END AS deletable
+      FROM Accounts
+      $whereClause
+    ''';
+
+    final List<Map<String, dynamic>> accounts =
+        await dbClient.rawQuery(rawQuery);
 
     return accounts.map((json) => Account.fromJson(json)).toList();
   }
@@ -193,6 +213,7 @@ class Account {
   bool hidden;
   String name;
   AccountType type;
+  bool deletable;
 
   Account({
     this.id,
@@ -204,6 +225,7 @@ class Account {
     this.hidden = false,
     required this.name,
     required this.type,
+    this.deletable = false,
   });
 
   factory Account.fromJson(Map<String, dynamic> json) {
@@ -219,6 +241,8 @@ class Account {
       hidden: json['hidden'] == 1,
       name: json['name'],
       type: type,
+      // readonly
+      deletable: json['deletable'] == 1,
     );
   }
 

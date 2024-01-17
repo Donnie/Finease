@@ -39,6 +39,13 @@ final GoRouter goRouter = GoRouter(
       },
     ),
     GoRoute(
+      name: RoutesName.months.name,
+      path: RoutesName.months.path,
+      builder: (BuildContext context, GoRouterState state) {
+        return const MonthsPage();
+      },
+    ),
+    GoRoute(
       name: RoutesName.transactions.name,
       path: RoutesName.transactions.path,
       builder: (BuildContext context, GoRouterState state) {

@@ -1,6 +1,7 @@
 import 'package:currency_picker/currency_picker.dart';
 import 'package:finease/db/accounts.dart';
 import 'package:finease/db/currency.dart';
+import 'package:finease/parts/account_item.dart';
 import 'package:finease/parts/export.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -9,38 +10,30 @@ class EditAccountBody extends StatelessWidget {
   const EditAccountBody({
     super.key,
     required this.formState,
-    required this.accountType,
-    required this.accountBalance,
+    required this.account,
     required this.accountCurrency,
     required this.accountName,
-    required this.accountLiquid,
-    required this.accountHidden,
-    required this.onChangeLiquid,
+    required this.onChangeAccountType,
     required this.onChangeHidden,
+    required this.onChangeLiquid,
     this.onDelete,
   });
 
   final GlobalKey<FormState> formState;
-  final TextEditingController accountName;
-  final double accountBalance;
+  final Account account;
   final TextEditingController accountCurrency;
-  final ValueChanged<bool> onChangeLiquid;
+  final TextEditingController accountName;
+  final ValueChanged<AccountType> onChangeAccountType;
   final ValueChanged<bool> onChangeHidden;
+  final ValueChanged<bool> onChangeLiquid;
   final VoidCallback? onDelete;
-  final bool accountLiquid;
-  final bool accountHidden;
-  final AccountType accountType;
 
   @override
   Widget build(BuildContext context) {
     bool trackLiquid = [
       AccountType.asset,
       AccountType.liability,
-    ].contains(accountType);
-
-    bool balanceZero = accountBalance == 0;
-    // when balance is zero, one may
-    // change currency and even delete an account
+    ].contains(account.type);
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -48,11 +41,17 @@ class EditAccountBody extends StatelessWidget {
         key: formState,
         child: ListView(
           children: [
+            AccountTypeSelectionFormField(
+              key: const Key('account_type'),
+              initialValue: account.type,
+              onChanged: (AccountType value) => onChangeAccountType.call(value),
+            ),
+            const SizedBox(height: 16),
             Visibility(
               visible: trackLiquid,
               child: Column(children: [
                 SwitchListTile(
-                  value: accountLiquid,
+                  value: account.liquid,
                   key: const Key('account_liquidity'),
                   title: const Text('Liquid'),
                   onChanged: (bool value) => onChangeLiquid.call(value),
@@ -76,7 +75,7 @@ class EditAccountBody extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Visibility(
-              visible: balanceZero,
+              visible: account.deletable,
               child: Column(children: [
                 GestureDetector(
                   onTap: () => showCurrencyPicker(
@@ -106,36 +105,31 @@ class EditAccountBody extends StatelessWidget {
                 const SizedBox(height: 16),
               ]),
             ),
-            Visibility(
-              visible: !balanceZero,
-              child: Column(children: [
-                SwitchListTile(
-                  value: accountHidden,
-                  key: const Key('account_hidden'),
-                  title: const Text('Hide account!'),
-                  onChanged: (bool value) {
-                    if (value) {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext dialogContext) {
-                          return SwitchAlert(
-                            word: "hide",
-                            onChange: onChangeHidden,
-                          );
-                        },
+            SwitchListTile(
+              value: account.hidden,
+              key: const Key('account_hidden'),
+              title: const Text('Hide account!'),
+              onChanged: (bool value) {
+                if (value) {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext dialogContext) {
+                      return SwitchAlert(
+                        word: "hide",
+                        onChange: onChangeHidden,
                       );
-                    }
-                    onChangeHidden.call(false);
-                  },
-                ),
-                const SizedBox(height: 16),
-              ]),
+                    },
+                  );
+                }
+                onChangeHidden.call(false);
+              },
             ),
+            const SizedBox(height: 16),
             Visibility(
-              visible: balanceZero,
+              visible: account.deletable && (onDelete != null),
               child: Column(children: [
                 SwitchListTile(
-                  value: accountHidden,
+                  value: false,
                   key: const Key('account_delete'),
                   title: const Text('Delete account!'),
                   onChanged: (bool value) {

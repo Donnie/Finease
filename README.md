@@ -22,8 +22,12 @@
 | :--------------------------------------------------: | :--------------------------------------------------: | :--------------------------------------------------: |
 |                        Mobile                        |                        Tablet                        |                       Desktop                        |
 
-### Expense Tracking
+### Privacy-first budgeting.
 
 - Double Entry Accounting
 - Easy export to Google Drive or WhatsApp/Telegram
-- Totally offline! 100% privacy guaranteed.
+- Totally offline! 100% privacy commitment.
+
+Cultivate discipline, enjoy ease of use, and control your financial data.
+
+> Made with ♥ in Berlin

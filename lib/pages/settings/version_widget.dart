@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-
-import 'package:finease/core/common.dart';
 import 'setting_option.dart';
 
 class VersionWidget extends StatefulWidget {
@@ -28,17 +26,10 @@ class _VersionWidgetState extends State<VersionWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (packageInfo == null) {
-      return SettingsOption(
-        icon: MdiIcons.numeric,
-        title: language["version"],
-      );
-    }
-    String version = packageInfo!.version;
     return SettingsOption(
       icon: MdiIcons.numeric,
-      title: language["version"],
-      subtitle: version,
+      title: "Version",
+      subtitle: packageInfo?.version ?? "",
     );
   }
 }

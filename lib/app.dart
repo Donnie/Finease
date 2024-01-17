@@ -7,9 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MainApp extends StatefulWidget {
-  const MainApp({
-    super.key
-  });
+  const MainApp({super.key});
 
   @override
   State<MainApp> createState() => _MainAppState();

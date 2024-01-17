@@ -88,10 +88,10 @@ class AccountItemWidget extends StatelessWidget {
 class AccountTypeSelectionFormField extends FormField<AccountType> {
   AccountTypeSelectionFormField({
     super.key,
-    FormFieldSetter<AccountType>? onChanged,
+    ValueChanged<AccountType>? onChanged,
     AccountType initialValue = AccountType.asset,
   }) : super(
-          initialValue: AccountType.asset,
+          initialValue: initialValue,
           builder: (FormFieldState<AccountType> state) {
             return Padding(
               padding: const EdgeInsets.all(8),
