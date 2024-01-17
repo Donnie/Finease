@@ -1,122 +1,135 @@
+import 'package:finease/db/months.dart';
 import 'package:finease/parts/card.dart';
 import 'package:flutter/material.dart';
 import 'package:finease/core/common.dart';
+import 'package:intl/intl.dart';
+
+DateFormat formatter = DateFormat('MMMM yyyy');
+
+class MonthCards extends StatelessWidget {
+  final List<Month> months;
+
+  const MonthCards({
+    super.key,
+    required this.months,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: months.length,
+      itemBuilder: (context, index) => MonthCard(
+        month: months[index],
+      ),
+    );
+  }
+}
 
 class MonthCard extends StatelessWidget {
   const MonthCard({
     super.key,
+    required this.month,
   });
+
+  final Month month;
 
   @override
   Widget build(BuildContext context) {
     final ColorScheme colorScheme =
         ColorScheme.fromSeed(seedColor: const Color(0xFF795548));
     final Color color = colorScheme.primaryContainer;
-    final Color onPrimary = colorScheme.onPrimaryContainer;
-    const num expense = 26000;
-    const num income = 65400;
-    const num savings = income - expense;
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: AspectRatio(
-        aspectRatio: 16 / 5,
-        child: AppCard(
-          elevation: 4,
-          color: color,
-          child: InkWell(
-            onTap: () {
-              // show transactions
-            },
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+
+    return AppCard(
+      elevation: 4,
+      color: color,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Flex(
+              direction: Axis.horizontal,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: ThisMonthTransactionWidget(
-                          title: "Mar 2023",
-                          content: "N26",
-                          color: onPrimary,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: ThisMonthTransactionWidget(
-                          title: "Savings",
-                          content: savings.toString(),
-                          color: onPrimary,
-                        ),
-                      ),
-                    ],
+                Text(
+                  formatter.format(month.date!),
+                  style: context.titleSmall?.copyWith(
+                    color: context.primaryContainer,
+                  ),
+                )
+              ],
+            ),
+            const Divider(),
+            Row(
+              children: [
+                Expanded(
+                  child: MonthWidget(
+                    title: "Net Worth",
+                    content: month.networth!.toStringAsFixed(2),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: ThisMonthTransactionWidget(
-                          title: "Income",
-                          content: income.toString(),
-                          color: onPrimary,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: ThisMonthTransactionWidget(
-                          title: "Expense",
-                          color: onPrimary,
-                          content: expense.toString(),
-                        ),
-                      ),
-                    ],
+                const SizedBox(width: 8),
+                Expanded(
+                  child: MonthWidget(
+                    title: "Effect",
+                    content: month.effect!.toStringAsFixed(2),
                   ),
                 ),
               ],
             ),
-          ),
+            const SizedBox(height: 6),
+            Row(
+              children: [
+                Expanded(
+                  child: MonthWidget(
+                    title: "Income",
+                    content: month.income!.toStringAsFixed(2),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: MonthWidget(
+                    title: "Expense",
+                    content: month.expense!.toStringAsFixed(2),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
-class ThisMonthTransactionWidget extends StatelessWidget {
-  const ThisMonthTransactionWidget({
+class MonthWidget extends StatelessWidget {
+  const MonthWidget({
     super.key,
     required this.title,
     required this.content,
-    required this.color,
   });
 
-  final Color color;
   final String content;
   final String title;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              color: color.withOpacity(0.75),
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: TextStyle(
+            color: context.primaryContainer,
           ),
-          const SizedBox(height: 6),
-          Text(
-            content,
-            style: context.titleLarge?.copyWith(
-              color: color,
-            ),
+        ),
+        Text(
+          content,
+          style: context.titleLarge?.copyWith(
+            color: context.primaryContainer,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
