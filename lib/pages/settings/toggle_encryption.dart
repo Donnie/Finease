@@ -1,6 +1,6 @@
 import 'package:finease/db/settings.dart';
+import 'package:finease/parts/password_button.dart';
 import 'package:flutter/material.dart';
-import 'package:password_strength/password_strength.dart';
 
 class ToggleEncryptionWidget extends StatefulWidget {
   const ToggleEncryptionWidget({super.key});
@@ -12,6 +12,7 @@ class ToggleEncryptionWidget extends StatefulWidget {
 class ToggleEncryptionWidgetState extends State<ToggleEncryptionWidget> {
   final SettingService _settingService = SettingService();
   bool _useEncryption = false;
+  final TextEditingController _password = TextEditingController();
 
   @override
   void initState() {
@@ -20,48 +21,58 @@ class ToggleEncryptionWidgetState extends State<ToggleEncryptionWidget> {
   }
 
   Future<void> _initSettings() async {
-    String useEncryptionStr = await _settingService.getSetting(Setting.useEncryption);
-    _useEncryption = useEncryptionStr == "true";
-    setState(() {});
+    String useEncryptionStr =
+        await _settingService.getSetting(Setting.useEncryption);
+    setState(() {
+      _useEncryption = useEncryptionStr == "true";
+      _password.text = '';
+    });
+  }
+
+  Future<void> _confirmPassword() async {
+    setState(() {
+      _useEncryption = true;
+    });
+    _settingService.setSetting(Setting.dbPassword, _password.text);
+    _settingService.setSetting(Setting.useEncryption, "true");
   }
 
   Future<void> _askForPassword() async {
-    String password = '';
     await showDialog(
       context: context,
       builder: (BuildContext dialogContext) => AlertDialog(
+        key: ValueKey(_password.text),
         title: const Text("Enable Encryption"),
         content: StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
-            return TextField(
-              decoration: const InputDecoration(hintText: "Enter a strong password"),
-              onChanged: (value) {
-                setState(() {
-                  password = value;
-                });
-              },
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'This password will be used to encrypt'
+                  ' your database only during export.',
+                ),
+                const SizedBox(height: 32),
+                TextField(
+                  controller: _password,
+                  onChanged: (value) => setState(() {}),
+                  decoration: const InputDecoration(
+                    hintText: "Enter a strong password",
+                  ),
+                ),
+                const SizedBox(height: 16),
+                PasswordButton(
+                  key: ValueKey(_password.text),
+                  password: _password.text,
+                  onPressed: () {
+                    _confirmPassword();
+                    Navigator.of(dialogContext).pop();
+                  },
+                ),
+              ],
             );
           },
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: const Text("Cancel"),
-          ),
-          TextButton(
-            onPressed: estimatePasswordStrength(password) > 0.8 // Checking if the password is strong
-                ? () {
-                    Navigator.of(dialogContext).pop();
-                    _settingService.setSetting(Setting.dbPassword, password);
-                    _settingService.setSetting(Setting.useEncryption, "true");
-                    setState(() {
-                      _useEncryption = true;
-                    });
-                  }
-                : null,
-            child: const Text("Confirm"),
-          ),
-        ],
       ),
     );
   }
@@ -72,15 +83,15 @@ class ToggleEncryptionWidgetState extends State<ToggleEncryptionWidget> {
       context: context,
       builder: (BuildContext dialogContext) => AlertDialog(
         title: const Text("Disable Encryption"),
-        content: const Text("Disabling encryption will remove encryption from your exported database."),
+        content: const Text(
+          'Disabling encryption will remove encryption'
+          ' from your exported databases.',
+        ),
         actions: [
           TextButton(
             child: const Text("Cancel"),
             onPressed: () {
               Navigator.of(dialogContext).pop();
-              setState(() {
-                _useEncryption = true; // Don't change the toggle if cancelled
-              });
             },
           ),
           TextButton(
@@ -105,19 +116,18 @@ class ToggleEncryptionWidgetState extends State<ToggleEncryptionWidget> {
 
   Future<void> _handleEncryptionToggle(bool value) async {
     if (value) {
-      // Show password dialog if true
       await _askForPassword();
-    } else {
-      // Confirm before disabling encryption
-      await _confirmDisable();
+      return;
     }
+    await _confirmDisable();
   }
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: const Text('Encryption'),
-      subtitle: const Text('Use encryption for your database'),
+      leading: const Icon(Icons.enhanced_encryption),
+      key: ValueKey(_password.text),
+      title: const Text('Enable Encryption'),
       trailing: Switch(
         value: _useEncryption,
         onChanged: (value) => _handleEncryptionToggle(value),

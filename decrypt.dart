@@ -21,7 +21,7 @@
 //   dart decrypt.dart encrypted.dat original.txt "myPassword123"
 //
 // Requirements:
-// - The input file must have been encrypted using a compatible encryption algorithm,
+// - The input file must have been encrypted using the enryption function in this app
 //   specifically AES-CBC with PKCS7 padding, and a key derived from the given password.
 // - Dart runtime must be installed on the system to run this script.
 //
