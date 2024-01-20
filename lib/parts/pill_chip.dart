@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'package:finease/core/common.dart';
+import 'package:finease/core/export.dart';
 
 class AppPillChip extends StatelessWidget {
   const AppPillChip({

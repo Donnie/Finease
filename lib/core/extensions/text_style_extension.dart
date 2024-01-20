@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:finease/core/common.dart';
+import 'package:finease/core/export.dart';
 
 extension TextStyleHelper on BuildContext {
   TextStyle? get titleLarge => Theme.of(this).textTheme.titleLarge;

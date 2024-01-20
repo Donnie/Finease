@@ -86,7 +86,10 @@ class EntryCard extends StatelessWidget {
                         return AlertDialog(
                           title: const Text('Confirm'),
                           content: const Text(
-                              'Once you delete a transaction the balance in related accounts would be automatically updated'),
+                            'Once you delete a transaction the balance '
+                            'in related accounts would be automatically '
+                            'readjusted',
+                          ),
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.of(context).pop(false),

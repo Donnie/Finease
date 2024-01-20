@@ -1,59 +1,142 @@
+import 'dart:io';
+import 'package:finease/core/export.dart';
 import 'package:finease/db/db.dart';
+import 'package:finease/db/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:path/path.dart' as path;
 
-class ImportDatabaseWidget extends StatelessWidget {
+class ImportDatabaseWidget extends StatefulWidget {
   final Function onImport;
   const ImportDatabaseWidget({
     super.key,
     required this.onImport,
   });
 
-  Future<bool> _importDatabase(BuildContext context) async {
-    bool confirmed = await showDialog(
+  @override
+  ImportDatabaseWidgetState createState() => ImportDatabaseWidgetState();
+}
+
+class ImportDatabaseWidgetState extends State<ImportDatabaseWidget> {
+  final SettingService settingService = SettingService();
+  final DatabaseHelper db = DatabaseHelper();
+
+  Future<void> _onImportTap() async {
+    bool confirmed = await _showImportConfirmationDialog();
+    if (!confirmed) return;
+
+    String? filePath = await _pickFile();
+    if (filePath == null) return;
+
+    bool importSuccessful = await _importDatabase(filePath);
+    if (importSuccessful) {
+      await File(filePath).delete();
+      // ignore: use_build_context_synchronously
+      context.pop();
+      widget.onImport();
+    }
+  }
+
+  Future<bool> _showImportConfirmationDialog() async {
+    return await showDialog<bool>(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
               title: const Text("Import Database"),
               content: const Text(
-                  "Are you sure you want to import a new database? This will replace the current database!"),
+                  "Are you sure you want to import the database? This will replace the current database!"),
               actions: <Widget>[
                 TextButton(
                   child: const Text("Cancel"),
-                  onPressed: () {
-                    Navigator.of(context)
-                        .pop(false); // Dismisses the dialog and returns false
-                  },
+                  onPressed: () => Navigator.of(context).pop(false),
                 ),
                 TextButton(
                   child: const Text("Import"),
-                  onPressed: () {
-                    Navigator.of(context)
-                        .pop(true); // Dismisses the dialog and returns true
-                  },
+                  onPressed: () => Navigator.of(context).pop(true),
                 ),
               ],
             );
           },
         ) ??
-        false; // In case the dialog is dismissed by tapping outside of it
+        false;
+  }
 
-    if (!confirmed) {
+  Future<String?> _pickFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    if (result != null && result.files.single.path != null) {
+      return result.files.single.path;
+    }
+    return null;
+  }
+
+  Future<bool> _importDatabase(String filePath) async {
+    final String ext = path.extension(filePath);
+    String newPath = filePath;
+
+    if (ext == ".enc") {
+      newPath = path.join(path.dirname(filePath), "database.db");
+      if (!await _handleEncryption(filePath, newPath)) {
+        return false;
+      }
+    }
+
+    await db.importNewDatabase(newPath);
+    return true;
+  }
+
+  Future<bool> _handleEncryption(String oldPath, String newPath) async {
+    String dbPassword = await settingService.getSetting(Setting.dbPassword);
+    if (dbPassword.isEmpty) {
+      await _showEncryptionAlert();
       return false;
     }
 
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
-    if (result != null && result.files.single.path != null) {
-      String filePath = result.files.single.path!;
-      await DatabaseHelper().importNewDatabase(filePath);
-      // ignore: use_build_context_synchronously
-      context.pop();
-      onImport();
+    try {
+      await decryptFile(oldPath, newPath, dbPassword);
       return true;
+    } catch (e) {
+      await _showPaddingErrorAlert();
+      return false;
     }
-    return false;
+  }
+
+  Future<void> _showEncryptionAlert() async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Enable Encryption"),
+          content: const Text(
+              "Please Enable Encryption in the Settings before importing an encrypted database."),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("OK"),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showPaddingErrorAlert() async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Password error"),
+          content: const Text("The database file could not be recovered!"),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("OK"),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -61,7 +144,7 @@ class ImportDatabaseWidget extends StatelessWidget {
     return ListTile(
       title: const Text("Import DB"),
       leading: Icon(MdiIcons.import),
-      onTap: () => _importDatabase(context),
+      onTap: _onImportTap,
     );
   }
 }

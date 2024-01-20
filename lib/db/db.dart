@@ -80,6 +80,7 @@ class DatabaseHelper {
     final currentDbPath = await getDatabasePath();
     await clearDatabase();
     await File(newDbPath).copy(currentDbPath);
+    await File(newDbPath).delete();
     await closeDatabase();
     await ensureDatabaseOpened();
   }

@@ -1,4 +1,4 @@
-import 'package:finease/core/currency.dart';
+import 'package:finease/core/export.dart';
 import 'package:hive/hive.dart';
 
 class CurrencyBoxService {

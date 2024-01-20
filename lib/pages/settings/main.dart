@@ -1,8 +1,9 @@
 import 'package:finease/pages/export.dart';
 import 'package:finease/pages/settings/about.dart';
+import 'package:finease/pages/settings/toggle_encryption.dart';
 import 'package:finease/parts/export.dart';
 import 'package:flutter/material.dart';
-import 'package:finease/core/common.dart';
+import 'package:finease/core/export.dart';
 
 class SettingsPage extends StatelessWidget {
   final Function onFormSubmitted;
@@ -43,6 +44,7 @@ class SettingsPage extends StatelessWidget {
             SettingsGroup(
               title: "Database",
               options: [
+                const ToggleEncryptionWidget(),
                 const ExportDatabaseWidget(),
                 ImportDatabaseWidget(onImport: onFormSubmitted),
                 const ResetAppWidget(),

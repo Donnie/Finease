@@ -8,6 +8,8 @@ enum Setting {
   onboarded,
   pastAccount,
   prefCurrency,
+  useEncryption,
+  dbPassword,
 }
 
 typedef Settings = Map<Setting, String>;

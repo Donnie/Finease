@@ -73,7 +73,11 @@ class MonthService {
       FROM CumulativeTotals;
     ''');
 
-    return results.map((json) => Month.fromJson(json)).toList();
+    try {
+      return results.map((json) => Month.fromJson(json)).toList();
+    } catch (e) {
+      return [];
+    }
   }
 }
 
