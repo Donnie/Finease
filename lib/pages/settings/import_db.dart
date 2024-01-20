@@ -1,8 +1,11 @@
+import 'package:finease/core/export.dart';
 import 'package:finease/db/db.dart';
+import 'package:finease/db/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:path/path.dart' as path;
 
 class ImportDatabaseWidget extends StatelessWidget {
   final Function onImport;
@@ -12,6 +15,8 @@ class ImportDatabaseWidget extends StatelessWidget {
   });
 
   Future<bool> _importDatabase(BuildContext context) async {
+    final SettingService settingService = SettingService();
+
     bool confirmed = await showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -47,7 +52,17 @@ class ImportDatabaseWidget extends StatelessWidget {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (result != null && result.files.single.path != null) {
       String filePath = result.files.single.path!;
-      await DatabaseHelper().importNewDatabase(filePath);
+      final String ext = path.extension(filePath);
+      String newPath = filePath;
+
+      if (ext == ".enc") {
+        newPath = path.join(path.dirname(filePath), "database.db");
+        String dbPassword =
+            await settingService.getSetting(Setting.dbPassword);
+        await decryptFile(filePath, newPath, dbPassword);
+      }
+
+      await DatabaseHelper().importNewDatabase(newPath);
       // ignore: use_build_context_synchronously
       context.pop();
       onImport();

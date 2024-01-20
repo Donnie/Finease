@@ -16,11 +16,13 @@ class ExportDatabaseWidget extends StatefulWidget {
 }
 
 class ExportDatabaseWidgetState extends State<ExportDatabaseWidget> {
+  final SettingService _settingService = SettingService();
+
   Future<void> _exportDatabase() async {
     String newPath = '';
     try {
       String useEncryption =
-          await SettingService().getSetting(Setting.useEncryption);
+          await _settingService.getSetting(Setting.useEncryption);
       bool encrypt = useEncryption == 'true';
 
       final databasePath = await DatabaseHelper().getDatabasePath();
@@ -30,7 +32,7 @@ class ExportDatabaseWidgetState extends State<ExportDatabaseWidget> {
 
       if (encrypt) {
         String dbPassword =
-            await SettingService().getSetting(Setting.dbPassword);
+            await _settingService.getSetting(Setting.dbPassword);
         newPath = path.join(dir, "database_$time.db.enc");
         await encryptFile(databasePath, newPath, dbPassword);
       } else {
