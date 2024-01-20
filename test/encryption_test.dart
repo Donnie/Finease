@@ -10,6 +10,8 @@ void main() {
     late String inputFile;
     late String encryptedOutputFile;
     late String decryptedOutputFile;
+    late String oldEncryptedFile;
+    late String oldDecryptedFile;
     late File testFile;
     late List<int> originalData;
 
@@ -19,6 +21,8 @@ void main() {
       inputFile = 'test_input.txt';
       encryptedOutputFile = 'test_encrypted.txt';
       decryptedOutputFile = 'test_decrypted.txt';
+      oldEncryptedFile = 'test/test_input.enc';
+      oldDecryptedFile = 'test/test_input.txt';
       testFile = File(inputFile);
       originalData = List.generate(1000, (index) => index % 256);
 
@@ -39,6 +43,10 @@ void main() {
       if ((await FileSystemEntity.type(decryptedOutputFile)) !=
           FileSystemEntityType.notFound) {
         await File(decryptedOutputFile).delete();
+      }
+      if ((await FileSystemEntity.type(oldDecryptedFile)) !=
+          FileSystemEntityType.notFound) {
+        await File(oldDecryptedFile).delete();
       }
     });
 
@@ -63,6 +71,14 @@ void main() {
 
       final decryptedBytes = await File(decryptedOutputFile).readAsBytes();
       expect(decryptedBytes, equals(originalData));
+    });
+
+    test('File decryption recovers old encrypted data', () async {
+      await decryptFile(oldEncryptedFile, oldDecryptedFile, password);
+
+      final decryptedBytes = await File(oldDecryptedFile).readAsBytes();
+      String str = String.fromCharCodes(decryptedBytes);
+      expect(str, equals("hello\n"));
     });
   });
 }
