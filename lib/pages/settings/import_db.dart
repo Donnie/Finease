@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:finease/core/export.dart';
 import 'package:finease/db/db.dart';
 import 'package:finease/db/settings.dart';
@@ -31,6 +32,7 @@ class ImportDatabaseWidgetState extends State<ImportDatabaseWidget> {
 
     bool importSuccessful = await _importDatabase(filePath);
     if (importSuccessful) {
+      await File(filePath).delete();
       // ignore: use_build_context_synchronously
       context.pop();
       widget.onImport();

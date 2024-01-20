@@ -28,6 +28,8 @@
 // Ensure that 'finease/core/encryption.dart' file is available and contains the
 // necessary encryption logic and dependencies such as the pointycastle package.
 
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 import 'package:finease/core/encryption.dart';
 
