@@ -1,5 +1,4 @@
 import 'package:finease/db/db.dart';
-import 'package:finease/pages/export.dart';
 import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -19,9 +18,9 @@ class _ResetAppWidgetState extends State<ResetAppWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return SettingsOption(
-      title: "Reset App",
-      icon: Icons.delete_forever,
+    return ListTile(
+      title: const Text("Reset App"),
+      leading: const Icon(Icons.delete_forever),
       onTap: () async {
         await showDialog(
           context: context,

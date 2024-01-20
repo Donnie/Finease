@@ -27,7 +27,6 @@ export "settings/export_db.dart";
 export "settings/import_db.dart";
 export "settings/main.dart";
 export "settings/reset_app.dart";
-export "settings/setting_option.dart";
 export "settings/settings_group_card.dart";
 export "settings/version_widget.dart";
 export "setup_accounts/default_account.dart";

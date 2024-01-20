@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'setting_option.dart';
 
 class VersionWidget extends StatefulWidget {
   const VersionWidget({super.key});
@@ -26,10 +25,10 @@ class _VersionWidgetState extends State<VersionWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return SettingsOption(
-      icon: MdiIcons.numeric,
-      title: "Version",
-      subtitle: packageInfo?.version ?? "",
+    return ListTile(
+      leading: Icon(MdiIcons.numeric),
+      title: const Text("Version"),
+      subtitle: Text(packageInfo?.version ?? ""),
     );
   }
 }
