@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'package:finease/core/export.dart';
 import 'package:finease/db/db.dart';
+import 'package:finease/db/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -17,16 +19,26 @@ class ExportDatabaseWidgetState extends State<ExportDatabaseWidget> {
   Future<void> _exportDatabase() async {
     String newPath = '';
     try {
+      String useEncryption =
+          await SettingService().getSetting(Setting.useEncryption);
+      bool encrypt = useEncryption == 'true';
+
       final databasePath = await DatabaseHelper().getDatabasePath();
       final time = DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
       final dir = path.dirname(databasePath);
-      final ext = path.extension(databasePath);
-      final newFilename = 'database_$time$ext';
-      newPath = path.join(dir, newFilename);
+      String newPath = '';
 
-      final databaseFile = File(databasePath);
-      final newDatabaseFile = await databaseFile.copy(newPath);
-      final xFile = XFile(newDatabaseFile.path);
+      if (encrypt) {
+        String dbPassword =
+            await SettingService().getSetting(Setting.dbPassword);
+        newPath = path.join(dir, "database_$time.db.enc");
+        await encryptFile(databasePath, newPath, dbPassword);
+      } else {
+        newPath = path.join(dir, "database_$time.db");
+        await File(databasePath).copy(newPath);
+      }
+
+      final xFile = XFile(newPath);
 
       await Share.shareXFiles([xFile], text: 'Here is my database file.');
     } catch (e) {
