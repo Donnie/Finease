@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:finease/core/common.dart';
+import 'package:finease/core/export.dart';
 
 class SettingsOption extends StatelessWidget {
   const SettingsOption({

@@ -1,4 +1,4 @@
-import 'package:finease/core/common.dart';
+import 'package:finease/core/export.dart';
 import 'package:flutter/material.dart';
 
 class AppUserWidget extends StatelessWidget {

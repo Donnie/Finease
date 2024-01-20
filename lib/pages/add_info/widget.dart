@@ -2,7 +2,7 @@ import 'package:currency_picker/currency_picker.dart';
 import 'package:finease/db/currency.dart';
 import 'package:flutter/material.dart';
 
-import 'package:finease/core/common.dart';
+import 'package:finease/core/export.dart';
 import 'package:finease/parts/export.dart';
 import 'package:finease/parts/intro_top.dart';
 
