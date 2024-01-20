@@ -20,6 +20,7 @@ dependencies:
   local_auth: 2.1.8
   material_design_icons_flutter: 7.0.7296
   package_info_plus: 5.0.1
+  password_strength: 0.2.0
   path: 1.8.3
   path_provider: 2.1.2
   pointycastle: 3.7.4
