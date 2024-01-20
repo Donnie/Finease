@@ -6,8 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class EntriesPage extends StatefulWidget {
+  final DateTime? startDate;
+  final DateTime? endDate;
+  final int? accountID;
   const EntriesPage({
     super.key,
+    this.accountID,
+    this.startDate,
+    this.endDate,
   });
 
   @override
