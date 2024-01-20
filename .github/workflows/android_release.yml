@@ -1,9 +1,11 @@
 name: Release Android
 
 on:
-  push:
-    tags:
-      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      releaseRef:
+        description: "Git REF for release (e.g., refs/tags/v1.0.0)"
+        required: true
 
 permissions:
   contents: write
@@ -13,7 +15,13 @@ jobs:
     name: Build and Release Android
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Set env
+        run: |
+          echo "RELEASE_VERSION=${{ github.event.inputs.releaseRef }}" >> $GITHUB_ENV
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.releaseRef }}
 
       - name: Install and set up Java
         uses: actions/setup-java@v3
@@ -30,20 +38,36 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Run tests
-        run: flutter test
+      - name: Build with Flutter
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_KEYSTORE_PASSWORD }}
+        run: flutter build apk
 
-      - name: Build APK for android
-        run: flutter build apk --release
+      - name: Sign APK
+        id: sign_apk
+        uses: ilharp/sign-android-release@v1
+        with:
+          releaseDir: build/app/outputs/flutter-apk
+          signingKey: ${{ secrets.SIGNING_KEYSTORE }}
+          keyStorePassword: ${{ secrets.SIGNING_KEYSTORE_PASSWORD }}
+          keyAlias: ${{ secrets.SIGNING_KEY_ALIAS }}
+          keyPassword: ${{ secrets.SIGNING_KEY_PASSWORD }}
+
+      - name: Add version to APK
+        run: mv ${{steps.sign_apk.outputs.signedFile}} finease-${{ env.RELEASE_VERSION }}.apk
 
       - name: Create release
         id: create-release
         uses: softprops/action-gh-release@v1
         with:
           draft: false
+          tag_name: ${{ env.RELEASE_VERSION }}
           fail_on_unmatched_files: true
           files: |
-            build/app/outputs/apk/release/app-release.apk
+            finease-${{ env.RELEASE_VERSION }}.apk
           generate_release_notes: true
           prerelease: false
           token: ${{ secrets.GITHUB_TOKEN }}
