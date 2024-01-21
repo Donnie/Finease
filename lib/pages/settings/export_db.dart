@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:finease/core/export.dart';
 import 'package:finease/db/db.dart';
 import 'package:finease/db/settings.dart';
+import 'package:finease/parts/error_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -45,7 +46,7 @@ class ExportDatabaseWidgetState extends State<ExportDatabaseWidget> {
       await Share.shareXFiles([xFile], text: 'Here is my database file.');
     } catch (e) {
       if (mounted) {
-        _showErrorDialog('Error sharing database: $e');
+        await showErrorDialog('Error sharing database: $e', context);
       }
     } finally {
       if (newPath.isNotEmpty) {
@@ -55,24 +56,6 @@ class ExportDatabaseWidgetState extends State<ExportDatabaseWidget> {
         }
       }
     }
-  }
-
-  void _showErrorDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Error'),
-          content: Text(message),
-          actions: [
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override
