@@ -1,6 +1,7 @@
 import 'package:finease/core/export.dart';
 import 'package:finease/db/accounts.dart';
 import 'package:finease/pages/export.dart';
+import 'package:finease/parts/error_dialog.dart';
 import 'package:finease/parts/export.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -79,8 +80,14 @@ class AddAccountScreenState extends State<AddAccountScreen> {
         liquid: accountLiquid,
         type: accountType,
       );
-      account = await _accountService.createAccount(account);
-      widget.onFormSubmitted(account);
+      try {
+        account = await _accountService.createAccount(account);
+        widget.onFormSubmitted(account);
+      } catch (e) {
+        _showError(e);
+      }
     }
   }
+
+  Future<void> _showError(e) async => showErrorDialog(e.toString(), context);
 }

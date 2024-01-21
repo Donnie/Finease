@@ -1,6 +1,7 @@
 import 'package:finease/core/export.dart';
 import 'package:finease/db/db.dart';
 import 'package:finease/db/settings.dart';
+import 'package:finease/parts/error_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -100,42 +101,16 @@ class ImportDatabaseWidgetState extends State<ImportDatabaseWidget> {
     }
   }
 
-  Future<void> _showEncryptionAlert() async {
-    await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Enable Encryption"),
-          content: const Text(
-              "Please Enable Encryption in the Settings before importing an encrypted database."),
-          actions: <Widget>[
-            TextButton(
-              child: const Text("OK"),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ],
-        );
-      },
-    );
-  }
+  Future<void> _showEncryptionAlert() async => showErrorDialog(
+        'Please Enable Encryption in the Settings'
+        ' before importing an encrypted database.',
+        context,
+      );
 
-  Future<void> _showPaddingErrorAlert() async {
-    await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Password error"),
-          content: const Text("The database file could not be recovered!"),
-          actions: <Widget>[
-            TextButton(
-              child: const Text("OK"),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ],
-        );
-      },
-    );
-  }
+  Future<void> _showPaddingErrorAlert() async => showErrorDialog(
+        'The database file could not be recovered!',
+        context,
+      );
 
   @override
   Widget build(BuildContext context) {

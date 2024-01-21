@@ -165,34 +165,38 @@ class AccountService {
     // Execute the query
     List<Map<String, dynamic>> result = await dbClient.rawQuery(sql);
 
-    int totalBalance = 0;
+    // result is like:
+    // [{total_balance: 9880057, currency: EUR}]
 
+    int totalBalance = 0;
     String prefCurrency =
         await _settingService.getSetting(Setting.prefCurrency);
 
+    // Determine if conversion is needed and initialize currencyBoxService once if true
+    bool needsConversion = result.any((row) => row['currency'] != prefCurrency);
+    if (needsConversion) {
+      await currencyBoxService.init();
+    }
+
     // Loop through each currency and convert the balance to preferred currency
-    await currencyBoxService.init();
     for (var row in result) {
       String currency = row['currency'];
       int balance = row['total_balance'];
 
-      // Convert balance to preferred currency
-      double convertedBalance =
-          await _convertCurrency(currency, balance, prefCurrency);
-      totalBalance += convertedBalance.round();
+      // If the currency is not the preferred currency, convert it
+      if (currency != prefCurrency) {
+        double rate = await currencyBoxService.getSingleRate(
+          currency,
+          prefCurrency,
+        );
+        totalBalance += (balance * rate).round();
+      } else {
+        // Already in preferred currency, no conversion needed
+        totalBalance += balance;
+      }
     }
 
     return totalBalance / 100;
-  }
-
-  Future<double> _convertCurrency(
-    String fromCurrency,
-    int balance,
-    String toCurrency,
-  ) async {
-    double rate =
-        await currencyBoxService.getSingleRate(fromCurrency, toCurrency);
-    return balance * rate;
   }
 }
 

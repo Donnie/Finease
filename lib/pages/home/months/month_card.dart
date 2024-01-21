@@ -1,3 +1,4 @@
+import 'package:finease/db/currency.dart';
 import 'package:finease/db/months.dart';
 import 'package:finease/parts/card.dart';
 import 'package:finease/routes/routes_name.dart';
@@ -40,6 +41,11 @@ class MonthCard extends StatelessWidget {
     DateTime startDate = month.date!;
     DateTime endDate = DateTime(month.date!.year, month.date!.month + 1, 1)
         .subtract(const Duration(seconds: 1));
+    String currency = SupportedCurrency[month.currency!]!;
+    String networth = '$currency${month.networth!.toStringAsFixed(2)}';
+    String effect = '$currency${month.effect!.toStringAsFixed(2)}';
+    String income = '$currency${month.income!.toStringAsFixed(2)}';
+    String expense = '$currency${month.expense!.toStringAsFixed(2)}';
 
     return InkWell(
       onTap: () {
@@ -68,20 +74,29 @@ class MonthCard extends StatelessWidget {
                   )
                 ],
               ),
-              const Divider(),
+              const SizedBox(height: 4),
+              LinearProgressIndicator(
+                value: month.factor,
+                minHeight: 2.0,
+                backgroundColor: Colors.grey[300],
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  month.good ? Colors.green : Colors.red,
+                ),
+              ),
+              const SizedBox(height: 8),
               Row(
                 children: [
                   Expanded(
                     child: MonthWidget(
                       title: "Net Worth",
-                      content: month.networth!.toStringAsFixed(2),
+                      content: networth,
                     ),
                   ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: MonthWidget(
                       title: "Effect",
-                      content: month.effect!.toStringAsFixed(2),
+                      content: effect,
                     ),
                   ),
                 ],
@@ -92,14 +107,14 @@ class MonthCard extends StatelessWidget {
                   Expanded(
                     child: MonthWidget(
                       title: "Income",
-                      content: month.income!.toStringAsFixed(2),
+                      content: income,
                     ),
                   ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: MonthWidget(
                       title: "Expense",
-                      content: month.expense!.toStringAsFixed(2),
+                      content: expense,
                     ),
                   ),
                 ],

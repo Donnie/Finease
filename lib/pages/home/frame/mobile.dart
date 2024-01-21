@@ -1,4 +1,5 @@
 import 'package:finease/pages/export.dart';
+import 'package:finease/parts/error_dialog.dart';
 import 'package:finease/parts/export.dart';
 import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
@@ -32,21 +33,27 @@ class SummaryPageState extends State<SummaryPage> {
   }
 
   Future<void> _fetchNetWorth() async {
-    String prefCurrency =
-        await _settingService.getSetting(Setting.prefCurrency);
-    double asset =
-        await _accountService.getTotalBalance(type: AccountType.asset);
-    double liabilities =
-        await _accountService.getTotalBalance(type: AccountType.liability);
-    double liquid = await _accountService.getTotalBalance(liquid: true);
-    setState(() {
-      currency = prefCurrency;
-      networthAmount = asset + liabilities;
-      liabilitiesAmount = liabilities;
-      assetAmount = asset;
-      liquidAmount = liquid;
-    });
+    try {
+      String prefCurrency =
+          await _settingService.getSetting(Setting.prefCurrency);
+      double asset =
+          await _accountService.getTotalBalance(type: AccountType.asset);
+      double liabilities =
+          await _accountService.getTotalBalance(type: AccountType.liability);
+      double liquid = await _accountService.getTotalBalance(liquid: true);
+      setState(() {
+        currency = prefCurrency;
+        networthAmount = asset + liabilities;
+        liabilitiesAmount = liabilities;
+        assetAmount = asset;
+        liquidAmount = liquid;
+      });
+    } catch (e) {
+      _showError(e);
+    }
   }
+
+  Future<void> _showError(e) async => showErrorDialog(e.toString(), context);
 
   void _updateBody(int index) {
     setState(() {
@@ -74,12 +81,18 @@ class SummaryPageState extends State<SummaryPage> {
         destinations: destinations,
         onDestinationSelected: _updateBody,
       ),
-      body: SummaryBody(
-        networthAmount: networthAmount,
-        assetAmount: assetAmount,
-        liabilitiesAmount: liabilitiesAmount,
-        liquidAmount: liquidAmount,
-        currency: currency,
+      body: RefreshIndicator(
+        onRefresh: _fetchNetWorth,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: SummaryBody(
+            networthAmount: networthAmount,
+            assetAmount: assetAmount,
+            liabilitiesAmount: liabilitiesAmount,
+            liquidAmount: liquidAmount,
+            currency: currency,
+          ),
+        ),
       ),
       floatingActionButton: VariableFABSize(
         onPressed: () =>
