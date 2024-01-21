@@ -10,6 +10,7 @@ enum RoutesName {
   settings,
   setupAccounts,
   transactions,
+  transactionsByDate,
 }
 
 extension RoutesNameHelper on RoutesName {

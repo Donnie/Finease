@@ -1,7 +1,9 @@
 import 'package:finease/db/months.dart';
 import 'package:finease/parts/card.dart';
+import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 import 'package:finease/core/export.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 DateFormat formatter = DateFormat('MMMM yyyy');
@@ -35,60 +37,75 @@ class MonthCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppCard(
-      elevation: 4,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Flex(
-              direction: Axis.horizontal,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Text(
-                  formatter.format(month.date!),
-                  style: context.titleSmall,
-                )
-              ],
-            ),
-            const Divider(),
-            Row(
-              children: [
-                Expanded(
-                  child: MonthWidget(
-                    title: "Net Worth",
-                    content: month.networth!.toStringAsFixed(2),
+    DateTime startDate = month.date!;
+    DateTime endDate = DateTime(month.date!.year, month.date!.month + 1, 1)
+        .subtract(const Duration(seconds: 1));
+
+    return InkWell(
+      onTap: () {
+        context.pushNamed(
+          RoutesName.transactionsByDate.name,
+          extra: {
+            'startDate': startDate.toIso8601String(),
+            'endDate': endDate.toIso8601String(),
+          },
+        );
+      },
+      child: AppCard(
+        elevation: 4,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Flex(
+                direction: Axis.horizontal,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Text(
+                    formatter.format(month.date!),
+                    style: context.titleSmall,
+                  )
+                ],
+              ),
+              const Divider(),
+              Row(
+                children: [
+                  Expanded(
+                    child: MonthWidget(
+                      title: "Net Worth",
+                      content: month.networth!.toStringAsFixed(2),
+                    ),
                   ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: MonthWidget(
-                    title: "Effect",
-                    content: month.effect!.toStringAsFixed(2),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: MonthWidget(
+                      title: "Effect",
+                      content: month.effect!.toStringAsFixed(2),
+                    ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 6),
-            Row(
-              children: [
-                Expanded(
-                  child: MonthWidget(
-                    title: "Income",
-                    content: month.income!.toStringAsFixed(2),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Row(
+                children: [
+                  Expanded(
+                    child: MonthWidget(
+                      title: "Income",
+                      content: month.income!.toStringAsFixed(2),
+                    ),
                   ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: MonthWidget(
-                    title: "Expense",
-                    content: month.expense!.toStringAsFixed(2),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: MonthWidget(
+                      title: "Expense",
+                      content: month.expense!.toStringAsFixed(2),
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
