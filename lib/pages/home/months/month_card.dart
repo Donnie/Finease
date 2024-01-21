@@ -74,7 +74,16 @@ class MonthCard extends StatelessWidget {
                   )
                 ],
               ),
-              const Divider(),
+              const SizedBox(height: 4),
+              LinearProgressIndicator(
+                value: month.factor,
+                minHeight: 2.0,
+                backgroundColor: Colors.grey[300],
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  month.good ? Colors.green : Colors.red,
+                ),
+              ),
+              const SizedBox(height: 8),
               Row(
                 children: [
                   Expanded(

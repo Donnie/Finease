@@ -111,4 +111,22 @@ class Month {
       currency: json['currency'],
     );
   }
+
+  // Calculate the factor based on the relationship between income and expense
+  double get factor {
+    if (income == null || expense == null) {
+      return 0; // or some default value or handle error
+    }
+    // Ensure that neither income nor expense is zero to avoid division by zero
+    if (income == 0 && expense == 0) {
+      return 0.5; // When both are zero, we can define factor as 0.5
+    }
+
+    // Bias towards extremes for visibility
+    num incomeSquared = income! * income!;
+    num expenseSquared = expense! * expense!;
+    return (incomeSquared / (incomeSquared + expenseSquared));
+  }
+
+  bool get good => factor > 0.5; 
 }
