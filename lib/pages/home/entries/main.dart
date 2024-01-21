@@ -31,7 +31,10 @@ class EntriesPageState extends State<EntriesPage> {
   }
 
   Future<void> loadEntries() async {
-    List<Entry> entriesList = await _entryService.getAllEntries();
+    List<Entry> entriesList = await _entryService.getAllEntries(
+      startDate: widget.startDate,
+      endDate: widget.endDate,
+    );
     entriesList.sort((a, b) => (b.date!.compareTo(a.date!)));
 
     List<Entry> mergedEntries = [];

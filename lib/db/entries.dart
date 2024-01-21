@@ -64,13 +64,39 @@ class EntryService {
     return null;
   }
 
-  Future<List<Entry>> getAllEntries() async {
+  Future<List<Entry>> getAllEntries({
+    DateTime? startDate,
+    DateTime? endDate,
+  }) async {
     final dbClient = await _databaseHelper.db;
 
-    // Fetch all entries and all accounts in separate calls
-    final List<Map<String, dynamic>> entriesData =
-        await dbClient.query('Entries');
-    final List<Account> allAccounts = await AccountService().getAllAccounts(true);
+    String whereClause = '';
+    List<dynamic> whereArguments = [];
+
+    // If startDate is provided, add it to the where clause
+    if (startDate != null) {
+      whereClause += 'date >= ?';
+      whereArguments.add(startDate.toIso8601String());
+    }
+
+    // If endDate is provided, add it to the where clause
+    if (endDate != null) {
+      if (whereClause.isNotEmpty) {
+        whereClause += ' AND ';
+      }
+      whereClause += 'date <= ?';
+      whereArguments.add(endDate.toIso8601String());
+    }
+
+    // Fetch all entries according to the provided start and end dates
+    final List<Map<String, dynamic>> entriesData = await dbClient.query(
+      'Entries',
+      where: whereClause.isEmpty ? null : whereClause,
+      whereArgs: whereArguments.isEmpty ? null : whereArguments,
+    );
+
+    final List<Account> allAccounts =
+        await AccountService().getAllAccounts(true);
 
     // Create a map for quick account lookup by ID
     var accountsMap = {for (var account in allAccounts) account.id: account};
@@ -105,7 +131,8 @@ class EntryService {
     );
   }
 
-  Future adjustFirstBalance(int toAccountId, int fromAccountId, double balance) async {
+  Future adjustFirstBalance(
+      int toAccountId, int fromAccountId, double balance) async {
     if (balance == 0) {
       return;
     }
@@ -121,7 +148,8 @@ class EntryService {
     await dbClient.insert('Entries', entry.toJson());
   }
 
-  Future adjustFirstForexBalance(int toAccountId, int fromAccountId, double balance) async {
+  Future adjustFirstForexBalance(
+      int toAccountId, int fromAccountId, double balance) async {
     if (balance == 0) {
       return;
     }
