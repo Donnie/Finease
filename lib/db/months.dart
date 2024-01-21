@@ -47,7 +47,8 @@ class MonthService {
               AND e.date BETWEEN months.startDate AND months.endDate
               AND ac.currency = '$prefCurrency'
               AND ad.currency = '$prefCurrency'
-          ), 0) AS expense
+          ), 0) AS expense,
+          '$prefCurrency' AS currency
         FROM (
           SELECT 
             REPLACE(DATETIME(monthDate, 'start of month'), ' ', 'T') || 'Z' as startDate,
@@ -61,7 +62,8 @@ class MonthService {
           income,
           expense,
           (income - expense) as effect,
-          SUM(income - expense) OVER (ORDER BY startDate ASC) as networth
+          SUM(income - expense) OVER (ORDER BY startDate ASC) as networth,
+          currency
         FROM MonthlyTotals
       )
       SELECT
@@ -69,7 +71,8 @@ class MonthService {
         effect,
         expense,
         income,
-        networth
+        networth,
+        currency
       FROM CumulativeTotals;
     ''');
 
@@ -87,6 +90,7 @@ class Month {
   num? expense;
   num? income;
   num? networth;
+  String? currency;
 
   Month({
     this.date,
@@ -94,6 +98,7 @@ class Month {
     this.expense,
     this.income,
     this.networth,
+    this.currency,
   });
 
   factory Month.fromJson(Map<String, dynamic> json) {
@@ -103,6 +108,7 @@ class Month {
       expense: json['expense'] / 100,
       income: json['income'] / 100,
       networth: json['networth'] / 100,
+      currency: json['currency'],
     );
   }
 }
