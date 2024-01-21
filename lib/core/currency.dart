@@ -6,20 +6,25 @@ class ExchangeService {
       'https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml';
 
   Future<Map<String, double>> getExchangeRateMap(String baseCurrency) async {
-    final response = await http.get(Uri.parse(url));
-    if (response.statusCode != 200) {
+    try {
+      final response =
+          await http.get(Uri.parse(url)).timeout(const Duration(seconds: 5));
+      if (response.statusCode != 200) {
+        throw InternetUnavailableError('Failed to load currency data');
+      }
+
+      final document = XmlDocument.parse(response.body);
+      final rates = _parseRates(document);
+
+      if (!rates.containsKey(baseCurrency)) {
+        throw Exception('Base currency not found');
+      }
+
+      final baseRate = rates[baseCurrency]!;
+      return rates.map((currency, rate) => MapEntry(currency, rate / baseRate));
+    } catch (e) {
       throw InternetUnavailableError('Failed to load currency data');
     }
-
-    final document = XmlDocument.parse(response.body);
-    final rates = _parseRates(document);
-
-    if (!rates.containsKey(baseCurrency)) {
-      throw Exception('Base currency not found');
-    }
-
-    final baseRate = rates[baseCurrency]!;
-    return rates.map((currency, rate) => MapEntry(currency, rate / baseRate));
   }
 
   Map<String, double> _parseRates(XmlDocument document) {

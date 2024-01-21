@@ -37,17 +37,19 @@ class CurrencyBoxService {
     String targetCurrency,
   ) async {
     double baseRate = 1.0;
+    double targetRate = 1.0;
     // Assuming data is always available and up-to-date.
     // Retrieve the rates directly from the box.
-    final targetRate = _box.get(targetCurrency) as double?;
     if (baseCurrency != prefCurrency) {
-      baseRate = _box.get(baseCurrency);
+      baseRate = _box.get(baseCurrency) ?? 0;
+    }
+    if (targetCurrency != prefCurrency) {
+      targetRate = _box.get(targetCurrency) ?? 0;
     }
 
     // rates must be available; if not, throw an exception.
-    if (targetRate == null) {
-      throw Exception(
-          'Unable to find rate for $targetCurrency');
+    if (targetRate == 0 || baseRate == 0) {
+      throw Exception('Unable to find rate for $baseCurrency/$targetCurrency');
     }
 
     // Calculate and return the combined rate.
