@@ -1,6 +1,7 @@
 import 'package:finease/db/accounts.dart';
 import 'package:finease/db/entries.dart';
 import 'package:finease/pages/export.dart';
+import 'package:finease/parts/error_dialog.dart';
 import 'package:finease/parts/export.dart';
 import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
@@ -104,12 +105,18 @@ class AddEntryScreenState extends State<AddEntryScreen> {
         notes: entryNotes,
         date: _dateTime,
       );
-      if (_debitAccount!.currency != _creditAccount!.currency) {
-        await _entryService.createForexEntry(entry);
-      } else {
-        await _entryService.createEntry(entry);
+      try {
+        if (_debitAccount!.currency != _creditAccount!.currency) {
+          await _entryService.createForexEntry(entry);
+        } else {
+          await _entryService.createEntry(entry);
+        }
+        widget.onFormSubmitted();
+      } catch (e) {
+        _showError(e);
       }
-      widget.onFormSubmitted();
     }
   }
+
+  Future<void> _showError(e) async => showErrorDialog(e.toString(), context);
 }

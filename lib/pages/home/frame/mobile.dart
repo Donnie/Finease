@@ -81,12 +81,18 @@ class SummaryPageState extends State<SummaryPage> {
         destinations: destinations,
         onDestinationSelected: _updateBody,
       ),
-      body: SummaryBody(
-        networthAmount: networthAmount,
-        assetAmount: assetAmount,
-        liabilitiesAmount: liabilitiesAmount,
-        liquidAmount: liquidAmount,
-        currency: currency,
+      body: RefreshIndicator(
+        onRefresh: _fetchNetWorth,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: SummaryBody(
+            networthAmount: networthAmount,
+            assetAmount: assetAmount,
+            liabilitiesAmount: liabilitiesAmount,
+            liquidAmount: liquidAmount,
+            currency: currency,
+          ),
+        ),
       ),
       floatingActionButton: VariableFABSize(
         onPressed: () =>
