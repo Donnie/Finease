@@ -8,7 +8,7 @@ class ExchangeService {
   Future<Map<String, double>> getExchangeRateMap(String baseCurrency) async {
     final response = await http.get(Uri.parse(url));
     if (response.statusCode != 200) {
-      throw Exception('Failed to load currency data');
+      throw InternetUnavailableError('Failed to load currency data');
     }
 
     final document = XmlDocument.parse(response.body);
@@ -40,4 +40,13 @@ class ExchangeService {
 
     return rates;
   }
+}
+
+class InternetUnavailableError implements Exception {
+  final String message;
+
+  InternetUnavailableError(this.message);
+
+  @override
+  String toString() => 'InternetUnavailableError: $message';
 }

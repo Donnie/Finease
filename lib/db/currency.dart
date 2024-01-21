@@ -1,59 +1,62 @@
 import 'package:finease/core/export.dart';
+import 'package:finease/db/settings.dart';
 import 'package:hive/hive.dart';
 
 class CurrencyBoxService {
   static const String _boxName = 'currencies';
   late Box _box;
-  final ExchangeService _currencyService = ExchangeService();
+  late String prefCurrency;
+  final ExchangeService _exchangeService = ExchangeService();
 
   Future<void> init() async {
     _box = await Hive.openBox(_boxName);
-  }
-
-  Future<Map<String, double>> getLatestRates(String baseCurrency) async {
     final currentDate = DateTime.now();
     final lastUpdate = _box.get('lastUpdate') as DateTime?;
+    prefCurrency = await SettingService().getSetting(Setting.prefCurrency);
 
-    if (lastUpdate == null || lastUpdate.day != currentDate.day) {
-      await _updateRates(baseCurrency);
+    // Check if data is older than a day or if no data is available (lastUpdate is null)
+    if (lastUpdate == null ||
+        lastUpdate.difference(currentDate).inDays.abs() >= 1) {
+      try {
+        await _updateRates(prefCurrency);
+      } on InternetUnavailableError {
+        if (lastUpdate == null) {
+          // If no data available and there is an InternetUnavailableError, then rethrow it
+          rethrow;
+        }
+        // else, ignore the error because we have data (even if it is outdated)
+      } catch (e) {
+        // Handle all other exceptions or rethrow as needed
+        rethrow;
+      }
     }
-
-    return Map<String, double>.from(_box.toMap())
-      ..remove('lastUpdate'); // Exclude the 'lastUpdate' key
   }
 
   Future<double> getSingleRate(
     String baseCurrency,
     String targetCurrency,
   ) async {
-    final currentDate = DateTime.now();
-    final lastUpdate = _box.get('lastUpdate') as DateTime?;
-
-    if (lastUpdate == null || lastUpdate.day != currentDate.day) {
-      await _updateRates(baseCurrency);
-    }
-
-    // Retrieve the rate for the targetCurrency and the baseCurrency
+    double baseRate = 1.0;
+    // Assuming data is always available and up-to-date.
+    // Retrieve the rates directly from the box.
     final targetRate = _box.get(targetCurrency) as double?;
-    final baseRate = _box.get(baseCurrency) as double?;
+    if (baseCurrency != prefCurrency) {
+      baseRate = _box.get(baseCurrency);
+    }
 
-    // Check if either rate is null
+    // rates must be available; if not, throw an exception.
     if (targetRate == null) {
-      throw Exception('Rate for $targetCurrency not found');
-    }
-    if (baseRate == null) {
-      throw Exception('Rate for $baseCurrency not found');
+      throw Exception(
+          'Unable to find rate for $targetCurrency');
     }
 
-    // Calculate the combined rate
-    final combinedRate = targetRate / baseRate;
-
-    return combinedRate;
+    // Calculate and return the combined rate.
+    return targetRate / baseRate;
   }
 
   Future<void> _updateRates(String baseCurrency) async {
     try {
-      final rates = await _currencyService.getExchangeRateMap(baseCurrency);
+      final rates = await _exchangeService.getExchangeRateMap(baseCurrency);
       await _box.putAll(rates);
       await _box.put('lastUpdate', DateTime.now());
     } catch (e) {
