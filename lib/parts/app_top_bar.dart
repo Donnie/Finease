@@ -19,6 +19,13 @@ PreferredSize appBar(
             borderRadius: BorderRadius.circular(32),
             clipBehavior: Clip.antiAlias,
             child: AppBar(
+              leading: Navigator.of(context).canPop()
+                  ? IconButton(
+                      icon: const Icon(Icons.arrow_back),
+                      onPressed: () => Navigator.of(context).pop(),
+                    )
+                  : null,
+              automaticallyImplyLeading: true,
               backgroundColor: context.secondaryContainer.withOpacity(0.5),
               scrolledUnderElevation: 0,
               title: Text(title, style: context.titleMedium),
