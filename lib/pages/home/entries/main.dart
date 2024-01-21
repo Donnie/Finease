@@ -6,8 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class EntriesPage extends StatefulWidget {
+  final DateTime? startDate;
+  final DateTime? endDate;
+  final int? accountID;
   const EntriesPage({
     super.key,
+    this.accountID,
+    this.startDate,
+    this.endDate,
   });
 
   @override
@@ -25,7 +31,10 @@ class EntriesPageState extends State<EntriesPage> {
   }
 
   Future<void> loadEntries() async {
-    List<Entry> entriesList = await _entryService.getAllEntries();
+    List<Entry> entriesList = await _entryService.getAllEntries(
+      startDate: widget.startDate,
+      endDate: widget.endDate,
+    );
     entriesList.sort((a, b) => (b.date!.compareTo(a.date!)));
 
     List<Entry> mergedEntries = [];

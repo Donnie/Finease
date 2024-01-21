@@ -53,6 +53,16 @@ final GoRouter goRouter = GoRouter(
       },
     ),
     GoRoute(
+      name: RoutesName.transactionsByDate.name,
+      path: RoutesName.transactionsByDate.path,
+      builder: (BuildContext context, GoRouterState state) {
+        Map<String, String> range = state.extra as Map<String, String>;
+        final DateTime startDate = DateTime.parse(range['startDate']!);
+        final DateTime endDate = DateTime.parse(range['endDate']!);
+        return EntriesPage(startDate: startDate, endDate: endDate);
+      },
+    ),
+    GoRoute(
       name: RoutesName.setupAccounts.name,
       path: RoutesName.setupAccounts.path,
       builder: (BuildContext context, GoRouterState state) {
@@ -75,8 +85,7 @@ final GoRouter goRouter = GoRouter(
         final int accountID = int.parse(
           state.pathParameters[RoutesName.editAccount.param]!,
         );
-        dynamic Function() onFormSubmitted =
-            state.extra as dynamic Function();
+        dynamic Function() onFormSubmitted = state.extra as dynamic Function();
         return EditAccountScreen(
           accountID: accountID,
           onFormSubmitted: onFormSubmitted,
