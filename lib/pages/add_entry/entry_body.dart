@@ -75,7 +75,6 @@ class AddEntryBodyState extends State<AddEntryBody> {
                 return null;
               },
             ),
-            const SizedBox(height: 16),
             AccountChoiceFormField(
               key: UniqueKey(),
               title: "To Account",
@@ -93,7 +92,7 @@ class AddEntryBodyState extends State<AddEntryBody> {
                 return null;
               },
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 32),
             AppTextFormField(
               key: const Key('entry_notes'),
               controller: widget.entryNotes,

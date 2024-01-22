@@ -56,28 +56,29 @@ class AccountChoice extends StatelessWidget {
     onAccountSelected?.call(selectedAccount);
   }
 
-  void _handleAddNew() {
-    onAddNew?.call();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return FractionallySizedBox(
-      widthFactor: 1,
-      child: Column(
-        children: [
-          ListTile(
-            title: Text(
-              title,
-              style: context.titleMedium,
-            ),
+    return Column(
+      children: [
+        ListTile(
+          title: Text(
+            title,
+            style: context.titleMedium,
           ),
-          Wrap(
-            spacing: 12.0,
-            runSpacing: 12.0,
-            children: [
-              ...accounts.map(
-                (account) => AccountChip(
+        ),
+        SizedBox(
+          height: 60,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: accounts.length + 1,
+            itemBuilder: (BuildContext context, int index) {
+              if (index == accounts.length) {
+                return AddNewAccount(onSelected: (val) => onAddNew?.call());
+              }
+              Account account = accounts[index];
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: AccountChip(
                   selected: selectedAccount?.id == account.id,
                   avatar: Text(
                     SupportedCurrency[account.currency]!,
@@ -89,19 +90,18 @@ class AccountChoice extends StatelessWidget {
                     style: TextStyle(color: context.primary),
                   ),
                 ),
-              ),
-              AddNewAccount(onSelected: (val) => _handleAddNew()),
-            ],
+              );
+            },
           ),
-          if (errorMessage != null)
-            ListTile(
-              title: Text(
-                errorMessage!,
-                style: TextStyle(color: context.error),
-              ),
+        ),
+        if (errorMessage != null)
+          ListTile(
+            title: Text(
+              errorMessage!,
+              style: TextStyle(color: context.error),
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 }
