@@ -18,6 +18,32 @@ class EntryService {
     return entry;
   }
 
+  Future<void> createMultiCurrencyEntry(Entry entry, double debitAmount) async {
+    final creditAccount =
+        await AccountService().getAccount(entry.creditAccountId);
+    final debitAccount =
+        await AccountService().getAccount(entry.debitAccountId);
+
+    final forexAccountDebit = await AccountService()
+        .createForexAccountIfNotExist(debitAccount!.currency);
+    final forexAccountCredit = await AccountService()
+        .createForexAccountIfNotExist(creditAccount!.currency);
+
+    await createEntry(Entry(
+      debitAccountId: entry.debitAccountId,
+      creditAccountId: forexAccountDebit.id!,
+      amount: debitAmount,
+      notes: "Forex transaction by App",
+    ));
+
+    await createEntry(Entry(
+      debitAccountId: forexAccountCredit.id!,
+      creditAccountId: entry.creditAccountId,
+      amount: entry.amount,
+      notes: entry.notes,
+    ));
+  }
+
   Future<void> createForexEntry(Entry entry) async {
     final creditAccount =
         await AccountService().getAccount(entry.creditAccountId);

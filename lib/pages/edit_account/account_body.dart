@@ -2,7 +2,6 @@ import 'package:currency_picker/currency_picker.dart';
 import 'package:finease/db/accounts.dart';
 import 'package:finease/db/currency.dart';
 import 'package:finease/parts/account_item.dart';
-import 'package:finease/parts/export.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -59,11 +58,13 @@ class EditAccountBody extends StatelessWidget {
                 const SizedBox(height: 16),
               ]),
             ),
-            AppTextFormField(
+            TextFormField(
               key: const Key('account_name'),
               controller: accountName,
-              hintText: 'Enter account name',
-              label: 'Enter account name',
+              decoration: const InputDecoration(
+                hintText: 'Enter account name',
+                label: Text('Enter account name'),
+              ),
               keyboardType: TextInputType.name,
               validator: (val) {
                 if (val!.isNotEmpty) {
@@ -86,11 +87,13 @@ class EditAccountBody extends StatelessWidget {
                         accountCurrency.text = currency.code,
                   ),
                   child: AbsorbPointer(
-                    child: AppTextFormField(
+                    child: TextFormField(
                       key: const Key('account_currency'),
                       controller: accountCurrency,
-                      hintText: 'Select currency',
-                      label: 'Currency',
+                      decoration: const InputDecoration(
+                        hintText: 'Select currency',
+                        label: Text('Currency'),
+                      ),
                       keyboardType: TextInputType.name,
                       validator: (val) {
                         if (val!.isNotEmpty) {

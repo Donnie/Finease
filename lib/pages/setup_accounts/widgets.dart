@@ -56,52 +56,53 @@ class AccountChoice extends StatelessWidget {
     onAccountSelected?.call(selectedAccount);
   }
 
-  void _handleAddNew() {
-    onAddNew?.call();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return FractionallySizedBox(
-      widthFactor: 1,
-      child: Column(
-        children: [
+    return Column(
+      children: [
+        ListTile(
+          title: Text(
+            title,
+            style: context.titleMedium,
+          ),
+        ),
+        SizedBox(
+          height: 48,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: accounts.length + 1,
+            itemBuilder: (BuildContext context, int index) {
+              if (index == accounts.length) {
+                return AddNewAccount(onSelected: (val) => onAddNew?.call());
+              }
+              Account account = accounts[index];
+              return AccountChip(
+                invisible: (selectedAccount?.id != null &&
+                    selectedAccount?.id != account.id),
+                selected: selectedAccount?.id == account.id,
+                avatar: Text(
+                  SupportedCurrency[account.currency]!,
+                  style: context.bodyMedium,
+                ),
+                onSelected: (val) => _handleAccountSelection(account, val),
+                label: Text(
+                  account.name,
+                  style: context.bodyMedium,
+                ),
+              );
+            },
+          ),
+        ),
+        if (errorMessage != null)
           ListTile(
             title: Text(
-              title,
-              style: context.titleMedium,
-            ),
-          ),
-          Wrap(
-            spacing: 12.0,
-            runSpacing: 12.0,
-            children: [
-              ...accounts.map(
-                (account) => AccountChip(
-                  selected: selectedAccount?.id == account.id,
-                  avatar: Text(
-                    SupportedCurrency[account.currency]!,
-                    style: context.bodyLarge,
-                  ),
-                  onSelected: (val) => _handleAccountSelection(account, val),
-                  label: Text(
-                    account.name,
-                    style: TextStyle(color: context.primary),
-                  ),
-                ),
-              ),
-              AddNewAccount(onSelected: (val) => _handleAddNew()),
-            ],
-          ),
-          if (errorMessage != null)
-            ListTile(
-              title: Text(
-                errorMessage!,
-                style: TextStyle(color: context.error),
+              errorMessage!,
+              style: context.bodyMedium!.copyWith(
+                color: context.error,
               ),
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 }
@@ -124,7 +125,7 @@ class AddNewAccount extends StatelessWidget {
       onSelected: onSelected,
       label: Text(
         "Add new",
-        style: TextStyle(color: context.primary),
+        style: context.bodyMedium,
       ),
     );
   }
@@ -134,6 +135,7 @@ class AccountChip extends StatelessWidget {
   const AccountChip({
     this.selected,
     this.onSelected,
+    this.invisible = false,
     this.avatar,
     required this.label,
     super.key,
@@ -143,28 +145,35 @@ class AccountChip extends StatelessWidget {
   final Widget? avatar;
   final Widget label;
   final bool? selected;
+  final bool invisible;
 
   @override
   Widget build(BuildContext context) {
-    return ChoiceChip(
-      selected: selected ?? false,
-      onSelected: onSelected,
-      avatar: avatar,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(28),
-        side: BorderSide(
-          width: 1,
-          color: context.primary,
+    return Visibility(
+      visible: !invisible,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        child: ChoiceChip(
+          selected: selected ?? false,
+          onSelected: onSelected,
+          avatar: avatar,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(28),
+            side: BorderSide(
+              width: 1,
+              color: context.primary,
+            ),
+          ),
+          showCheckmark: false,
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          label: label,
+          labelStyle: Theme.of(context)
+              .textTheme
+              .titleMedium
+              ?.copyWith(color: context.onSurfaceVariant),
+          padding: const EdgeInsets.all(12),
         ),
       ),
-      showCheckmark: false,
-      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      label: label,
-      labelStyle: Theme.of(context)
-          .textTheme
-          .titleMedium
-          ?.copyWith(color: context.onSurfaceVariant),
-      padding: const EdgeInsets.all(12),
     );
   }
 }
