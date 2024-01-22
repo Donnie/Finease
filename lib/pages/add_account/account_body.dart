@@ -3,7 +3,6 @@ import 'package:finease/core/extensions/color_extension.dart';
 import 'package:finease/db/accounts.dart';
 import 'package:finease/db/currency.dart';
 import 'package:finease/parts/account_item.dart';
-import 'package:finease/parts/export.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -67,11 +66,13 @@ class AddAccountBodyState extends State<AddAccountBody> {
               ),
             ),
             const SizedBox(height: 16),
-            AppTextFormField(
+            TextFormField(
               key: const Key('account_name'),
               controller: widget.accountName,
-              hintText: 'Enter account name',
-              label: 'Enter account name',
+              decoration: const InputDecoration(
+                hintText: 'Enter account name',
+                label: Text('Enter account name'),
+              ),
               keyboardType: TextInputType.name,
               validator: (val) {
                 if (val!.isNotEmpty) {
@@ -95,14 +96,16 @@ class AddAccountBodyState extends State<AddAccountBody> {
                       ),
                     ),
                   ),
-                  AppTextFormField(
+                  TextFormField(
                     key: const Key('account_balance'),
                     controller: widget.accountBalance,
-                    hintText: 'Enter current balance',
+                    decoration: const InputDecoration(
+                      hintText: 'Enter current balance',
+                      label: Text('Enter current balance'),
+                    ),
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(RegExp("[0-9.-]")),
                     ],
-                    label: 'Enter current balance',
                     keyboardType: TextInputType.number,
                     validator: (val) {
                       if (val!.isNotEmpty) {
@@ -125,11 +128,13 @@ class AddAccountBodyState extends State<AddAccountBody> {
                     widget.accountCurrency.text = currency.code,
               ),
               child: AbsorbPointer(
-                child: AppTextFormField(
+                child: TextFormField(
                   key: const Key('account_currency'),
                   controller: widget.accountCurrency,
-                  hintText: 'Select currency',
-                  label: 'Currency',
+                  decoration: const InputDecoration(
+                    hintText: 'Select currency',
+                    label: Text('Currency'),
+                  ),
                   keyboardType: TextInputType.name,
                   validator: (val) {
                     if (val!.isNotEmpty) {

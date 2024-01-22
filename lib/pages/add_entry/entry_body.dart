@@ -1,6 +1,5 @@
 import 'package:finease/db/accounts.dart';
 import 'package:finease/pages/export.dart';
-import 'package:finease/parts/export.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -93,18 +92,23 @@ class AddEntryBodyState extends State<AddEntryBody> {
               },
             ),
             const SizedBox(height: 32),
-            AppTextFormField(
+            TextFormField(
               key: const Key('entry_notes'),
               controller: widget.entryNotes,
-              hintText: 'Enter entry notes',
-              label: 'Enter entry notes',
+              decoration: const InputDecoration(
+                hintText: 'Enter entry notes',
+                label: Text('Enter entry notes'),
+              ),
               keyboardType: TextInputType.text,
             ),
             const SizedBox(height: 16),
-            AppTextFormField(
+            TextFormField(
               key: const Key('entry_amount'),
               controller: widget.entryAmount,
-              hintText: 'Enter amount',
+              decoration: const InputDecoration(
+                hintText: 'Enter amount',
+                label: Text('Enter amount'),
+              ),
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r"[0-9.]")),
                 TextInputFormatter.withFunction((oldValue, newValue) {
@@ -116,7 +120,6 @@ class AddEntryBodyState extends State<AddEntryBody> {
                   return oldValue;
                 }),
               ],
-              label: 'Enter amount',
               keyboardType: TextInputType.number,
               validator: (val) {
                 if (val == null) {

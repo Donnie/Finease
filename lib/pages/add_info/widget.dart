@@ -1,9 +1,7 @@
 import 'package:currency_picker/currency_picker.dart';
 import 'package:finease/db/currency.dart';
 import 'package:flutter/material.dart';
-
 import 'package:finease/core/export.dart';
-import 'package:finease/parts/export.dart';
 import 'package:finease/parts/intro_top.dart';
 
 class AddInfoBody extends StatelessWidget {
@@ -53,17 +51,19 @@ class AddInfoBody extends StatelessWidget {
               child: Column(
                 children: [
                   const SizedBox(height: 32),
-                  AppTextFormField(
+                  TextFormField(
                     key: const Key('user_name_textfield'),
                     controller: name,
-                    hintText: language["enterNameHint"],
-                    label: language["nameHint"],
+                    decoration: const InputDecoration(
+                      hintText: "Enter name",
+                      label: Text("Name"),
+                    ),
                     keyboardType: TextInputType.name,
                     validator: (val) {
                       if (val!.isNotEmpty) {
                         return null;
                       } else {
-                        return language["enterNameHint"];
+                        return "Enter name";
                       }
                     },
                   ),
@@ -76,11 +76,13 @@ class AddInfoBody extends StatelessWidget {
                       onSelect: (Currency curr) => currency.text = curr.code,
                     ),
                     child: AbsorbPointer(
-                      child: AppTextFormField(
+                      child: TextFormField(
                         key: const Key('pref_currency'),
                         controller: currency,
-                        hintText: "Enter Preferred Currency",
-                        label: "Enter Preferred Currency",
+                        decoration: const InputDecoration(
+                          hintText: "Enter Preferred Currency",
+                          label: Text("Enter Preferred Currency"),
+                        ),
                         keyboardType: TextInputType.name,
                         validator: (val) {
                           if (val!.isNotEmpty) {
