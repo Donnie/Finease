@@ -58,6 +58,42 @@ class AddEntryBodyState extends State<AddEntryBody> {
         key: widget.formState,
         child: ListView(
           children: [
+            AccountChoiceFormField(
+              key: UniqueKey(),
+              title: "From Account",
+              accounts: widget.accounts,
+              selectedAccount: widget.debitAccount,
+              onAccountSelected: widget.onDebitAccountSelected,
+              onAddNew: () => context.pushNamed(
+                widget.addNewRoute,
+                extra: debitRouteArg,
+              ),
+              validator: (Account? account) {
+                if (account == null) {
+                  return 'Please select an account';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 16),
+            AccountChoiceFormField(
+              key: UniqueKey(),
+              title: "To Account",
+              accounts: widget.accounts,
+              selectedAccount: widget.creditAccount,
+              onAccountSelected: widget.onCreditAccountSelected,
+              onAddNew: () => context.pushNamed(
+                widget.addNewRoute,
+                extra: creditRouteArg,
+              ),
+              validator: (Account? account) {
+                if (account == null) {
+                  return 'Please select an account';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 16),
             AppTextFormField(
               key: const Key('entry_notes'),
               controller: widget.entryNotes,
@@ -100,42 +136,6 @@ class AddEntryBodyState extends State<AddEntryBody> {
             DateTimePicker(
               dateTime: widget.dateTime,
               onDateTimeChanged: widget.onDateTimeChanged,
-            ),
-            const SizedBox(height: 16),
-            AccountChoiceFormField(
-              key: UniqueKey(),
-              title: "From Account",
-              accounts: widget.accounts,
-              selectedAccount: widget.debitAccount,
-              onAccountSelected: widget.onDebitAccountSelected,
-              onAddNew: () => context.pushNamed(
-                widget.addNewRoute,
-                extra: debitRouteArg,
-              ),
-              validator: (Account? account) {
-                if (account == null) {
-                  return 'Please select an account';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            AccountChoiceFormField(
-              key: UniqueKey(),
-              title: "To Account",
-              accounts: widget.accounts,
-              selectedAccount: widget.creditAccount,
-              onAccountSelected: widget.onCreditAccountSelected,
-              onAddNew: () => context.pushNamed(
-                widget.addNewRoute,
-                extra: creditRouteArg,
-              ),
-              validator: (Account? account) {
-                if (account == null) {
-                  return 'Please select an account';
-                }
-                return null;
-              },
             ),
           ],
         ),
