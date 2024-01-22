@@ -33,6 +33,8 @@ class BankAccounts extends StatelessWidget {
             ].contains(a.type))
         .toList();
 
+    List<Account> hiddenAccounts = accounts.where((a) => a.hidden).toList();
+
     return ListView(
       children: [
         ...mainAccounts.map(
@@ -46,6 +48,10 @@ class BankAccounts extends StatelessWidget {
           ),
         ),
         const Divider(),
+        const Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Text("Income and Expense Accounts"),
+        ),
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Wrap(
@@ -53,6 +59,30 @@ class BankAccounts extends StatelessWidget {
             runSpacing: 12.0,
             children: [
               ...extAccounts.map(
+                (a) => BankAccountChipClickable(
+                  account: a,
+                  onTap: () => context.pushNamed(
+                    RoutesName.editAccount.name,
+                    pathParameters: {'id': a.id.toString()},
+                    extra: onEdit,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const Divider(),
+        const Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Text("Hidden Accounts"),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Wrap(
+            spacing: 12.0,
+            runSpacing: 12.0,
+            children: [
+              ...hiddenAccounts.map(
                 (a) => BankAccountChipClickable(
                   account: a,
                   onTap: () => context.pushNamed(
@@ -200,14 +230,18 @@ class BankAccountChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Chip(
-      padding: const EdgeInsets.all(12.0),
+      padding: account.hidden
+          ? const EdgeInsets.all(6.0)
+          : const EdgeInsets.all(12.0),
       avatar: Text(
         SupportedCurrency[account.currency]!,
         style: context.bodyLarge,
       ),
       label: Text(account.name, style: context.bodyLarge),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: account.hidden
+            ? BorderRadius.circular(14)
+            : BorderRadius.circular(28),
         side: BorderSide(
           width: 1,
           color: context.primary,
