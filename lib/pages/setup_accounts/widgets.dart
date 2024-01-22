@@ -76,19 +76,18 @@ class AccountChoice extends StatelessWidget {
                 return AddNewAccount(onSelected: (val) => onAddNew?.call());
               }
               Account account = accounts[index];
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                child: AccountChip(
-                  selected: selectedAccount?.id == account.id,
-                  avatar: Text(
-                    SupportedCurrency[account.currency]!,
-                    style: context.bodyLarge,
-                  ),
-                  onSelected: (val) => _handleAccountSelection(account, val),
-                  label: Text(
-                    account.name,
-                    style: TextStyle(color: context.primary),
-                  ),
+              return AccountChip(
+                invisible: (selectedAccount?.id != null &&
+                    selectedAccount?.id != account.id),
+                selected: selectedAccount?.id == account.id,
+                avatar: Text(
+                  SupportedCurrency[account.currency]!,
+                  style: context.bodyLarge,
+                ),
+                onSelected: (val) => _handleAccountSelection(account, val),
+                label: Text(
+                  account.name,
+                  style: TextStyle(color: context.primary),
                 ),
               );
             },
@@ -134,6 +133,7 @@ class AccountChip extends StatelessWidget {
   const AccountChip({
     this.selected,
     this.onSelected,
+    this.invisible,
     this.avatar,
     required this.label,
     super.key,
@@ -143,28 +143,35 @@ class AccountChip extends StatelessWidget {
   final Widget? avatar;
   final Widget label;
   final bool? selected;
+  final bool? invisible;
 
   @override
   Widget build(BuildContext context) {
-    return ChoiceChip(
-      selected: selected ?? false,
-      onSelected: onSelected,
-      avatar: avatar,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(28),
-        side: BorderSide(
-          width: 1,
-          color: context.primary,
+    return Visibility(
+      visible: !(invisible ?? false),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        child: ChoiceChip(
+          selected: selected ?? false,
+          onSelected: onSelected,
+          avatar: avatar,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(28),
+            side: BorderSide(
+              width: 1,
+              color: context.primary,
+            ),
+          ),
+          showCheckmark: false,
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          label: label,
+          labelStyle: Theme.of(context)
+              .textTheme
+              .titleMedium
+              ?.copyWith(color: context.onSurfaceVariant),
+          padding: const EdgeInsets.all(12),
         ),
       ),
-      showCheckmark: false,
-      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      label: label,
-      labelStyle: Theme.of(context)
-          .textTheme
-          .titleMedium
-          ?.copyWith(color: context.onSurfaceVariant),
-      padding: const EdgeInsets.all(12),
     );
   }
 }

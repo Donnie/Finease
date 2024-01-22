@@ -1,4 +1,5 @@
 import 'package:finease/db/accounts.dart';
+import 'package:finease/db/currency.dart';
 import 'package:finease/pages/export.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,6 +13,7 @@ class AddEntryBody extends StatefulWidget {
     this.dateTime,
     this.creditAccount,
     this.debitAccount,
+    this.defaultCurrency,
     required this.entryAmount,
     required this.entryNotes,
     required this.formState,
@@ -30,6 +32,7 @@ class AddEntryBody extends StatefulWidget {
   final String addNewRoute;
   final TextEditingController entryAmount;
   final TextEditingController entryNotes;
+  final String? defaultCurrency;
   final ValueChanged<DateTime> onDateTimeChanged;
   final ValueChanged<Account?> onCreditAccountSelected;
   final ValueChanged<Account?> onDebitAccountSelected;
@@ -51,6 +54,8 @@ class AddEntryBodyState extends State<AddEntryBody> {
 
   @override
   Widget build(BuildContext context) {
+    String? creditCurrency = SupportedCurrency[
+        widget.creditAccount?.currency ?? widget.defaultCurrency];
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Form(
@@ -105,9 +110,15 @@ class AddEntryBodyState extends State<AddEntryBody> {
             TextFormField(
               key: const Key('entry_amount'),
               controller: widget.entryAmount,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 hintText: 'Enter amount',
-                label: Text('Enter amount'),
+                label: const Text('Enter amount'),
+                prefixIcon: Padding(
+                  padding: const EdgeInsets.only(left: 12, right: 4),
+                  child: Text("$creditCurrency"),
+                ),
+                prefixIconConstraints:
+                    const BoxConstraints(minWidth: 0, minHeight: 0),
               ),
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r"[0-9.]")),
@@ -120,7 +131,9 @@ class AddEntryBodyState extends State<AddEntryBody> {
                   return oldValue;
                 }),
               ],
-              keyboardType: TextInputType.number,
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
               validator: (val) {
                 if (val == null) {
                   return 'Enter an amount';

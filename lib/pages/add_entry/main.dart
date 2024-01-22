@@ -1,5 +1,6 @@
 import 'package:finease/db/accounts.dart';
 import 'package:finease/db/entries.dart';
+import 'package:finease/db/settings.dart';
 import 'package:finease/pages/export.dart';
 import 'package:finease/parts/error_dialog.dart';
 import 'package:finease/parts/export.dart';
@@ -22,6 +23,7 @@ class AddEntryScreen extends StatefulWidget {
 class AddEntryScreenState extends State<AddEntryScreen> {
   final EntryService _entryService = EntryService();
   final AccountService _accountService = AccountService();
+  final SettingService _settingService = SettingService();
 
   final _formState = GlobalKey<FormState>();
   final _entryNotes = TextEditingController();
@@ -31,6 +33,7 @@ class AddEntryScreenState extends State<AddEntryScreen> {
   Account? _creditAccount;
   Account? _debitAccount;
   DateTime? _dateTime;
+  String? _defaultCurrency;
 
   @override
   void initState() {
@@ -40,8 +43,11 @@ class AddEntryScreenState extends State<AddEntryScreen> {
 
   Future<void> _fetchAccounts() async {
     final accounts = await _accountService.getAllAccounts(false);
+    final curr = await _settingService.getSetting(Setting.prefCurrency);
+
     setState(() {
       _accounts = accounts;
+      _defaultCurrency = curr;
     });
   }
 
@@ -54,6 +60,7 @@ class AddEntryScreenState extends State<AddEntryScreen> {
         creditAccount: _creditAccount,
         dateTime: _dateTime,
         debitAccount: _debitAccount,
+        defaultCurrency: _defaultCurrency,
         entryAmount: _entryAmount,
         entryNotes: _entryNotes,
         formState: _formState,
