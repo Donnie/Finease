@@ -10,6 +10,7 @@ dependencies:
   currency_picker: 2.0.20
   dynamic_color: 1.6.9
   file_picker: 6.1.1
+  fl_chart: 0.66.0
   flutter:
     sdk: flutter
   go_router: 13.0.1
