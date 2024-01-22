@@ -14,7 +14,8 @@ class AddEntryBody extends StatefulWidget {
     this.creditAccount,
     this.debitAccount,
     this.defaultCurrency,
-    required this.entryAmount,
+    required this.creditAmount,
+    required this.debitAmount,
     required this.entryNotes,
     required this.formState,
     required this.onCreditAccountSelected,
@@ -30,7 +31,8 @@ class AddEntryBody extends StatefulWidget {
   final List<Account> accounts;
   final Function routeArg;
   final String addNewRoute;
-  final TextEditingController entryAmount;
+  final TextEditingController creditAmount;
+  final TextEditingController debitAmount;
   final TextEditingController entryNotes;
   final String? defaultCurrency;
   final ValueChanged<DateTime> onDateTimeChanged;
@@ -54,8 +56,13 @@ class AddEntryBodyState extends State<AddEntryBody> {
 
   @override
   Widget build(BuildContext context) {
-    String? creditCurrency = SupportedCurrency[
-        widget.creditAccount?.currency ?? widget.defaultCurrency];
+    String? creditCurrencyISO =
+        widget.creditAccount?.currency ?? widget.defaultCurrency;
+    String? creditCurrency = SupportedCurrency[creditCurrencyISO];
+    String? debitCurrencyISO =
+        widget.debitAccount?.currency ?? widget.defaultCurrency;
+    String? debitCurrency = SupportedCurrency[debitCurrencyISO];
+    bool showDebitAmount = creditCurrency != debitCurrency;
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Form(
@@ -106,13 +113,61 @@ class AddEntryBodyState extends State<AddEntryBody> {
               ),
               keyboardType: TextInputType.text,
             ),
+            Visibility(
+              visible: showDebitAmount,
+              child: Column(
+                children: [
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    key: const Key('entry_amount_debit'),
+                    controller: widget.debitAmount,
+                    decoration: InputDecoration(
+                      hintText: 'Enter $debitCurrencyISO amount',
+                      label: Text('Enter $debitCurrencyISO amount'),
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.only(left: 12, right: 4),
+                        child: Text("$debitCurrency"),
+                      ),
+                      prefixIconConstraints:
+                          const BoxConstraints(minWidth: 0, minHeight: 0),
+                    ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r"[0-9.]")),
+                      TextInputFormatter.withFunction((oldValue, newValue) {
+                        try {
+                          final text = newValue.text;
+                          if (text.isNotEmpty) double.parse(text);
+                          return newValue;
+                        } catch (_) {}
+                        return oldValue;
+                      }),
+                    ],
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    validator: (val) {
+                      if (val == null) {
+                        return 'Enter an amount';
+                      }
+                      if (val.isEmpty) {
+                        return 'Enter an amount';
+                      }
+                      if (double.tryParse(val) == 0) {
+                        return 'Enter an amount';
+                      }
+                      return null;
+                    },
+                  ),
+                ],
+              ),
+            ),
             const SizedBox(height: 16),
             TextFormField(
-              key: const Key('entry_amount'),
-              controller: widget.entryAmount,
+              key: const Key('entry_amount_credit'),
+              controller: widget.creditAmount,
               decoration: InputDecoration(
-                hintText: 'Enter amount',
-                label: const Text('Enter amount'),
+                hintText: 'Enter $creditCurrencyISO amount',
+                label: Text('Enter $creditCurrencyISO amount'),
                 prefixIcon: Padding(
                   padding: const EdgeInsets.only(left: 12, right: 4),
                   child: Text("$creditCurrency"),

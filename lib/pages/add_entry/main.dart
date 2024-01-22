@@ -27,7 +27,8 @@ class AddEntryScreenState extends State<AddEntryScreen> {
 
   final _formState = GlobalKey<FormState>();
   final _entryNotes = TextEditingController();
-  final _entryAmount = TextEditingController();
+  final _creditAmount = TextEditingController();
+  final _debitAmount = TextEditingController();
   List<Account> _accounts = [];
 
   Account? _creditAccount;
@@ -63,7 +64,8 @@ class AddEntryScreenState extends State<AddEntryScreen> {
         dateTime: _dateTime,
         debitAccount: _debitAccount,
         defaultCurrency: _defaultCurrency,
-        entryAmount: _entryAmount,
+        creditAmount: _creditAmount,
+        debitAmount: _debitAmount,
         entryNotes: _entryNotes,
         formState: _formState,
         onCreditAccountSelected: _onCreditAccountSelected,
@@ -104,19 +106,20 @@ class AddEntryScreenState extends State<AddEntryScreen> {
 
   Future<void> _submitForm() async {
     String entryNotes = _entryNotes.text;
-    double amount = double.tryParse(_entryAmount.text) ?? 0;
+    double creditAmount = double.tryParse(_creditAmount.text) ?? 0;
     if (_formState.currentState?.validate() ?? false) {
       context.pop();
       Entry entry = Entry(
         debitAccountId: _debitAccount!.id!,
         creditAccountId: _creditAccount!.id!,
-        amount: amount,
+        amount: creditAmount,
         notes: entryNotes,
         date: _dateTime,
       );
       try {
         if (_debitAccount!.currency != _creditAccount!.currency) {
-          await _entryService.createForexEntry(entry);
+          double debitAmount = double.tryParse(_debitAmount.text) ?? 0;
+          await _entryService.createMultiCurrencyEntry(entry, debitAmount);
         } else {
           await _entryService.createEntry(entry);
         }
