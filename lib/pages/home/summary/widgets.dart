@@ -37,12 +37,13 @@ class NetWorthCard extends StatelessWidget {
               amount: networthAmount,
               liquid: liquidAmount,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 8),
             TotalLiabilitiesAsset(
               currency: currency,
               liabilities: liabilitiesAmount,
               asset: assetAmount,
             ),
+            const SizedBox(height: 8),
           ],
         ),
       ),
@@ -68,51 +69,49 @@ class TotalNetWorthWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Net Worth",
-                    style: context.titleMedium?.copyWith(
-                      color: context.onPrimaryContainer.withOpacity(0.85),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    "$symbol${amount.toStringAsFixed(2)}",
-                    style: context.headlineMedium?.copyWith(
-                      color: context.onPrimaryContainer,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Net Worth",
+                style: context.titleMedium?.copyWith(
+                  color: context.onPrimaryContainer.withOpacity(0.85),
+                ),
               ),
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    "Liquid",
-                    style: context.titleMedium?.copyWith(
-                      color: context.onPrimaryContainer.withOpacity(0.85),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    "$symbol$liquid",
-                    style: context.headlineMedium?.copyWith(
-                      color: context.onPrimaryContainer,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
+              const SizedBox(height: 8),
+              Text(
+                "$symbol${amount.toStringAsFixed(2)}",
+                style: context.headlineMedium?.copyWith(
+                  color: context.onPrimaryContainer,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Liquid",
+                style: context.titleMedium?.copyWith(
+                  color: context.onPrimaryContainer.withOpacity(0.85),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                "$symbol${liquid.toStringAsFixed(2)}",
+                style: context.headlineMedium?.copyWith(
+                  color: context.onPrimaryContainer,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     );
@@ -162,7 +161,7 @@ class TotalLiabilitiesAsset extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '$symbol$asset',
+                    '$symbol${asset.toStringAsFixed(2)}',
                     style: context.titleLarge?.copyWith(
                       color: context.onPrimaryContainer,
                     ),
@@ -191,7 +190,7 @@ class TotalLiabilitiesAsset extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '$symbol${(liabilities * -1)}',
+                    '$symbol${(liabilities * -1).toStringAsFixed(2)}',
                     style: context.titleLarge?.copyWith(
                       color: context.onPrimaryContainer,
                     ),

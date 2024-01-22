@@ -67,7 +67,7 @@ class AccountChoice extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: 60,
+          height: 48,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: accounts.length + 1,
@@ -82,12 +82,12 @@ class AccountChoice extends StatelessWidget {
                 selected: selectedAccount?.id == account.id,
                 avatar: Text(
                   SupportedCurrency[account.currency]!,
-                  style: context.bodyLarge,
+                  style: context.bodyMedium,
                 ),
                 onSelected: (val) => _handleAccountSelection(account, val),
                 label: Text(
                   account.name,
-                  style: TextStyle(color: context.primary),
+                  style: context.bodyMedium,
                 ),
               );
             },
@@ -97,7 +97,9 @@ class AccountChoice extends StatelessWidget {
           ListTile(
             title: Text(
               errorMessage!,
-              style: TextStyle(color: context.error),
+              style: context.bodyMedium!.copyWith(
+                color: context.error,
+              ),
             ),
           ),
       ],
@@ -123,7 +125,7 @@ class AddNewAccount extends StatelessWidget {
       onSelected: onSelected,
       label: Text(
         "Add new",
-        style: TextStyle(color: context.primary),
+        style: context.bodyMedium,
       ),
     );
   }
@@ -133,7 +135,7 @@ class AccountChip extends StatelessWidget {
   const AccountChip({
     this.selected,
     this.onSelected,
-    this.invisible,
+    this.invisible = false,
     this.avatar,
     required this.label,
     super.key,
@@ -143,12 +145,12 @@ class AccountChip extends StatelessWidget {
   final Widget? avatar;
   final Widget label;
   final bool? selected;
-  final bool? invisible;
+  final bool invisible;
 
   @override
   Widget build(BuildContext context) {
     return Visibility(
-      visible: !(invisible ?? false),
+      visible: !invisible,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4),
         child: ChoiceChip(

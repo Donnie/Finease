@@ -43,6 +43,8 @@ class AddEntryScreenState extends State<AddEntryScreen> {
 
   Future<void> _fetchAccounts() async {
     final accounts = await _accountService.getAllAccounts(false);
+    accounts.sort((a, b) => a.name.compareTo(b.name));
+
     final curr = await _settingService.getSetting(Setting.prefCurrency);
 
     setState(() {
