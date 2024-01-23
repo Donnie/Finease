@@ -12,7 +12,7 @@ class MonthService {
         await SettingService().getSetting(Setting.prefCurrency);
 
     final dbClient = await _databaseHelper.db;
-    final results = await dbClient.rawQuery('''
+    String query = '''
       WITH RECURSIVE MonthDates(monthDate) AS (
         SELECT DATETIME((SELECT MIN(date) FROM entries), 'start of month')
         UNION ALL
@@ -33,8 +33,8 @@ class MonthService {
             WHERE
               ac.type IN ('asset', 'liability') AND ad.type IN ('income', 'expense')
               AND e.date BETWEEN months.startDate AND months.endDate
-              AND ac.currency = '$prefCurrency'
-              AND ad.currency = '$prefCurrency'
+              AND ac.currency = ?
+              AND ad.currency = ?
           ), 0) AS income,
           COALESCE((
             SELECT
@@ -45,10 +45,10 @@ class MonthService {
             WHERE
               ad.type IN ('asset', 'liability') AND ac.type IN ('income', 'expense')
               AND e.date BETWEEN months.startDate AND months.endDate
-              AND ac.currency = '$prefCurrency'
-              AND ad.currency = '$prefCurrency'
+              AND ac.currency = ?
+              AND ad.currency = ?
           ), 0) AS expense,
-          '$prefCurrency' AS currency
+          ? AS currency
         FROM (
           SELECT 
             REPLACE(DATETIME(monthDate, 'start of month'), ' ', 'T') || 'Z' as startDate,
@@ -74,7 +74,12 @@ class MonthService {
         networth,
         currency
       FROM CumulativeTotals;
-    ''');
+    ''';
+
+    final results = await dbClient.rawQuery(
+      query,
+      [prefCurrency, prefCurrency, prefCurrency, prefCurrency, prefCurrency],
+    );
 
     try {
       return results.map((json) => Month.fromJson(json)).toList();
@@ -128,5 +133,5 @@ class Month {
     return (incomeSquared / (incomeSquared + expenseSquared));
   }
 
-  bool get good => factor > 0.5; 
+  bool get good => factor > 0.5;
 }
