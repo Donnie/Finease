@@ -24,29 +24,15 @@ class MonthService {
         SELECT 
           months.startDate,
           months.endDate,
-          COALESCE((
-            SELECT
-              SUM(e.amount)
-            FROM entries AS e
-            LEFT JOIN accounts AS ac ON e.credit_account_id = ac.id
-            LEFT JOIN accounts AS ad ON e.debit_account_id = ad.id
-            WHERE
-              ac.type IN ('asset', 'liability') AND ad.type IN ('income', 'expense')
-              AND e.date BETWEEN months.startDate AND months.endDate
-              AND ac.currency = ?
-              AND ad.currency = ?
+          COALESCE(SUM(
+            e.amount
+          ) FILTER (
+            WHERE ac.type IN ('asset', 'liability') AND ad.type IN ('income', 'expense')
           ), 0) AS income,
-          COALESCE((
-            SELECT
-              SUM(e.amount)
-            FROM entries AS e
-            LEFT JOIN accounts AS ac ON e.credit_account_id = ac.id
-            LEFT JOIN accounts AS ad ON e.debit_account_id = ad.id
-            WHERE
-              ad.type IN ('asset', 'liability') AND ac.type IN ('income', 'expense')
-              AND e.date BETWEEN months.startDate AND months.endDate
-              AND ac.currency = ?
-              AND ad.currency = ?
+          COALESCE(SUM(
+            e.amount
+          ) FILTER (
+            WHERE ad.type IN ('asset', 'liability') AND ac.type IN ('income', 'expense')
           ), 0) AS expense,
           ? AS currency
         FROM (
@@ -55,6 +41,10 @@ class MonthService {
             REPLACE(DATETIME(monthDate, 'start of month', '+1 month', '-1 second'), ' ', 'T') || 'Z' as endDate
           FROM MonthDates
         ) AS months
+        LEFT JOIN entries e ON e.date BETWEEN months.startDate AND months.endDate
+        LEFT JOIN accounts ac ON e.credit_account_id = ac.id
+        LEFT JOIN accounts ad ON e.debit_account_id = ad.id
+        GROUP BY months.startDate, months.endDate
       ),
       CumulativeTotals AS (
         SELECT
@@ -78,12 +68,13 @@ class MonthService {
 
     final results = await dbClient.rawQuery(
       query,
-      [prefCurrency, prefCurrency, prefCurrency, prefCurrency, prefCurrency],
+      [prefCurrency, prefCurrency, prefCurrency],
     );
 
     try {
       return results.map((json) => Month.fromJson(json)).toList();
     } catch (e) {
+      print(e);
       return [];
     }
   }
@@ -109,10 +100,10 @@ class Month {
   factory Month.fromJson(Map<String, dynamic> json) {
     return Month(
       date: DateTime.tryParse(json['date']),
-      effect: json['effect'] / 100,
-      expense: json['expense'] / 100,
-      income: json['income'] / 100,
-      networth: json['networth'] / 100,
+      effect: (json['effect'] ?? 0) / 100,
+      expense: (json['expense'] ?? 0) / 100,
+      income: (json['income'] ?? 0) / 100,
+      networth: (json['networth'] ?? 0) / 100,
       currency: json['currency'],
     );
   }
