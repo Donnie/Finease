@@ -1,6 +1,7 @@
 import 'package:finease/db/accounts.dart';
 import 'package:finease/db/currency.dart';
 import 'package:finease/pages/export.dart';
+import 'package:finease/parts/export.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -44,14 +45,42 @@ class AddEntryBody extends StatefulWidget {
 }
 
 class AddEntryBodyState extends State<AddEntryBody> {
-  creditRouteArg(Account account) async {
+  final CurrencyBoxService _currencyBoxService = CurrencyBoxService();
+  final FocusNode _debitFocusNode = FocusNode();
+  final FocusNode _creditFocusNode = FocusNode();
+  bool _useECBrate = false;
+  String? creditCurrencyISO;
+  String? debitCurrencyISO;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.debitAmount.addListener(_updateAmounts);
+    widget.creditAmount.addListener(_updateAmounts);
+  }
+
+  Future<void> creditRouteArg(Account account) async {
     await widget.routeArg();
     widget.onCreditAccountSelected(account);
   }
 
-  debitRouteArg(Account account) async {
+  Future<void> debitRouteArg(Account account) async {
     await widget.routeArg();
     widget.onDebitAccountSelected(account);
+  }
+
+  Future<void> _onUseECBrateChanged(bool val) async {
+    try {
+      if (val) await _currencyBoxService.init();
+    } catch (e) {
+      _showError(e);
+      val = false;
+    } finally {
+      if (!val) _currencyBoxService.close();
+      setState(() {
+        _useECBrate = val;
+      });
+    }
   }
 
   @override
@@ -130,8 +159,16 @@ class AddEntryBodyState extends State<AddEntryBody> {
               child: Column(
                 children: [
                   const SizedBox(height: 16),
+                  SwitchListTile(
+                    key: const Key('use_ecb_rate'),
+                    title: const Text('Use ECB Rate'),
+                    value: _useECBrate,
+                    onChanged: _onUseECBrateChanged,
+                  ),
+                  const SizedBox(height: 16),
                   TextFormField(
                     key: const Key('entry_amount_debit'),
+                    focusNode: _debitFocusNode,
                     controller: widget.debitAmount,
                     decoration: InputDecoration(
                       hintText: 'Enter $debitCurrencyISO amount',
@@ -166,6 +203,7 @@ class AddEntryBodyState extends State<AddEntryBody> {
             const SizedBox(height: 16),
             TextFormField(
               key: const Key('entry_amount_credit'),
+              focusNode: _creditFocusNode,
               controller: widget.creditAmount,
               decoration: InputDecoration(
                 hintText: 'Enter $creditCurrencyISO amount',
@@ -203,5 +241,47 @@ class AddEntryBodyState extends State<AddEntryBody> {
         ),
       ),
     );
+  }
+
+  Future<void> _showError(e) async => showErrorDialog(e.toString(), context);
+
+  void _updateAmounts() async {
+    if (!_useECBrate) return;
+    double rate = await _currencyBoxService.getSingleRate(
+      widget.creditAccount?.currency ?? widget.defaultCurrency!,
+      widget.debitAccount?.currency ?? widget.defaultCurrency!,
+    );
+
+    // When debitAmount changes, update creditAmount
+    if (_debitFocusNode.hasFocus) {
+      double? debitValue = double.tryParse(widget.debitAmount.text);
+      if (debitValue != null) {
+        double creditValue = debitValue / rate;
+        widget.creditAmount
+          ..removeListener(_updateAmounts)
+          ..text = creditValue.toStringAsFixed(2)
+          ..addListener(_updateAmounts);
+      }
+    }
+    // When creditAmount changes, update debitAmount
+    else if (_creditFocusNode.hasFocus) {
+      double? creditValue = double.tryParse(widget.creditAmount.text);
+      if (creditValue != null) {
+        double debitValue = creditValue * rate;
+        widget.debitAmount
+          ..removeListener(_updateAmounts)
+          ..text = debitValue.toStringAsFixed(2)
+          ..addListener(_updateAmounts);
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _debitFocusNode.dispose();
+    _creditFocusNode.dispose();
+    widget.debitAmount.removeListener(_updateAmounts);
+    widget.creditAmount.removeListener(_updateAmounts);
+    super.dispose();
   }
 }

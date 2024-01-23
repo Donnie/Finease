@@ -115,19 +115,13 @@ class AddEntryScreenState extends State<AddEntryScreen> {
         notes: entryNotes,
         date: _dateTime,
       );
-      try {
-        if (_debitAccount!.currency != _creditAccount!.currency) {
-          double debitAmount = double.tryParse(_debitAmount.text) ?? 0;
-          await _entryService.createMultiCurrencyEntry(entry, debitAmount);
-        } else {
-          await _entryService.createEntry(entry);
-        }
-        widget.onFormSubmitted();
-      } catch (e) {
-        _showError(e);
+      if (_debitAccount!.currency != _creditAccount!.currency) {
+        double debitAmount = double.tryParse(_debitAmount.text) ?? 0;
+        await _entryService.createMultiCurrencyEntry(entry, debitAmount);
+      } else {
+        await _entryService.createEntry(entry);
       }
+      widget.onFormSubmitted();
     }
   }
-
-  Future<void> _showError(e) async => showErrorDialog(e.toString(), context);
 }
