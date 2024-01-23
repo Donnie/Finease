@@ -25,12 +25,24 @@ class MonthService {
           months.startDate,
           months.endDate,
           COALESCE(SUM(
-            e.amount
+            CASE 
+              WHEN ac.currency = ? THEN e.amount
+              ELSE e.amount * (
+                SELECT cr.rate FROM rates cr
+                WHERE cr.currency = ac.currency
+              )
+            END
           ) FILTER (
             WHERE ac.type IN ('asset', 'liability') AND ad.type IN ('income', 'expense')
           ), 0) AS income,
           COALESCE(SUM(
-            e.amount
+            CASE 
+              WHEN ac.currency = ? THEN e.amount
+              ELSE e.amount * (
+                SELECT cr.rate FROM rates cr
+                WHERE cr.currency = ac.currency
+              )
+            END
           ) FILTER (
             WHERE ad.type IN ('asset', 'liability') AND ac.type IN ('income', 'expense')
           ), 0) AS expense,
@@ -74,7 +86,6 @@ class MonthService {
     try {
       return results.map((json) => Month.fromJson(json)).toList();
     } catch (e) {
-      print(e);
       return [];
     }
   }
@@ -100,10 +111,10 @@ class Month {
   factory Month.fromJson(Map<String, dynamic> json) {
     return Month(
       date: DateTime.tryParse(json['date']),
-      effect: (json['effect'] ?? 0) / 100,
-      expense: (json['expense'] ?? 0) / 100,
-      income: (json['income'] ?? 0) / 100,
-      networth: (json['networth'] ?? 0) / 100,
+      effect: json['effect'] / 100,
+      expense: json['expense'] / 100,
+      income: json['income'] / 100,
+      networth: json['networth'] / 100,
       currency: json['currency'],
     );
   }
