@@ -113,7 +113,7 @@ class AddEntryScreenState extends State<AddEntryScreen> {
         creditAccountId: _creditAccount!.id!,
         amount: creditAmount,
         notes: entryNotes,
-        date: _dateTime,
+        date: _dateTime ?? DateTime.now(),
       );
       if (_debitAccount!.currency != _creditAccount!.currency) {
         double debitAmount = double.tryParse(_debitAmount.text) ?? 0;
