@@ -63,6 +63,18 @@ class AddEntryBodyState extends State<AddEntryBody> {
         widget.debitAccount?.currency ?? widget.defaultCurrency;
     String? debitCurrency = SupportedCurrency[debitCurrencyISO];
     bool showDebitAmount = creditCurrency != debitCurrency;
+    var numberFormatter = [
+      FilteringTextInputFormatter.allow(RegExp(r"[0-9.]")),
+      TextInputFormatter.withFunction((oldValue, newValue) {
+        try {
+          final text = newValue.text;
+          if (text.isNotEmpty) double.parse(text);
+          return newValue;
+        } catch (_) {}
+        return oldValue;
+      }),
+    ];
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Form(
@@ -131,17 +143,7 @@ class AddEntryBodyState extends State<AddEntryBody> {
                       prefixIconConstraints:
                           const BoxConstraints(minWidth: 0, minHeight: 0),
                     ),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r"[0-9.]")),
-                      TextInputFormatter.withFunction((oldValue, newValue) {
-                        try {
-                          final text = newValue.text;
-                          if (text.isNotEmpty) double.parse(text);
-                          return newValue;
-                        } catch (_) {}
-                        return oldValue;
-                      }),
-                    ],
+                    inputFormatters: numberFormatter,
                     keyboardType: const TextInputType.numberWithOptions(
                       decimal: true,
                     ),
@@ -175,17 +177,7 @@ class AddEntryBodyState extends State<AddEntryBody> {
                 prefixIconConstraints:
                     const BoxConstraints(minWidth: 0, minHeight: 0),
               ),
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r"[0-9.]")),
-                TextInputFormatter.withFunction((oldValue, newValue) {
-                  try {
-                    final text = newValue.text;
-                    if (text.isNotEmpty) double.parse(text);
-                    return newValue;
-                  } catch (_) {}
-                  return oldValue;
-                }),
-              ],
+              inputFormatters: numberFormatter,
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
