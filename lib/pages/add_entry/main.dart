@@ -2,7 +2,6 @@ import 'package:finease/db/accounts.dart';
 import 'package:finease/db/entries.dart';
 import 'package:finease/db/settings.dart';
 import 'package:finease/pages/export.dart';
-import 'package:finease/parts/error_dialog.dart';
 import 'package:finease/parts/export.dart';
 import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
@@ -86,19 +85,19 @@ class AddEntryScreenState extends State<AddEntryScreen> {
     );
   }
 
-  Future<void> _onDateTimeChanged(DateTime dateTime) async {
+  void _onDateTimeChanged(DateTime dateTime) {
     setState(() {
       _dateTime = dateTime;
     });
   }
 
-  Future<void> _onDebitAccountSelected(Account? account) async {
+  void _onDebitAccountSelected(Account? account) {
     setState(() {
       _debitAccount = account;
     });
   }
 
-  Future<void> _onCreditAccountSelected(Account? account) async {
+  void _onCreditAccountSelected(Account? account) {
     setState(() {
       _creditAccount = account;
     });
