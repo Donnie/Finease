@@ -45,7 +45,7 @@ class AboutWidget extends StatelessWidget {
           ),
           actions: [
             TextButton(
-              child: const Text('Yus'),
+              child: const Text('Yus!'),
               onPressed: () {
                 Navigator.of(context).pop();
               },

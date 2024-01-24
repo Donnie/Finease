@@ -26,14 +26,18 @@ class _ResetAppWidgetState extends State<ResetAppWidget> {
           context: context,
           builder: (BuildContext dialogContext) => AlertDialog(
             title: const Text("Reset App"),
-            content: const Text("Are you sure you want to wipe all data in this App? This action cannot be undone!"),
+            content: const Text(
+              'Are you sure you want to wipe '
+              'all data, and reset this App?'
+              '\n\nMake sure you export the database before!'
+            ),
             actions: <Widget>[
               TextButton(
                 child: const Text("Cancel"),
                 onPressed: () => Navigator.of(dialogContext).pop(false),
               ),
               TextButton(
-                child: const Text("Reset App"),
+                child: const Text("Reset App!"),
                 onPressed: () async {
                   await DatabaseHelper().clearDatabase().then((value) {
                     Navigator.of(dialogContext).pop(false);
