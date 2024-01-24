@@ -1,5 +1,6 @@
 import 'package:finease/pages/export.dart';
 import 'package:finease/pages/settings/about.dart';
+import 'package:finease/pages/settings/currency.dart';
 import 'package:finease/pages/settings/toggle_encryption.dart';
 import 'package:finease/parts/export.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +42,12 @@ class SettingsPage extends StatelessWidget {
           padding: EdgeInsets.zero,
           shrinkWrap: true,
           children: [
+            SettingsGroup(
+              title: "Personalise",
+              options: [
+                CurrencySelectorWidget(onChange: onFormSubmitted),
+              ],
+            ),
             SettingsGroup(
               title: "Database",
               options: [

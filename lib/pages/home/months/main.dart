@@ -58,7 +58,7 @@ class MonthsPageState extends State<MonthsPage> {
       drawer: AppDrawer(
         onRefresh: loadMonths,
         scaffoldKey: scaffoldStateKey,
-        selectedIndex: 1,
+        selectedIndex: 3,
         destinations: destinations,
         onDestinationSelected: updateBody,
       ),

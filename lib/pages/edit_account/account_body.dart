@@ -118,7 +118,9 @@ class EditAccountBody extends StatelessWidget {
                     context: context,
                     builder: (BuildContext dialogContext) {
                       return SwitchAlert(
-                        word: "hide",
+                        text: 'Once you hide an account, '
+                            'you can still find it at the '
+                            'bottom of the accounts page and unhide it.',
                         onChange: onChangeHidden,
                       );
                     },
@@ -141,7 +143,9 @@ class EditAccountBody extends StatelessWidget {
                         context: context,
                         builder: (BuildContext dialogContext) {
                           return SwitchAlert(
-                            word: "delete",
+                            text: 'Once you delete an account, '
+                                'you would never get it back,'
+                                'unless you restore from a backup!',
                             onChange: (val) => val ? onDelete?.call() : {},
                           );
                         },
@@ -163,18 +167,17 @@ class SwitchAlert extends StatelessWidget {
   const SwitchAlert({
     super.key,
     required this.onChange,
-    required this.word,
+    required this.text,
   });
 
   final ValueChanged<bool> onChange;
-  final String word;
+  final String text;
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text('Confirm'),
-      content: Text(
-          'Once you $word an account, you would never get it back, unless you restore from a backup!'),
+      content: Text(text),
       actions: [
         TextButton(
           onPressed: () {
