@@ -20,12 +20,52 @@ class MonthService {
         FROM MonthDates
         WHERE DATETIME(monthDate, '+1 month') < CURRENT_DATE
       ),
+      ForexPairs AS (
+        SELECT
+          MIN(e.id) AS forex_debit_id,
+          MAX(e.id) AS forex_credit_id
+        FROM
+          entries e
+          INNER JOIN accounts a ON e.credit_account_id = a.id OR e.debit_account_id = a.id
+        WHERE
+          a.name = 'Forex'
+        GROUP BY
+          e.date
+      ),
+      ConsolidatedForex AS (
+        SELECT
+          f.forex_debit_id AS id,
+          e1.created_at,
+          e1.updated_at,
+          e1.debit_account_id,
+          e2.credit_account_id,
+          e2.amount,
+          e1.date,
+          e2.notes
+        FROM
+          ForexPairs f
+          JOIN entries e1 ON f.forex_debit_id = e1.id
+          JOIN entries e2 ON f.forex_credit_id = e2.id
+      ),
+      NonForexEntries AS (
+        SELECT *
+        FROM entries
+        WHERE id NOT IN (SELECT forex_debit_id FROM ForexPairs)
+          AND id NOT IN (SELECT forex_credit_id FROM ForexPairs)
+      ),
+      ConsolidatedEntries AS (
+        SELECT *
+        FROM ConsolidatedForex
+        UNION ALL
+        SELECT *
+        FROM NonForexEntries
+      ),
       MonthlyTotals AS (
-        SELECT 
+        SELECT
           months.startDate,
           months.endDate,
           COALESCE(SUM(
-            CASE 
+            CASE
               WHEN ac.currency = ? THEN e.amount
               ELSE e.amount * (
                 SELECT cr.rate FROM rates cr
@@ -36,7 +76,7 @@ class MonthService {
             WHERE ac.type IN ('asset', 'liability') AND ad.type IN ('income', 'expense')
           ), 0) AS income,
           COALESCE(SUM(
-            CASE 
+            CASE
               WHEN ac.currency = ? THEN e.amount
               ELSE e.amount * (
                 SELECT cr.rate FROM rates cr
@@ -53,7 +93,7 @@ class MonthService {
             REPLACE(DATETIME(monthDate, 'start of month', '+1 month', '-1 second'), ' ', 'T') || 'Z' as endDate
           FROM MonthDates
         ) AS months
-        LEFT JOIN entries e ON e.date BETWEEN months.startDate AND months.endDate
+        LEFT JOIN ConsolidatedEntries e ON e.date BETWEEN months.startDate AND months.endDate
         LEFT JOIN accounts ac ON e.credit_account_id = ac.id
         LEFT JOIN accounts ad ON e.debit_account_id = ad.id
         GROUP BY months.startDate, months.endDate
