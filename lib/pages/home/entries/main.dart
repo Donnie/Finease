@@ -35,7 +35,7 @@ class EntriesPageState extends State<EntriesPage> {
       startDate: widget.startDate,
       endDate: widget.endDate,
     );
-    entriesList.sort((a, b) => (b.id!.compareTo(a.id!)));
+    entriesList.sort((a, b) => (b.date!.compareTo(a.date!)));
 
     List<Entry> mergedEntries = [];
     for (int i = 0; i < entriesList.length; i++) {
