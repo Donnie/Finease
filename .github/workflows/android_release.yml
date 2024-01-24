@@ -1,6 +1,9 @@
 name: Release Android
 
 on:
+  push:
+    tags:
+      - "v*.*.*"
   workflow_dispatch:
     inputs:
       releaseRef:
@@ -17,11 +20,17 @@ jobs:
     steps:
       - name: Set env
         run: |
-          echo "RELEASE_VERSION=${{ github.event.inputs.releaseRef }}" >> $GITHUB_ENV
+          if [ "${{ github.event.inputs.releaseRef }}" != "" ]; then
+            RELEASE_REF=${{ github.event.inputs.releaseRef }}
+          else
+            RELEASE_REF=${GITHUB_REF}
+          fi
+          RELEASE_VERSION=$(echo $RELEASE_REF | sed -e 's/refs\/tags\///')
+          echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
 
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.releaseRef }}
+          ref: ${{ env.RELEASE_VERSION }}
 
       - name: Install and set up Java
         uses: actions/setup-java@v3
