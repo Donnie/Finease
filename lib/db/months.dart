@@ -1,8 +1,10 @@
 import 'package:finease/db/db.dart';
+import 'package:finease/db/currency.dart';
 import 'package:finease/db/settings.dart';
 
 class MonthService {
   final DatabaseHelper _databaseHelper;
+  final CurrencyBoxService currencyBoxService = CurrencyBoxService();
 
   MonthService({DatabaseHelper? databaseHelper})
       : _databaseHelper = databaseHelper ?? DatabaseHelper();
@@ -10,6 +12,9 @@ class MonthService {
   Future<List<Month>> getAllMonthsInsights() async {
     String prefCurrency =
         await SettingService().getSetting(Setting.prefCurrency);
+
+    await currencyBoxService.init();
+    await currencyBoxService.updateRatesTable();
 
     final dbClient = await _databaseHelper.db;
     String query = '''
@@ -67,7 +72,7 @@ class MonthService {
           COALESCE(SUM(
             CASE
               WHEN ac.currency = ? THEN e.amount
-              ELSE e.amount * (
+              ELSE e.amount / (
                 SELECT cr.rate FROM rates cr
                 WHERE cr.currency = ac.currency
               )
@@ -78,7 +83,7 @@ class MonthService {
           COALESCE(SUM(
             CASE
               WHEN ac.currency = ? THEN e.amount
-              ELSE e.amount * (
+              ELSE e.amount / (
                 SELECT cr.rate FROM rates cr
                 WHERE cr.currency = ac.currency
               )
@@ -122,6 +127,7 @@ class MonthService {
       query,
       [prefCurrency, prefCurrency, prefCurrency],
     );
+    currencyBoxService.close();
 
     try {
       return results.map((json) => Month.fromJson(json)).toList();

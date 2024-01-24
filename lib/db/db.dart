@@ -1,5 +1,6 @@
 import 'package:finease/db/migrations/a_initial_migration.dart';
 import 'package:finease/db/migrations/b_add_indices.dart';
+import 'package:finease/db/migrations/c_add_rates.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:io';
@@ -39,7 +40,7 @@ class DatabaseHelper {
   Future<Database> initDb(String path) async {
     var ourDb = await openDatabase(
       path,
-      version: 2,
+      version: 3,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -55,7 +56,7 @@ class DatabaseHelper {
       await bAddIndices(db);
     }
     if (oldVersion < 3) {
-      // Execute next migration
+      await cAddRates(db);
     }
   }
 
