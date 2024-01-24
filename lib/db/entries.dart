@@ -30,16 +30,18 @@ class EntryService {
         .createForexAccountIfNotExist(creditAccount!.currency);
 
     await createEntry(Entry(
-      debitAccountId: entry.debitAccountId,
-      creditAccountId: forexAccountDebit.id!,
       amount: debitAmount,
-      notes: "Forex transaction by App",
+      creditAccountId: forexAccountDebit.id!,
+      date: entry.date,
+      debitAccountId: entry.debitAccountId,
+      notes: "Forex transaction",
     ));
 
     await createEntry(Entry(
-      debitAccountId: forexAccountCredit.id!,
-      creditAccountId: entry.creditAccountId,
       amount: entry.amount,
+      creditAccountId: entry.creditAccountId,
+      date: entry.date,
+      debitAccountId: forexAccountCredit.id!,
       notes: entry.notes,
     ));
   }
@@ -63,16 +65,18 @@ class EntryService {
         .createForexAccountIfNotExist(creditAccount.currency);
 
     await createEntry(Entry(
-      debitAccountId: entry.debitAccountId,
-      creditAccountId: forexAccountDebit.id!,
       amount: debitAmount,
+      creditAccountId: forexAccountDebit.id!,
+      date: entry.date,
+      debitAccountId: entry.debitAccountId,
       notes: "Forex transaction by App",
     ));
 
     await createEntry(Entry(
-      debitAccountId: forexAccountCredit.id!,
-      creditAccountId: entry.creditAccountId,
       amount: entry.amount,
+      creditAccountId: entry.creditAccountId,
+      date: entry.date,
+      debitAccountId: forexAccountCredit.id!,
       notes: entry.notes,
     ));
   }

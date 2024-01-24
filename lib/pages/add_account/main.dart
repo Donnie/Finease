@@ -1,7 +1,6 @@
 import 'package:finease/core/export.dart';
 import 'package:finease/db/accounts.dart';
 import 'package:finease/pages/export.dart';
-import 'package:finease/parts/error_dialog.dart';
 import 'package:finease/parts/export.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

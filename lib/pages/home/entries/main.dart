@@ -35,7 +35,7 @@ class EntriesPageState extends State<EntriesPage> {
       startDate: widget.startDate,
       endDate: widget.endDate,
     );
-    entriesList.sort((a, b) => (b.date!.compareTo(a.date!)));
+    entriesList.sort((a, b) => (b.id!.compareTo(a.id!)));
 
     List<Entry> mergedEntries = [];
     for (int i = 0; i < entriesList.length; i++) {
@@ -45,7 +45,7 @@ class EntriesPageState extends State<EntriesPage> {
       // Check if the next entry exists and if it's within a 1-second interval
       if (i < entriesList.length - 1) {
         Entry debitEntry = entriesList[i + 1];
-        if (creditEntry.date!.difference(debitEntry.date!).inSeconds <= 0.5 &&
+        if ((creditEntry.date! == debitEntry.date!) &&
             // name because in multi currency trans only name is same, ids are diff.
             debitEntry.creditAccount!.name == creditEntry.debitAccount!.name) {
           Entry mergedEntry = mergeEntries(debitEntry, creditEntry);

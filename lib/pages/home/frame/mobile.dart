@@ -1,5 +1,4 @@
 import 'package:finease/pages/export.dart';
-import 'package:finease/parts/error_dialog.dart';
 import 'package:finease/parts/export.dart';
 import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';

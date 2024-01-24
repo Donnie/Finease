@@ -1,8 +1,11 @@
 import 'package:finease/core/export.dart';
+import 'package:finease/db/db.dart';
 import 'package:finease/db/settings.dart';
 import 'package:hive/hive.dart';
+import 'package:sqflite/sqflite.dart';
 
 class CurrencyBoxService {
+  final DatabaseHelper _databaseHelper = DatabaseHelper();
   static const String _boxName = 'currencies';
   late Box _box;
   late String prefCurrency;
@@ -30,6 +33,23 @@ class CurrencyBoxService {
         rethrow;
       }
     }
+  }
+
+  Future<void> updateRatesTable() async {
+    final dbClient = await _databaseHelper.db;
+    Batch batch = dbClient.batch();
+
+    for (var currency in _box.keys) {
+      if (currency == "lastUpdate") break;
+      final rate = _box.get(currency);
+      batch.insert(
+        'rates',
+        {'currency': currency, 'rate': rate},
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    }
+
+    await batch.commit(noResult: true);
   }
 
   Future<double> getSingleRate(

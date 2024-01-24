@@ -24,6 +24,7 @@ class BankAccounts extends StatelessWidget {
               AccountType.asset,
               AccountType.liability,
             ].contains(a.type))
+        .where((a) => !a.hidden)
         .toList();
 
     List<Account> extAccounts = accounts
@@ -31,6 +32,7 @@ class BankAccounts extends StatelessWidget {
               AccountType.income,
               AccountType.expense,
             ].contains(a.type))
+        .where((a) => !a.hidden)
         .toList();
 
     List<Account> hiddenAccounts = accounts.where((a) => a.hidden).toList();
