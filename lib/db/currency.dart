@@ -56,16 +56,10 @@ class CurrencyBoxService {
     String baseCurrency,
     String targetCurrency,
   ) async {
-    double baseRate = 1.0;
-    double targetRate = 1.0;
     // Assuming data is always available and up-to-date.
     // Retrieve the rates directly from the box.
-    if (baseCurrency != prefCurrency) {
-      baseRate = _box.get(baseCurrency) ?? 0;
-    }
-    if (targetCurrency != prefCurrency) {
-      targetRate = _box.get(targetCurrency) ?? 0;
-    }
+    double baseRate = _box.get(baseCurrency) ?? 0;
+    double targetRate = _box.get(targetCurrency) ?? 0;
 
     // rates must be available; if not, throw an exception.
     if (targetRate == 0 || baseRate == 0) {
