@@ -75,6 +75,9 @@ class MonthService {
               ELSE e.amount / (
                 SELECT cr.rate FROM rates cr
                 WHERE cr.currency = ac.currency
+              ) * (
+                SELECT cr.rate FROM rates cr
+                WHERE cr.currency = ?
               )
             END
           ) FILTER (
@@ -86,6 +89,9 @@ class MonthService {
               ELSE e.amount / (
                 SELECT cr.rate FROM rates cr
                 WHERE cr.currency = ac.currency
+              ) * (
+                SELECT cr.rate FROM rates cr
+                WHERE cr.currency = ?
               )
             END
           ) FILTER (
@@ -125,7 +131,7 @@ class MonthService {
 
     final results = await dbClient.rawQuery(
       query,
-      [prefCurrency, prefCurrency, prefCurrency],
+      [prefCurrency, prefCurrency, prefCurrency, prefCurrency, prefCurrency],
     );
     currencyBoxService.close();
 
