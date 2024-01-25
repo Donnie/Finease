@@ -140,63 +140,59 @@ class AccountService {
     AccountType? type,
   }) async {
     final dbClient = await _databaseHelper.db;
-    List<String> conditions = ['hidden = 0'];
-
-    if (liquid) {
-      conditions.add('liquid = 1');
-    }
-
-    if (type != null) {
-      conditions.add("type = '${type.name}'");
-    }
-
-    String whereClause = conditions.join(' AND ');
-
-    String sql = '''
-      SELECT 
-        SUM(balance) as total_balance,
-        currency
-      FROM Accounts
-      WHERE $whereClause
-        AND type NOT IN ('income', 'expense')
-      GROUP BY currency;
-    ''';
-
-    // Execute the query
-    List<Map<String, dynamic>> result = await dbClient.rawQuery(sql);
-
-    // result is like:
-    // [{total_balance: 9880057, currency: EUR}]
-
-    int totalBalance = 0;
     String prefCurrency =
         await _settingService.getSetting(Setting.prefCurrency);
 
-    // Determine if conversion is needed and initialize currencyBoxService once if true
-    bool needsConversion = result.any((row) => row['currency'] != prefCurrency);
+    // Determine if conversion is needed
+    bool needsConversion = await currencyBoxService.isRequired();
     if (needsConversion) {
+      // updates rates table
       await currencyBoxService.init();
+      await currencyBoxService.updateRatesTable();
+      currencyBoxService.close();
     }
 
-    // Loop through each currency and convert the balance to preferred currency
-    for (var row in result) {
-      String currency = row['currency'];
-      int balance = row['total_balance'];
-
-      // If the currency is not the preferred currency, convert it
-      if (currency != prefCurrency) {
-        double rate = await currencyBoxService.getSingleRate(
-          currency,
-          prefCurrency,
-        );
-        totalBalance += (balance * rate).round();
-      } else {
-        // Already in preferred currency, no conversion needed
-        totalBalance += balance;
-      }
+    List<String> conditions = ["type NOT IN ('income', 'expense')"];
+    if (liquid) {
+      conditions.add('liquid = 1');
     }
+    if (type != null) {
+      conditions.add("type = '${type.name}'");
+    }
+    String whereClause = conditions.join(' AND ');
+    String sql = '''
+      WITH CurrencyGroups AS (
+        SELECT 
+          COALESCE(SUM(balance), 0) AS gbalance,
+          currency AS gcurrency
+        FROM Accounts
+        WHERE $whereClause
+        GROUP BY currency
+      )
+      SELECT COALESCE(SUM(
+        CASE
+          WHEN gcurrency = ? THEN gbalance
+          ELSE gbalance / (
+            SELECT cr.rate FROM rates cr
+            WHERE cr.currency = gcurrency
+          ) * (
+            SELECT cr.rate FROM rates cr
+            WHERE cr.currency = ?
+          )
+        END
+      ), 0) AS total_balance
+      FROM CurrencyGroups
+    ''';
 
-    return totalBalance / 100;
+    List<Map<String, dynamic>> result = await dbClient.rawQuery(
+      sql,
+      [prefCurrency, prefCurrency],
+    );
+    // result is like:
+    // [{total_balance: 9880057, currency: EUR}]
+
+    num totalBalance = result.first['total_balance'] ?? 0.0;
+    return (totalBalance / 100);
   }
 }
 

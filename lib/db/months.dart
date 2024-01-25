@@ -13,8 +13,14 @@ class MonthService {
     String prefCurrency =
         await SettingService().getSetting(Setting.prefCurrency);
 
-    await currencyBoxService.init();
-    await currencyBoxService.updateRatesTable();
+    // Determine if conversion is needed
+    bool needsConversion = await currencyBoxService.isRequired();
+    if (needsConversion) {
+      // updates rates table
+      await currencyBoxService.init();
+      await currencyBoxService.updateRatesTable();
+      currencyBoxService.close();
+    }
 
     final dbClient = await _databaseHelper.db;
     String query = '''
@@ -133,7 +139,6 @@ class MonthService {
       query,
       [prefCurrency, prefCurrency, prefCurrency, prefCurrency, prefCurrency],
     );
-    currencyBoxService.close();
 
     try {
       return results.map((json) => Month.fromJson(json)).toList();
