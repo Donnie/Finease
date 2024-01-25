@@ -69,10 +69,7 @@ class SummaryPageState extends State<SummaryPage> {
     return Scaffold(
       key: _scaffoldStateKey,
       resizeToAvoidBottomInset: true,
-      appBar: appBar(
-        context,
-        "home",
-      ),
+      appBar: appBar(context, "home"),
       drawer: AppDrawer(
         onRefresh: _fetchNetWorth,
         scaffoldKey: _scaffoldStateKey,
