@@ -32,37 +32,47 @@ class MonthService {
         WHERE DATETIME(monthDate, '+1 month') < CURRENT_DATE
       ),
       ForexPairs AS (
-        SELECT
-          MIN(e.id) AS forex_debit_id,
-          MAX(e.id) AS forex_credit_id
-        FROM
-          entries e
-          INNER JOIN accounts a ON e.credit_account_id = a.id OR e.debit_account_id = a.id
-        WHERE
-          a.name = 'Forex'
-        GROUP BY
-          e.date
+        SELECT 
+          ed.id AS debit_entry_id,
+          ec.id AS credit_entry_id,
+          ad.currency AS debit_currency,
+          ac.currency AS credit_currency
+        FROM entries ed
+        JOIN entries ec ON ed.date = ec.date AND ed.id <> ec.id
+        JOIN accounts ad ON ed.debit_account_id = ad.id
+        JOIN accounts ac ON ec.credit_account_id = ac.id
+        WHERE (
+          ed.credit_account_id = (SELECT id FROM accounts WHERE name = 'Forex') OR 
+          ec.debit_account_id = (SELECT id FROM accounts WHERE name = 'Forex')
+        )
       ),
       ConsolidatedForex AS (
         SELECT
-          f.forex_debit_id AS id,
+          f.debit_entry_id AS id,
           e1.created_at,
           e1.updated_at,
           e1.debit_account_id,
           e2.credit_account_id,
-          e2.amount,
+          (CASE
+            WHEN f.debit_currency = ? THEN e1.amount
+            ELSE e2.amount
+          END) AS amount,
           e1.date,
-          e2.notes
+          e2.notes,
+          (CASE
+            WHEN f.debit_currency = ? THEN ?
+            ELSE f.credit_currency
+          END) AS currency
         FROM
           ForexPairs f
-          JOIN entries e1 ON f.forex_debit_id = e1.id
-          JOIN entries e2 ON f.forex_credit_id = e2.id
+          JOIN entries e1 ON f.debit_entry_id = e1.id
+          JOIN entries e2 ON f.credit_entry_id = e2.id
       ),
       NonForexEntries AS (
-        SELECT *
+        SELECT *, ? AS currency
         FROM entries
-        WHERE id NOT IN (SELECT forex_debit_id FROM ForexPairs)
-          AND id NOT IN (SELECT forex_credit_id FROM ForexPairs)
+        WHERE id NOT IN (SELECT debit_entry_id FROM ForexPairs)
+          AND id NOT IN (SELECT credit_entry_id FROM ForexPairs)
       ),
       ConsolidatedEntries AS (
         SELECT *
@@ -77,10 +87,10 @@ class MonthService {
           months.endDate,
           COALESCE(SUM(
             CASE
-              WHEN ac.currency = ? THEN e.amount
+              WHEN e.currency = ? THEN e.amount
               ELSE e.amount / (
                 SELECT cr.rate FROM rates cr
-                WHERE cr.currency = ac.currency
+                WHERE cr.currency = e.currency
               ) * (
                 SELECT cr.rate FROM rates cr
                 WHERE cr.currency = ?
@@ -91,10 +101,10 @@ class MonthService {
           ), 0) AS income,
           COALESCE(SUM(
             CASE
-              WHEN ac.currency = ? THEN e.amount
+              WHEN e.currency = ? THEN e.amount
               ELSE e.amount / (
                 SELECT cr.rate FROM rates cr
-                WHERE cr.currency = ac.currency
+                WHERE cr.currency = e.currency
               ) * (
                 SELECT cr.rate FROM rates cr
                 WHERE cr.currency = ?
@@ -137,7 +147,17 @@ class MonthService {
 
     final results = await dbClient.rawQuery(
       query,
-      [prefCurrency, prefCurrency, prefCurrency, prefCurrency, prefCurrency],
+      [
+        prefCurrency,
+        prefCurrency,
+        prefCurrency,
+        prefCurrency,
+        prefCurrency,
+        prefCurrency,
+        prefCurrency,
+        prefCurrency,
+        prefCurrency
+      ],
     );
 
     try {
