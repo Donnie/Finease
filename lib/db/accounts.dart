@@ -38,6 +38,38 @@ class AccountService {
     return account;
   }
 
+  Future<Account> createForexRetransAccIfNotExist(
+    String currency, {
+    double balance = 0,
+    bool liquid = true,
+    name = "Forex Retranslation",
+    type = AccountType.asset,
+  }) async {
+    final dbClient = await _databaseHelper.db;
+    // Check if the account already exists
+    final List<Map<String, dynamic>> existingAccounts = await dbClient.query(
+      Accounts,
+      where: 'currency = ? AND name = ?',
+      whereArgs: [currency, name],
+    );
+    if (existingAccounts.isNotEmpty) {
+      // Account already exists, return the existing account
+      return Account.fromJson(existingAccounts.first);
+    } else {
+      // Account does not exist, create a new one
+      Account newAccount = Account(
+        balance: balance,
+        currency: currency,
+        name: name,
+        hidden: true,
+        type: type,
+        liquid: liquid,
+      );
+      // Persist the new account and return it
+      return await createAccount(newAccount);
+    }
+  }
+
   Future<Account> createForexAccountIfNotExist(
     String currency, {
     double balance = 0,
@@ -159,6 +191,7 @@ class AccountService {
     if (type != null) {
       conditions.add("type = '${type.name}'");
     }
+    conditions.add('hidden = 0');
     String whereClause = conditions.join(' AND ');
     String sql = '''
       WITH CurrencyGroups AS (

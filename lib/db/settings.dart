@@ -10,6 +10,7 @@ enum Setting {
   prefCurrency,
   useEncryption,
   dbPassword,
+  forexRetrans,
 }
 
 typedef Settings = Map<Setting, String>;
