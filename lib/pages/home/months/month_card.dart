@@ -12,11 +12,13 @@ DateFormat formatter = DateFormat('MMMM yyyy');
 class MonthCards extends StatelessWidget {
   final List<Month> months;
   final bool isLoading;
+  final double networth;
 
   const MonthCards({
     super.key,
     required this.months,
     this.isLoading = false,
+    required this.networth,
   });
 
   @override
@@ -33,10 +35,31 @@ class MonthCards extends StatelessWidget {
       );
     }
 
-    return ListView.builder(
-      itemCount: months.length,
-      itemBuilder: (context, index) => MonthCard(
-        month: months[index],
+    String currency = SupportedCurrency[months[0].currency!]!;
+    double unrealised = (networth- (months[0].networth ?? 0));
+    bool showUnrealised = unrealised.round().abs() > 0;
+    String gains = (unrealised > 0) ? "gains" : "losses";
+
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Visibility(
+            visible: showUnrealised,
+            child: Center(
+              child: Text(
+                'Unrealised $gains: $currency${unrealised.toStringAsFixed(2)}',
+              ),
+            ),
+          ),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: months.length,
+            itemBuilder: (context, index) => MonthCard(
+              month: months[index],
+            ),
+          ),
+        ],
       ),
     );
   }
