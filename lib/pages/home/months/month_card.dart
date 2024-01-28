@@ -11,14 +11,28 @@ DateFormat formatter = DateFormat('MMMM yyyy');
 
 class MonthCards extends StatelessWidget {
   final List<Month> months;
+  final bool isLoading;
 
   const MonthCards({
     super.key,
     required this.months,
+    this.isLoading = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (months.isEmpty) {
+      return const Center(
+        child: Text('No data available'),
+      );
+    }
+
     return ListView.builder(
       itemCount: months.length,
       itemBuilder: (context, index) => MonthCard(

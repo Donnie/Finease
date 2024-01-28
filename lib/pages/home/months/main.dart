@@ -52,8 +52,9 @@ class MonthsPageState extends State<MonthsPage> {
     return Scaffold(
       key: scaffoldStateKey,
       appBar: appBar(context, "months"),
-      body: MonthCards(
-        months: months,
+      body: RefreshIndicator(
+        onRefresh: loadMonths,
+        child: MonthCards(months: months),
       ),
       drawer: AppDrawer(
         onRefresh: loadMonths,

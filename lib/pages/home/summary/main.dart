@@ -54,6 +54,7 @@ class SummaryMobile extends StatelessWidget {
     required this.liabilitiesAmount,
     required this.liquidAmount,
     required this.currency,
+    this.isLoading = false,
   });
 
   final double networthAmount;
@@ -61,9 +62,22 @@ class SummaryMobile extends StatelessWidget {
   final double liabilitiesAmount;
   final double liquidAmount;
   final String currency;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (liabilitiesAmount == 0 && assetAmount == 0) {
+      return const Center(
+        child: Text('Enter your first transaction with the plus (+) button below.'),
+      );
+    }
+
     return ListView.builder(
       physics: const BouncingScrollPhysics(),
       shrinkWrap: true,
