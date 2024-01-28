@@ -39,6 +39,16 @@ class BankAccounts extends StatelessWidget {
 
     return ListView(
       children: [
+        const Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Text("Assets and Liabilities"),
+        ),
+        Visibility(
+          visible: mainAccounts.isEmpty,
+          child: const Center(
+            child: Text('Accounts yet to be set up'),
+          ),
+        ),
         ...mainAccounts.map(
           (a) => BankAccountCardClickable(
             account: a,
@@ -52,7 +62,13 @@ class BankAccounts extends StatelessWidget {
         const Divider(),
         const Padding(
           padding: EdgeInsets.all(16.0),
-          child: Text("Income and Expense Accounts"),
+          child: Text("Incomes and Expenses"),
+        ),
+        Visibility(
+          visible: extAccounts.isEmpty,
+          child: const Center(
+            child: Text('Accounts yet to be set up'),
+          ),
         ),
         Padding(
           padding: const EdgeInsets.all(16.0),
