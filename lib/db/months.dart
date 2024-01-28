@@ -41,10 +41,8 @@ class MonthService {
         JOIN entries ec ON ed.date = ec.date AND ed.id <> ec.id
         JOIN accounts ad ON ed.debit_account_id = ad.id
         JOIN accounts ac ON ec.credit_account_id = ac.id
-        WHERE (
-          ed.credit_account_id = (SELECT id FROM accounts WHERE name = 'Forex') OR 
-          ec.debit_account_id = (SELECT id FROM accounts WHERE name = 'Forex')
-        )
+        JOIN accounts adc ON ed.credit_account_id = adc.id AND adc.name = 'Forex'
+        JOIN accounts acd ON ec.debit_account_id = acd.id AND acd.name = 'Forex'
       ),
       ConsolidatedForex AS (
         SELECT
