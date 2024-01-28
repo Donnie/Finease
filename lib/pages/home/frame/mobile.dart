@@ -24,6 +24,7 @@ class SummaryPageState extends State<SummaryPage> {
   double liabilitiesAmount = 0.0;
   double liquidAmount = 0.0;
   String currency = "USD";
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -46,6 +47,7 @@ class SummaryPageState extends State<SummaryPage> {
         liabilitiesAmount = liabilities;
         assetAmount = asset;
         liquidAmount = liquid;
+        isLoading = false;
       });
     } catch (e) {
       _showError(e);
@@ -82,6 +84,7 @@ class SummaryPageState extends State<SummaryPage> {
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           child: SummaryBody(
+            isLoading: isLoading,
             networthAmount: networthAmount,
             assetAmount: assetAmount,
             liabilitiesAmount: liabilitiesAmount,

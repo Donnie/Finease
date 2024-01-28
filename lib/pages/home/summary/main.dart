@@ -8,6 +8,7 @@ class SummaryBody extends StatelessWidget {
   final double liabilitiesAmount;
   final double liquidAmount;
   final String currency;
+  final bool isLoading;
 
   const SummaryBody({
     super.key,
@@ -16,12 +17,14 @@ class SummaryBody extends StatelessWidget {
     required this.liabilitiesAmount,
     required this.liquidAmount,
     required this.currency,
+    this.isLoading = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return ScreenTypeLayout.builder(
       mobile: (p0) => SummaryMobile(
+        isLoading: isLoading,
         networthAmount: networthAmount,
         assetAmount: assetAmount,
         liabilitiesAmount: liabilitiesAmount,
