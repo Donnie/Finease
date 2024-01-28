@@ -49,6 +49,8 @@ class DatabaseHelper {
 
   Future<void> _onCreate(Database db, int version) async {
     await aInitialMigration(db);
+    await bAddIndices(db);
+    await cAddRates(db);
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {

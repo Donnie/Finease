@@ -50,7 +50,7 @@ class _AddInfoPageState extends State<AddInfoPage> {
         balance: 0,
         currency: _currency.text,
         liquid: false,
-        name: _name.text,
+        name: "Past",
         hidden: true,
         type: AccountType.income,
       ));

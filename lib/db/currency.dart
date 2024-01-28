@@ -11,6 +11,25 @@ class CurrencyBoxService {
   late String prefCurrency;
   final ExchangeService _exchangeService = ExchangeService();
 
+  Future<bool> isRequired() async {
+    final dbClient = await _databaseHelper.db;
+    const String sql = '''
+      SELECT COALESCE(COUNT(DISTINCT currency), 0) AS total_count
+      FROM (
+        SELECT currency FROM Accounts
+        UNION
+        SELECT value FROM settings WHERE key = 'prefCurrency'
+      ) AS combined_currencies;
+    ''';
+    final List<Map<String, dynamic>> result = await dbClient.rawQuery(sql);
+
+    if (result.isNotEmpty) {
+      final num count = result.first['total_count'];
+      return count > 1;
+    }
+    return false;
+  }
+
   Future<void> init() async {
     _box = await Hive.openBox(_boxName);
     final currentDate = DateTime.now();

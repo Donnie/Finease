@@ -56,7 +56,7 @@ class AddEntryScreenState extends State<AddEntryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Add Entry')),
+      appBar: AppBar(title: const Text('add a transaction')),
       body: AddEntryBody(
         accounts: _accounts,
         creditAccount: _creditAccount,

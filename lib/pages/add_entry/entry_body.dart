@@ -149,8 +149,8 @@ class AddEntryBodyState extends State<AddEntryBody> {
               key: const Key('entry_notes'),
               controller: widget.entryNotes,
               decoration: const InputDecoration(
-                hintText: 'Enter entry notes',
-                label: Text('Enter entry notes'),
+                hintText: 'Enter transaction notes',
+                label: Text('Enter transaction notes'),
               ),
               keyboardType: TextInputType.text,
             ),

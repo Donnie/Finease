@@ -4,7 +4,6 @@ import 'package:finease/pages/settings/currency.dart';
 import 'package:finease/pages/settings/toggle_encryption.dart';
 import 'package:finease/parts/export.dart';
 import 'package:flutter/material.dart';
-import 'package:finease/core/export.dart';
 
 class SettingsPage extends StatelessWidget {
   final Function onFormSubmitted;
@@ -15,29 +14,10 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double toolbarHeight = kToolbarHeight + 8;
     return AppAnnotatedRegionWidget(
       color: Colors.transparent,
       child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(toolbarHeight),
-          child: SafeArea(
-            top: true,
-            child: Container(
-              margin: const EdgeInsets.only(top: 8, bottom: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 12.0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(32),
-                clipBehavior: Clip.antiAlias,
-                child: AppBar(
-                  backgroundColor: context.secondaryContainer.withOpacity(0.5),
-                  scrolledUnderElevation: 0,
-                  title: Text("settings", style: context.titleMedium),
-                ),
-              ),
-            ),
-          ),
-        ),
+        appBar: appBar(context, "settings"),
         body: ListView(
           padding: EdgeInsets.zero,
           shrinkWrap: true,

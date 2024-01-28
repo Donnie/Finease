@@ -45,11 +45,11 @@ class AppDrawer extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: ListTile(
             onTap: () async {
+              scaffoldKey.currentState?.closeDrawer();
               await context.pushNamed(
                 RoutesName.settings.name,
                 extra: onRefresh,
               );
-              scaffoldKey.currentState?.closeDrawer();
             },
             leading: const Icon(Icons.settings),
             title: Text("settings", style: context.bodyLarge),

@@ -107,9 +107,12 @@ class EntriesPageState extends State<EntriesPage> {
         context,
         "transactions",
       ),
-      body: EntriesListView(
-        entries: entries,
-        onDelete: entryOnDelete,
+      body: RefreshIndicator(
+        onRefresh: loadEntries,
+        child: EntriesListView(
+          entries: entries,
+          onDelete: entryOnDelete,
+        ),
       ),
       drawer: AppDrawer(
         onRefresh: loadEntries,

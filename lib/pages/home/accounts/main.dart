@@ -51,9 +51,12 @@ class _AccountsPageState extends State<AccountsPage> {
     return Scaffold(
       key: scaffoldStateKey,
       appBar: appBar(context, "accounts"),
-      body: BankAccounts(
-        accounts: accounts,
-        onEdit: loadAccounts,
+      body: RefreshIndicator(
+        onRefresh: loadAccounts,
+        child: BankAccounts(
+          accounts: accounts,
+          onEdit: loadAccounts,
+        ),
       ),
       drawer: AppDrawer(
         onRefresh: loadAccounts,
