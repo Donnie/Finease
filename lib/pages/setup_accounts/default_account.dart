@@ -1,5 +1,6 @@
 import 'package:finease/db/accounts.dart';
 
+const String capitalGains = 'Capital Gains';
 List<Account> defaultAccountsData(
   String prefCurrency,
 ) {
@@ -12,7 +13,7 @@ List<Account> defaultAccountsData(
       type: AccountType.income,
     ),
     Account(
-      name: 'Capital Gains',
+      name: capitalGains,
       balance: 0,
       currency: prefCurrency,
       liquid: false,
