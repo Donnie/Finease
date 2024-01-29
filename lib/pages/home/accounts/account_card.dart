@@ -52,10 +52,14 @@ class BankAccounts extends StatelessWidget {
         ...mainAccounts.map(
           (a) => BankAccountCardClickable(
             account: a,
-            onTap: () => context.pushNamed(
+            onLongPress: () => context.pushNamed(
               RoutesName.editAccount.name,
               pathParameters: {'id': a.id.toString()},
               extra: onEdit,
+            ),
+            onTap: () => context.pushNamed(
+              RoutesName.transactionsByAccount.name,
+              extra: {'account_id': a.id.toString()},
             ),
           ),
         ),
@@ -79,10 +83,14 @@ class BankAccounts extends StatelessWidget {
               ...extAccounts.map(
                 (a) => BankAccountChipClickable(
                   account: a,
-                  onTap: () => context.pushNamed(
+                  onLongPress: () => context.pushNamed(
                     RoutesName.editAccount.name,
                     pathParameters: {'id': a.id.toString()},
                     extra: onEdit,
+                  ),
+                  onTap: () => context.pushNamed(
+                    RoutesName.transactionsByAccount.name,
+                    extra: {'account_id': a.id.toString()},
                   ),
                 ),
               ),
@@ -103,10 +111,14 @@ class BankAccounts extends StatelessWidget {
               ...hiddenAccounts.map(
                 (a) => BankAccountChipClickable(
                   account: a,
-                  onTap: () => context.pushNamed(
+                  onLongPress: () => context.pushNamed(
                     RoutesName.editAccount.name,
                     pathParameters: {'id': a.id.toString()},
                     extra: onEdit,
+                  ),
+                  onTap: () => context.pushNamed(
+                    RoutesName.transactionsByAccount.name,
+                    extra: {'account_id': a.id.toString()},
                   ),
                 ),
               ),
@@ -121,17 +133,20 @@ class BankAccounts extends StatelessWidget {
 class BankAccountCardClickable extends StatelessWidget {
   final Account account;
   final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
 
   const BankAccountCardClickable({
     super.key,
     required this.account,
-    required this.onTap,
+    this.onTap,
+    this.onLongPress,
   });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: onTap,
+      onLongPress: onLongPress,
       child: BankAccountCard(account: account),
     );
   }
@@ -221,17 +236,20 @@ class BankAccountCard extends StatelessWidget {
 class BankAccountChipClickable extends StatelessWidget {
   final Account account;
   final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
 
   const BankAccountChipClickable({
     super.key,
     required this.account,
     required this.onTap,
+    this.onLongPress,
   });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: onTap,
+      onLongPress: onLongPress,
       child: BankAccountChip(account: account),
     );
   }
