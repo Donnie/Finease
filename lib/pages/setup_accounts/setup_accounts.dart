@@ -39,7 +39,7 @@ class SetupAccountsWidgetState extends State<SetupAccountsWidget>
   }
 
   Future<void> _fetchAccounts() async {
-    final accounts = await _accountService.getAllAccounts(false);
+    final accounts = await _accountService.getAllAccounts(hidden: false);
     setState(() {
       selectedAccounts = accounts;
       accountsNotifier.value = [...selectedAccounts];

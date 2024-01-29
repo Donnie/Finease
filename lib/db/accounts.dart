@@ -124,10 +124,29 @@ class AccountService {
     return null;
   }
 
-  Future<List<Account>> getAllAccounts(bool hidden) async {
+  Future<List<Account>> getAllAccounts({
+    bool hidden = true,
+    bool liquid = false,
+    AccountType? type,
+  }) async {
     final dbClient = await _databaseHelper.db;
 
-    var whereClause = hidden ? '' : 'WHERE hidden = 0';
+    List<String> conditions = [];
+    if (liquid) {
+      conditions.add('liquid = 1');
+    }
+    if (type != null) {
+      conditions.add("type = '${type.name}'");
+    }
+    if (hidden != true) {
+      conditions.add('hidden = 0');
+    }
+
+    String whereClause = '';
+    if (conditions.isNotEmpty) {
+      whereClause = 'WHERE ';
+      whereClause += conditions.join(' AND ');
+    }
 
     String rawQuery = '''
       SELECT
