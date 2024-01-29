@@ -98,10 +98,6 @@ class CurrencyBoxService {
       rethrow;
     }
   }
-
-  void close() {
-    _box.close();
-  }
 }
 
 // ignore: non_constant_identifier_names

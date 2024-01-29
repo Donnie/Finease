@@ -181,7 +181,6 @@ class AccountService {
       // updates rates table
       await currencyBoxService.init();
       await currencyBoxService.updateRatesTable();
-      currencyBoxService.close();
     }
 
     List<String> conditions = ["type NOT IN ('income', 'expense')"];

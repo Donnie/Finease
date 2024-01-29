@@ -126,7 +126,7 @@ class EntryService {
     );
 
     final List<Account> allAccounts =
-        await AccountService().getAllAccounts(true);
+        await AccountService().getAllAccounts();
 
     // Create a map for quick account lookup by ID
     var accountsMap = {for (var account in allAccounts) account.id: account};
@@ -161,7 +161,7 @@ class EntryService {
     );
   }
 
-  Future adjustFirstBalance(
+  Future<void> adjustFirstBalance(
       int toAccountId, int fromAccountId, double balance) async {
     if (balance == 0) {
       return;
@@ -178,7 +178,7 @@ class EntryService {
     await dbClient.insert('Entries', entry.toJson());
   }
 
-  Future adjustFirstForexBalance(
+  Future<void> adjustFirstForexBalance(
       int toAccountId, int fromAccountId, double balance) async {
     if (balance == 0) {
       return;
@@ -189,6 +189,21 @@ class EntryService {
       creditAccountId: toAccountId,
       amount: balance,
       notes: "Carry In By App",
+    );
+
+    await createForexEntry(entry);
+  }
+
+  Future<void> addCurrencyRetranslation(
+    Account capGains,
+    Account forexReTrans,
+    double amount,
+  ) async {
+    Entry entry = Entry(
+      debitAccountId: capGains.id!,
+      creditAccountId: forexReTrans.id!,
+      amount: amount,
+      notes: "Foreign Currency Retranslation",
     );
 
     await createForexEntry(entry);

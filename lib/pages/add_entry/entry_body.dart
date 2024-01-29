@@ -76,7 +76,6 @@ class AddEntryBodyState extends State<AddEntryBody> {
       _showError(e);
       val = false;
     } finally {
-      if (!val) _currencyBoxService.close();
       setState(() {
         _useECBrate = val;
       });
