@@ -97,25 +97,34 @@ class EntryService {
   Future<List<Entry>> getAllEntries({
     DateTime? startDate,
     DateTime? endDate,
+    int? accountId,
   }) async {
     final dbClient = await _databaseHelper.db;
 
-    String whereClause = '';
+    List<String> conditions = [];
     List<dynamic> whereArguments = [];
+    // If account id is provided, add it to the where clause
+    if (accountId != null) {
+      conditions.add('debit_account_id = ? OR credit_account_id = ?');
+      whereArguments.add(accountId);
+      whereArguments.add(accountId);
+    }
 
     // If startDate is provided, add it to the where clause
     if (startDate != null) {
-      whereClause += 'date >= ?';
+      conditions.add('date >= ?');
       whereArguments.add(startDate.toIso8601String());
     }
 
     // If endDate is provided, add it to the where clause
     if (endDate != null) {
-      if (whereClause.isNotEmpty) {
-        whereClause += ' AND ';
-      }
-      whereClause += 'date <= ?';
+      conditions.add('date <= ?');
       whereArguments.add(endDate.toIso8601String());
+    }
+
+    String whereClause = '';
+    if (conditions.isNotEmpty) {
+      whereClause += conditions.join(' AND ');
     }
 
     // Fetch all entries according to the provided start and end dates
@@ -125,8 +134,7 @@ class EntryService {
       whereArgs: whereArguments.isEmpty ? null : whereArguments,
     );
 
-    final List<Account> allAccounts =
-        await AccountService().getAllAccounts();
+    final List<Account> allAccounts = await AccountService().getAllAccounts();
 
     // Create a map for quick account lookup by ID
     var accountsMap = {for (var account in allAccounts) account.id: account};

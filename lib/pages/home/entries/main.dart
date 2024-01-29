@@ -34,6 +34,7 @@ class EntriesPageState extends State<EntriesPage> {
     List<Entry> entriesList = await _entryService.getAllEntries(
       startDate: widget.startDate,
       endDate: widget.endDate,
+      accountId: widget.accountID,
     );
     entriesList.sort((a, b) => (b.date!.compareTo(a.date!)));
 
