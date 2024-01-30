@@ -1,6 +1,7 @@
 import 'package:finease/db/accounts.dart';
 import 'package:finease/db/currency.dart';
 import 'package:finease/db/db.dart';
+import 'package:finease/db/settings.dart';
 
 class EntryService {
   final DatabaseHelper _databaseHelper;
@@ -203,18 +204,25 @@ class EntryService {
   }
 
   Future<void> addCurrencyRetranslation(
-    Account capGains,
-    Account forexReTrans,
     double amount,
   ) async {
+    Account forexReTrans =
+        await AccountService().createForexRetransAccIfNotExist();
+
+    String? capG = await SettingService().getSetting(Setting.capitalGains);
+    int? capGains = int.tryParse(capG);
+    if (capGains == null) {
+      throw AccountLinkingException("Capital Gains account not linked");
+    }
+
     Entry entry = Entry(
-      debitAccountId: capGains.id!,
+      debitAccountId: capGains,
       creditAccountId: forexReTrans.id!,
       amount: amount,
       notes: "Foreign Currency Retranslation",
     );
 
-    await createForexEntry(entry);
+    await createEntry(entry);
   }
 }
 
@@ -267,4 +275,12 @@ class Entry {
       'notes': notes,
     };
   }
+}
+
+class AccountLinkingException implements Exception {
+  final String message;
+  AccountLinkingException(this.message);
+
+  @override
+  String toString() => message;
 }

@@ -63,6 +63,7 @@ class MonthsPageState extends State<MonthsPage> {
           isLoading: isLoading,
           months: months,
           networth: networth,
+          onChange: loadMonths,
         ),
       ),
       drawer: AppDrawer(
