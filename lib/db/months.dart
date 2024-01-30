@@ -50,33 +50,28 @@ class MonthService {
           e1.updated_at,
           e1.debit_account_id,
           e2.credit_account_id,
-          (CASE
-            WHEN f.debit_currency = ? THEN e1.amount
-            ELSE e2.amount
-          END) AS amount,
+          e2.amount,
           e1.date,
           e2.notes,
-          (CASE
-            WHEN f.debit_currency = ? THEN ?
-            ELSE f.credit_currency
-          END) AS currency
+          f.credit_currency AS currency
         FROM
           ForexPairs f
           JOIN entries e1 ON f.debit_entry_id = e1.id
           JOIN entries e2 ON f.credit_entry_id = e2.id
       ),
-      NonForexEntries AS (
-        SELECT *, ? AS currency
-        FROM entries
-        WHERE id NOT IN (SELECT debit_entry_id FROM ForexPairs)
-          AND id NOT IN (SELECT credit_entry_id FROM ForexPairs)
+      NormalEntries AS (
+        SELECT e.*, ac.currency AS currency
+        FROM entries e
+        JOIN accounts ac ON e.credit_account_id = ac.id
+        WHERE e.id NOT IN (SELECT debit_entry_id FROM ForexPairs)
+          AND e.id NOT IN (SELECT credit_entry_id FROM ForexPairs)
       ),
       ConsolidatedEntries AS (
         SELECT *
         FROM ConsolidatedForex
         UNION ALL
         SELECT *
-        FROM NonForexEntries
+        FROM NormalEntries
       ),
       MonthlyTotals AS (
         SELECT
@@ -145,10 +140,6 @@ class MonthService {
     final results = await dbClient.rawQuery(
       query,
       [
-        prefCurrency,
-        prefCurrency,
-        prefCurrency,
-        prefCurrency,
         prefCurrency,
         prefCurrency,
         prefCurrency,
