@@ -6,7 +6,7 @@ class AppUserWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: () => {},
       child: ClipOval(
         child: Container(

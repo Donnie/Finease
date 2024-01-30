@@ -39,7 +39,7 @@ class SetupAccountsWidgetState extends State<SetupAccountsWidget>
   }
 
   Future<void> _fetchAccounts() async {
-    final accounts = await _accountService.getAllAccounts(false);
+    final accounts = await _accountService.getAllAccounts(hidden: false);
     setState(() {
       selectedAccounts = accounts;
       accountsNotifier.value = [...selectedAccounts];
@@ -55,6 +55,9 @@ class SetupAccountsWidgetState extends State<SetupAccountsWidget>
 
   void selectAccount(Account model) async {
     var account = await _accountService.createAccount(model);
+    if (account.name == capitalGains) {
+      await _settingService.setSetting(Setting.capitalGains, "${account.id}");
+    }
     setState(() {
       egAccounts.remove(model);
       selectedAccounts.add(account);
@@ -64,6 +67,9 @@ class SetupAccountsWidgetState extends State<SetupAccountsWidget>
 
   void deselectAccount(Account model) async {
     await _accountService.deleteAccount(model.id!);
+    if (model.name == capitalGains) {
+      await _settingService.deleteSetting(Setting.capitalGains);
+    }
     model.id = null;
     setState(() {
       egAccounts.add(model);
@@ -114,7 +120,7 @@ class SetupAccountsWidgetState extends State<SetupAccountsWidget>
               runSpacing: 12.0,
               children: [
                 ...egAccounts.map(
-                    (model) => _buildAccountChip(model, isEGAccount: true)),
+                    (model) => _buildAccountChip(model, isEgAccount: true)),
                 AddNewAccount(
                   onSelected: (val) => context.pushNamed(
                     RoutesName.addAccount.name,
@@ -163,7 +169,7 @@ class SetupAccountsWidgetState extends State<SetupAccountsWidget>
     );
   }
 
-  Widget _buildAccountChip(Account model, {required bool isEGAccount}) {
+  Widget _buildAccountChip(Account model, {required bool isEgAccount}) {
     return AccountChip(
       avatar: Icon(
         Icons.add_rounded,
@@ -171,7 +177,7 @@ class SetupAccountsWidgetState extends State<SetupAccountsWidget>
       ),
       label: Text(model.name),
       onSelected: (val) =>
-          isEGAccount ? selectAccount(model) : deselectAccount(model),
+          isEgAccount ? selectAccount(model) : deselectAccount(model),
     );
   }
 }

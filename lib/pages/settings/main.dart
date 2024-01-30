@@ -1,5 +1,6 @@
 import 'package:finease/pages/export.dart';
 import 'package:finease/pages/settings/about.dart';
+import 'package:finease/pages/settings/capital_gains.dart';
 import 'package:finease/pages/settings/currency.dart';
 import 'package:finease/pages/settings/toggle_encryption.dart';
 import 'package:finease/parts/export.dart';
@@ -26,6 +27,7 @@ class SettingsPage extends StatelessWidget {
               title: "Personalise",
               options: [
                 CurrencySelectorWidget(onChange: onFormSubmitted),
+                const CapGainsSelectorWidget(),
               ],
             ),
             SettingsGroup(

@@ -1,6 +1,7 @@
 import 'package:finease/db/accounts.dart';
 import 'package:finease/db/currency.dart';
 import 'package:finease/db/db.dart';
+import 'package:finease/db/settings.dart';
 
 class EntryService {
   final DatabaseHelper _databaseHelper;
@@ -97,25 +98,34 @@ class EntryService {
   Future<List<Entry>> getAllEntries({
     DateTime? startDate,
     DateTime? endDate,
+    int? accountId,
   }) async {
     final dbClient = await _databaseHelper.db;
 
-    String whereClause = '';
+    List<String> conditions = [];
     List<dynamic> whereArguments = [];
+    // If account id is provided, add it to the where clause
+    if (accountId != null) {
+      conditions.add('debit_account_id = ? OR credit_account_id = ?');
+      whereArguments.add(accountId);
+      whereArguments.add(accountId);
+    }
 
     // If startDate is provided, add it to the where clause
     if (startDate != null) {
-      whereClause += 'date >= ?';
+      conditions.add('date >= ?');
       whereArguments.add(startDate.toIso8601String());
     }
 
     // If endDate is provided, add it to the where clause
     if (endDate != null) {
-      if (whereClause.isNotEmpty) {
-        whereClause += ' AND ';
-      }
-      whereClause += 'date <= ?';
+      conditions.add('date <= ?');
       whereArguments.add(endDate.toIso8601String());
+    }
+
+    String whereClause = '';
+    if (conditions.isNotEmpty) {
+      whereClause += conditions.join(' AND ');
     }
 
     // Fetch all entries according to the provided start and end dates
@@ -125,8 +135,7 @@ class EntryService {
       whereArgs: whereArguments.isEmpty ? null : whereArguments,
     );
 
-    final List<Account> allAccounts =
-        await AccountService().getAllAccounts(true);
+    final List<Account> allAccounts = await AccountService().getAllAccounts();
 
     // Create a map for quick account lookup by ID
     var accountsMap = {for (var account in allAccounts) account.id: account};
@@ -161,7 +170,7 @@ class EntryService {
     );
   }
 
-  Future adjustFirstBalance(
+  Future<void> adjustFirstBalance(
       int toAccountId, int fromAccountId, double balance) async {
     if (balance == 0) {
       return;
@@ -178,7 +187,7 @@ class EntryService {
     await dbClient.insert('Entries', entry.toJson());
   }
 
-  Future adjustFirstForexBalance(
+  Future<void> adjustFirstForexBalance(
       int toAccountId, int fromAccountId, double balance) async {
     if (balance == 0) {
       return;
@@ -192,6 +201,28 @@ class EntryService {
     );
 
     await createForexEntry(entry);
+  }
+
+  Future<void> addCurrencyRetranslation(
+    double amount,
+  ) async {
+    Account forexReTrans =
+        await AccountService().createForexRetransAccIfNotExist();
+
+    String? capG = await SettingService().getSetting(Setting.capitalGains);
+    int? capGains = int.tryParse(capG);
+    if (capGains == null) {
+      throw AccountLinkingException("Capital Gains account not linked");
+    }
+
+    Entry entry = Entry(
+      debitAccountId: capGains,
+      creditAccountId: forexReTrans.id!,
+      amount: amount,
+      notes: "Foreign Currency Retranslation",
+    );
+
+    await createEntry(entry);
   }
 }
 
@@ -244,4 +275,12 @@ class Entry {
       'notes': notes,
     };
   }
+}
+
+class AccountLinkingException implements Exception {
+  final String message;
+  AccountLinkingException(this.message);
+
+  @override
+  String toString() => message;
 }

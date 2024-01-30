@@ -19,7 +19,6 @@ class MonthService {
       // updates rates table
       await currencyBoxService.init();
       await currencyBoxService.updateRatesTable();
-      currencyBoxService.close();
     }
 
     final dbClient = await _databaseHelper.db;

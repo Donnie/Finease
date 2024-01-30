@@ -63,6 +63,15 @@ final GoRouter goRouter = GoRouter(
       },
     ),
     GoRoute(
+      name: RoutesName.transactionsByAccount.name,
+      path: RoutesName.transactionsByAccount.path,
+      builder: (BuildContext context, GoRouterState state) {
+        Map<String, String> range = state.extra as Map<String, String>;
+        final int accountID = int.tryParse(range['account_id']!) ?? 0;
+        return EntriesPage(accountID: accountID);
+      },
+    ),
+    GoRoute(
       name: RoutesName.setupAccounts.name,
       path: RoutesName.setupAccounts.path,
       builder: (BuildContext context, GoRouterState state) {

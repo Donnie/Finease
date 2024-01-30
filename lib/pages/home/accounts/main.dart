@@ -24,7 +24,7 @@ class _AccountsPageState extends State<AccountsPage> {
   }
 
   Future<void> loadAccounts() async {
-    List<Account> accountsList = await AccountService().getAllAccounts(true);
+    List<Account> accountsList = await AccountService().getAllAccounts();
     accountsList.sort((a, b) => a.name.compareTo(b.name));
 
     setState(() {
@@ -50,7 +50,8 @@ class _AccountsPageState extends State<AccountsPage> {
 
     return Scaffold(
       key: scaffoldStateKey,
-      appBar: appBar(context, "accounts"),
+      appBar: infoBar(context, "accounts",
+          "Click to see transactions,\nand long press to edit the account."),
       body: RefreshIndicator(
         onRefresh: loadAccounts,
         child: BankAccounts(

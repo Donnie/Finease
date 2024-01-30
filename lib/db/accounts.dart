@@ -38,6 +38,38 @@ class AccountService {
     return account;
   }
 
+  Future<Account> createForexRetransAccIfNotExist({
+    name = "Forex Retranslation",
+  }) async {
+    final dbClient = await _databaseHelper.db;
+
+    // Check if the account already exists
+    final String currency = await SettingService().getSetting(Setting.prefCurrency);
+    final List<Map<String, dynamic>> existingAccounts = await dbClient.query(
+      Accounts,
+      where: 'currency = ? AND name = ?',
+      whereArgs: [currency, name],
+    );
+
+    if (existingAccounts.isNotEmpty) {
+      // Account already exists, return the existing account
+      return Account.fromJson(existingAccounts.first);
+    } else {
+      // Account does not exist, create a new one
+      Account newAccount = Account(
+        balance: 0,
+        currency: currency,
+        name: name,
+        hidden: true,
+        type: AccountType.asset,
+        liquid: false,
+      );
+
+      // Persist the new account and return it
+      return await createAccount(newAccount);
+    }
+  }
+
   Future<Account> createForexAccountIfNotExist(
     String currency, {
     double balance = 0,
@@ -92,10 +124,33 @@ class AccountService {
     return null;
   }
 
-  Future<List<Account>> getAllAccounts(bool hidden) async {
+  Future<List<Account>> getAllAccounts({
+    bool hidden = true,
+    bool liquid = false,
+    String? currency,
+    AccountType? type,
+  }) async {
     final dbClient = await _databaseHelper.db;
 
-    var whereClause = hidden ? '' : 'WHERE hidden = 0';
+    List<String> conditions = [];
+    if (liquid) {
+      conditions.add('liquid = 1');
+    }
+    if (type != null) {
+      conditions.add("type = '${type.name}'");
+    }
+    if (currency != null) {
+      conditions.add("currency = '$currency'");
+    }
+    if (!hidden) {
+      conditions.add('hidden = 0');
+    }
+
+    String whereClause = '';
+    if (conditions.isNotEmpty) {
+      whereClause = 'WHERE ';
+      whereClause += conditions.join(' AND ');
+    }
 
     String rawQuery = '''
       SELECT
@@ -149,7 +204,6 @@ class AccountService {
       // updates rates table
       await currencyBoxService.init();
       await currencyBoxService.updateRatesTable();
-      currencyBoxService.close();
     }
 
     List<String> conditions = ["type NOT IN ('income', 'expense')"];
@@ -159,6 +213,7 @@ class AccountService {
     if (type != null) {
       conditions.add("type = '${type.name}'");
     }
+    conditions.add('hidden = 0');
     String whereClause = conditions.join(' AND ');
     String sql = '''
       WITH CurrencyGroups AS (

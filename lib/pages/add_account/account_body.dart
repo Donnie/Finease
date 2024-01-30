@@ -119,7 +119,7 @@ class AddAccountBodyState extends State<AddAccountBody> {
               ),
             ),
             const SizedBox(height: 16),
-            GestureDetector(
+            InkWell(
               onTap: () => showCurrencyPicker(
                 context: context,
                 currencyFilter: SupportedCurrency.keys.toList(),

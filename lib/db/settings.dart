@@ -2,14 +2,15 @@ import 'package:finease/db/db.dart';
 import 'package:sqflite/sqflite.dart';
 
 enum Setting {
-  introDone,
-  userName,
   accountSetup,
+  capitalGains, // account.id int
+  dbPassword,
+  introDone,
   onboarded,
   pastAccount,
   prefCurrency,
   useEncryption,
-  dbPassword,
+  userName,
 }
 
 typedef Settings = Map<Setting, String>;

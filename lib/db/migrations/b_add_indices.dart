@@ -18,8 +18,5 @@ Future<void> bAddIndices(Database db) async {
     CREATE INDEX idx_entries_notes ON Entries(notes);
 
     CREATE INDEX idx_settings_key ON Settings(key);
-
-    CREATE INDEX idx_migrations_id ON Migrations(id);
   ''');
 }
-

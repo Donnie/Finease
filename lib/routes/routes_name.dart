@@ -11,6 +11,7 @@ enum RoutesName {
   setupAccounts,
   transactions,
   transactionsByDate,
+  transactionsByAccount,
 }
 
 extension RoutesNameHelper on RoutesName {

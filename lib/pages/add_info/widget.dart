@@ -68,7 +68,7 @@ class AddInfoBody extends StatelessWidget {
                     },
                   ),
                   const SizedBox(height: 32),
-                  GestureDetector(
+                  InkWell(
                     onTap: () => showCurrencyPicker(
                       context: context,
                       currencyFilter: SupportedCurrency.keys.toList(),
