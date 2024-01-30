@@ -46,8 +46,6 @@ class _AddInfoPageState extends State<AddInfoPage> {
     if (_formState.currentState!.validate()) {
       context.go(RoutesName.setupAccounts.path);
       await _settingService.setSetting(Setting.userName, _name.text);
-      Account forex = await _accountService.createForexRetransAccIfNotExist(_currency.text);
-      await _settingService.setSetting(Setting.forexRetrans, "${forex.id}");
 
       Account account = await _accountService.createAccount(Account(
         balance: 0,

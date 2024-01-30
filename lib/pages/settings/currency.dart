@@ -1,6 +1,5 @@
 import 'package:currency_picker/currency_picker.dart';
 import 'package:finease/core/extensions/text_style_extension.dart';
-import 'package:finease/db/accounts.dart';
 import 'package:finease/db/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:finease/db/currency.dart';
@@ -19,7 +18,6 @@ class CurrencySelectorWidget extends StatefulWidget {
 
 class CurrencySelectorWidgetState extends State<CurrencySelectorWidget> {
   final SettingService _settingService = SettingService();
-  final AccountService _accountService = AccountService();
   String? currency;
   String? symbol;
 
@@ -48,9 +46,7 @@ class CurrencySelectorWidgetState extends State<CurrencySelectorWidget> {
           currency = selectedCurrency.code;
           symbol = selectedCurrency.symbol;
         });
-        Account forex = await _accountService.createForexRetransAccIfNotExist(currency!);
         await _settingService.setSetting(Setting.prefCurrency, currency!);
-        await _settingService.setSetting(Setting.forexRetrans, "${forex.id}");
         // ignore: use_build_context_synchronously
         context.pop();
         widget.onChange();

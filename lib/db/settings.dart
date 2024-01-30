@@ -5,7 +5,6 @@ enum Setting {
   accountSetup,
   capitalGains, // account.id int
   dbPassword,
-  forexRetrans, // account.id int
   introDone,
   onboarded,
   pastAccount,

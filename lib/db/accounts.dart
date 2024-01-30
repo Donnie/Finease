@@ -38,33 +38,33 @@ class AccountService {
     return account;
   }
 
-  Future<Account> createForexRetransAccIfNotExist(
-    String currency, {
-    double balance = 0,
-    bool liquid = true,
+  Future<Account> createForexRetransAccIfNotExist({
     name = "Forex Retranslation",
-    type = AccountType.asset,
   }) async {
     final dbClient = await _databaseHelper.db;
+
     // Check if the account already exists
+    final String currency = await SettingService().getSetting(Setting.prefCurrency);
     final List<Map<String, dynamic>> existingAccounts = await dbClient.query(
       Accounts,
       where: 'currency = ? AND name = ?',
       whereArgs: [currency, name],
     );
+
     if (existingAccounts.isNotEmpty) {
       // Account already exists, return the existing account
       return Account.fromJson(existingAccounts.first);
     } else {
       // Account does not exist, create a new one
       Account newAccount = Account(
-        balance: balance,
+        balance: 0,
         currency: currency,
         name: name,
         hidden: true,
-        type: type,
-        liquid: liquid,
+        type: AccountType.asset,
+        liquid: false,
       );
+
       // Persist the new account and return it
       return await createAccount(newAccount);
     }
@@ -127,6 +127,7 @@ class AccountService {
   Future<List<Account>> getAllAccounts({
     bool hidden = true,
     bool liquid = false,
+    String? currency,
     AccountType? type,
   }) async {
     final dbClient = await _databaseHelper.db;
@@ -138,7 +139,10 @@ class AccountService {
     if (type != null) {
       conditions.add("type = '${type.name}'");
     }
-    if (hidden != true) {
+    if (currency != null) {
+      conditions.add("currency = '$currency'");
+    }
+    if (!hidden) {
       conditions.add('hidden = 0');
     }
 
