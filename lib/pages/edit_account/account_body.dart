@@ -78,7 +78,7 @@ class EditAccountBody extends StatelessWidget {
             Visibility(
               visible: account.deletable,
               child: Column(children: [
-                GestureDetector(
+                InkWell(
                   onTap: () => showCurrencyPicker(
                     context: context,
                     currencyFilter: SupportedCurrency.keys.toList(),

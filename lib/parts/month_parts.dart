@@ -74,7 +74,7 @@ class MonthCard extends StatelessWidget {
     String income = '$currency${month.income!.toStringAsFixed(2)}';
     String expense = '$currency${month.expense!.toStringAsFixed(2)}';
 
-    return GestureDetector(
+    return InkWell(
       onTap: () {
         context.pushNamed(
           RoutesName.transactionsByDate.name,

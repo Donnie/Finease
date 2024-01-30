@@ -23,7 +23,7 @@ class AppPillChip extends StatelessWidget {
 
     return Row(
       children: [
-        GestureDetector(
+        InkWell(
           onTap: onPressed,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),

@@ -144,7 +144,7 @@ class BankAccountCardClickable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: onTap,
       onLongPress: onLongPress,
       child: BankAccountCard(account: account),
@@ -247,7 +247,7 @@ class BankAccountChipClickable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: onTap,
       onLongPress: onLongPress,
       child: BankAccountChip(account: account),
