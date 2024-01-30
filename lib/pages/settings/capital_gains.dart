@@ -48,9 +48,11 @@ class CapGainsSelectorWidgetState extends State<CapGainsSelectorWidget> {
   }
 
   void _showCapGainsPicker() async {
+    final String currency = await _settingService.getSetting(Setting.prefCurrency);
     final List<Account> accounts = await AccountService().getAllAccounts(
       hidden: false,
       type: AccountType.income,
+      currency: currency,
     );
     Account? selectedAccount = await search(accounts);
 
