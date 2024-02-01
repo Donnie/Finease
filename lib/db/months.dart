@@ -23,12 +23,13 @@ class MonthService {
 
     final dbClient = await _databaseHelper.db;
     String query = '''
-      WITH RECURSIVE MonthDates(monthDate) AS (
-        SELECT DATETIME((SELECT MIN(date) FROM entries), 'start of month')
+      WITH RECURSIVE MonthDates AS (
+        SELECT DATE(MIN(date), 'start of month') AS monthStart
+        FROM entries
         UNION ALL
-        SELECT DATETIME(monthDate, '+1 month')
+        SELECT DATE(monthStart, '+1 month')
         FROM MonthDates
-        WHERE DATETIME(monthDate, '+1 month') < CURRENT_DATE
+        WHERE monthStart < DATE('now', 'start of month')
       ),
       ForexPairs AS (
         SELECT 
@@ -107,9 +108,9 @@ class MonthService {
           ), 0) AS expense,
           ? AS currency
         FROM (
-          SELECT 
-            REPLACE(DATETIME(monthDate, 'start of month'), ' ', 'T') || 'Z' as startDate,
-            REPLACE(DATETIME(monthDate, 'start of month', '+1 month', '-1 second'), ' ', 'T') || 'Z' as endDate
+          SELECT
+            monthStart || 'T00:00:00Z' AS startDate,
+            DATE(monthStart, '+1 month', '-1 second') || 'T23:59:59Z' AS endDate
           FROM MonthDates
         ) AS months
         LEFT JOIN ConsolidatedEntries e ON e.date BETWEEN months.startDate AND months.endDate
