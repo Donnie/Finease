@@ -89,8 +89,18 @@ class EntryService {
       where: 'id = ?',
       whereArgs: [id],
     );
+
     if (entries.isNotEmpty) {
-      return Entry.fromJson(entries.first);
+      Entry entry = Entry.fromJson(entries.first);
+      final List<Account> allAccounts = await AccountService().getAllAccounts();
+
+      // Create a map for quick account lookup by ID
+      var accountsMap = {for (var account in allAccounts) account.id: account};
+
+      entry.creditAccount = accountsMap[entry.creditAccountId];
+      entry.debitAccount = accountsMap[entry.debitAccountId];
+
+      return entry;
     }
     return null;
   }
