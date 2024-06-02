@@ -20,10 +20,10 @@ class AccountChoiceFormField extends FormField<Account> {
             return AccountChoice(
               accounts: accounts,
               errorMessage: state.errorText,
-              onAccountSelected: (Account? account) {
+              onAccountSelected: (onAccountSelected != null) ? (Account? account) {
                 state.didChange(account);
-                onAccountSelected?.call(account);
-              },
+                onAccountSelected.call(account);
+              } : null,
               onAddNew: onAddNew,
               selectedAccount: state.value,
               title: title,
@@ -73,7 +73,7 @@ class AccountChoice extends StatelessWidget {
             itemCount: accounts.length + 1,
             itemBuilder: (BuildContext context, int index) {
               if (index == accounts.length) {
-                return AddNewAccount(onSelected: (val) => onAddNew?.call());
+                return AddNewAccount(onSelected: (onAddNew != null) ? (val) => onAddNew?.call() : null);
               }
               Account account = accounts[index];
               return AccountChip(
@@ -84,7 +84,7 @@ class AccountChoice extends StatelessWidget {
                   SupportedCurrency[account.currency]!,
                   style: context.bodyMedium,
                 ),
-                onSelected: (val) => _handleAccountSelection(account, val),
+                onSelected: (onAccountSelected != null) ? (val) => _handleAccountSelection(account, val) : null,
                 label: Text(
                   account.name,
                   style: context.bodyMedium,
@@ -161,7 +161,7 @@ class AccountChip extends StatelessWidget {
             borderRadius: BorderRadius.circular(28),
             side: BorderSide(
               width: 1,
-              color: context.primary,
+              color: (onSelected != null) ? context.primary : context.shadow,
             ),
           ),
           showCheckmark: false,

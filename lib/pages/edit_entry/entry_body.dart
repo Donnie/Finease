@@ -44,14 +44,12 @@ class EditEntryBodyState extends State<EditEntryBody> {
               title: "From Account",
               accounts: [widget.debitAccount],
               selectedAccount: widget.debitAccount,
-              onAccountSelected: (_) {},
             ),
             AccountChoiceFormField(
               key: const Key('to_account'),
               title: "To Account",
               accounts: [widget.creditAccount],
               selectedAccount: widget.creditAccount,
-              onAccountSelected: (_) {},
             ),
             const SizedBox(height: 32),
             TextFormField(
