@@ -1,3 +1,5 @@
+import 'package:finease/core/extensions/color_extension.dart';
+import 'package:finease/db/accounts.dart';
 import 'package:finease/db/currency.dart';
 import 'package:finease/db/entries.dart';
 import 'package:finease/routes/routes_name.dart';
@@ -48,6 +50,8 @@ class EntryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String symbol = SupportedCurrency[entry.creditAccount!.currency]!;
+    final cardColor = entry.creditAccount?.type == AccountType.expense ? context.secondaryContainer : context.tertiaryContainer;
+
     return InkWell(
       onTap: () => context.pushNamed(
         RoutesName.editEntry.name,
@@ -55,6 +59,7 @@ class EntryCard extends StatelessWidget {
         extra: onCardTap,
       ),
     child: Card(
+      color: cardColor,
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
