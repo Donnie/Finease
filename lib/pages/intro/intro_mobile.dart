@@ -15,7 +15,7 @@ class IntroMobileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppAnnotatedRegionWidget(
-      color: context.background,
+      color: context.surface,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.transparent,

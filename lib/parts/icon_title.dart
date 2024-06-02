@@ -19,7 +19,7 @@ class AppIconTitle extends StatelessWidget {
         Text(
           language["appTitle"],
           style: context.titleLarge?.copyWith(
-            color: context.onBackground,
+            color: context.onSurface,
             fontWeight: FontWeight.w600,
           ),
         )

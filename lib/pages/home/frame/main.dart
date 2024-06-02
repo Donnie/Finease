@@ -12,7 +12,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppAnnotatedRegionWidget(
-      color: context.background,
+      color: context.surface,
       child: ScreenTypeLayout.builder(
         mobile: (p0) => const SummaryPage(),
         tablet: (p0) => const HomePageTablet(),
