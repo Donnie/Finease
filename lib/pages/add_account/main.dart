@@ -29,7 +29,7 @@ class AddAccountScreenState extends State<AddAccountScreen> {
   @override
   Widget build(BuildContext context) {
     return AppAnnotatedRegionWidget(
-      color: context.background,
+      color: context.surface,
       child: Scaffold(
         appBar: AppBar(title: const Text('add account')),
         body: AddAccountBody(

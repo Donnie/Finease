@@ -1,7 +1,7 @@
 name: finease
 description: "A full stack mobile app to keep track of financial transactions"
 publish_to: 'none'
-version: 1.0.27
+version: 1.0.28
 
 environment:
   sdk: '>=3.2.3 <4.0.0'
@@ -22,7 +22,7 @@ dependencies:
   material_design_icons_flutter: 7.0.7296
   package_info_plus: 5.0.1
   password_strength: 0.2.0
-  path: 1.8.3
+  path: 1.9.0
   path_provider: 2.1.2
   pointycastle: 3.7.4
   responsive_builder: 0.7.0
@@ -33,7 +33,7 @@ dependencies:
 
 dev_dependencies:
   flutter_lints: 3.0.1
-  test: 1.24.9
+  test: 1.25.2
 
 flutter:
   uses-material-design: true

@@ -4,6 +4,7 @@ enum RoutesName {
   addEntry,
   addName,
   editAccount,
+  editEntry,
   home,
   intro,
   months,

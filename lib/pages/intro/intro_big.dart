@@ -15,7 +15,7 @@ class IntroBigScreenWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppAnnotatedRegionWidget(
-      color: context.background,
+      color: context.surface,
       child: Material(
         child: Row(
           children: [

@@ -21,7 +21,7 @@ class _SetupAccountsPageState extends State<SetupAccountsPage> {
   @override
   Widget build(BuildContext context) {
     return AppAnnotatedRegionWidget(
-      color: context.background,
+      color: context.surface,
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         body: const SetupAccountsWidget(),

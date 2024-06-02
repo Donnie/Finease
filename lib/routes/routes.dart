@@ -110,6 +110,20 @@ final GoRouter goRouter = GoRouter(
       },
     ),
     GoRoute(
+      name: RoutesName.editEntry.name,
+      path: RoutesName.editEntry.pathWparam,
+      builder: (BuildContext context, GoRouterState state) {
+        final int entryID = int.parse(
+          state.pathParameters[RoutesName.editEntry.param]!,
+        );
+        dynamic Function() onFormSubmitted = state.extra as dynamic Function();
+        return EditEntryScreen(
+          entryID: entryID,
+          onFormSubmitted: onFormSubmitted,
+        );
+      },
+    ),
+    GoRoute(
       name: RoutesName.home.name,
       path: RoutesName.home.path,
       builder: (BuildContext context, GoRouterState state) {

@@ -16,7 +16,7 @@ class SettingsGroup extends StatelessWidget {
     return Card(
       clipBehavior: Clip.antiAlias,
       elevation: 0,
-      color: context.background,
+      color: context.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12), // if you need this
         side: BorderSide(

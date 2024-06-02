@@ -74,7 +74,7 @@ class HomePageTabletState extends State<HomePageTablet> {
         VerticalDivider(
           thickness: 1,
           width: 1,
-          color: context.background,
+          color: context.surface,
         ),
         Expanded(
           child: Scaffold(
