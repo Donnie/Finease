@@ -113,6 +113,7 @@ class EntriesPageState extends State<EntriesPage> {
         child: EntriesListView(
           entries: entries,
           onDelete: entryOnDelete,
+          onEdit: loadEntries,
         ),
       ),
       drawer: AppDrawer(

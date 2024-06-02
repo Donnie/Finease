@@ -1,17 +1,21 @@
 import 'package:finease/db/currency.dart';
 import 'package:finease/db/entries.dart';
+import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class EntriesListView extends StatelessWidget {
   final List<Entry> entries;
   final Function(int)? onDelete;
+  final Function() onEdit;
 
   const EntriesListView({
     super.key,
     required this.entries,
     required this.onDelete,
+    required this.onEdit,
   });
 
   @override
@@ -22,6 +26,7 @@ class EntriesListView extends StatelessWidget {
         return EntryCard(
           entry: entries[index],
           onDelete: onDelete,
+          onCardTap: onEdit,
         );
       },
     );
@@ -31,17 +36,25 @@ class EntriesListView extends StatelessWidget {
 class EntryCard extends StatelessWidget {
   final Entry entry;
   final Function(int)? onDelete;
+  final Function()? onCardTap;
 
   const EntryCard({
     super.key,
     required this.entry,
+    required this.onCardTap,
     this.onDelete,
   });
 
   @override
   Widget build(BuildContext context) {
     final String symbol = SupportedCurrency[entry.creditAccount!.currency]!;
-    return Card(
+    return InkWell(
+      onTap: () => context.pushNamed(
+        RoutesName.editEntry.name,
+        pathParameters: {'id': entry.id.toString()},
+        extra: onCardTap,
+      ),
+    child: Card(
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
@@ -119,6 +132,7 @@ class EntryCard extends StatelessWidget {
               ],
             ),
           ],
+        ),
         ),
       ),
     );
