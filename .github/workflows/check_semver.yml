@@ -54,6 +54,8 @@ jobs:
             # Increment patch version
             new_patch=$((patch + 1))
             NEW_VERSION="${major}.${minor}.${new_patch}"
+
+            echo "Auto-incrementing version from $BASE_VERSION to $NEW_VERSION"
             
             # Update pubspec.yaml with new version
             sed -i "s/^version: .*/version: $NEW_VERSION/" pubspec.yaml
