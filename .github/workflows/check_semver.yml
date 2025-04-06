@@ -1,0 +1,98 @@
+name: Check Semver Update
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  check-semver:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Get base version
+        id: base
+        run: |
+          git fetch --tags --force
+          LATEST_TAG=$(git tag --list '[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -n 1)
+          if [ -z "$LATEST_TAG" ]; then
+            echo "No version tags found, falling back to base branch pubspec.yaml"
+            git fetch origin ${{ github.event.pull_request.base.ref }}
+            BASE_VERSION=$(git show origin/${{ github.event.pull_request.base.ref }}:pubspec.yaml | grep '^version:' | sed 's/version: //')
+            if [ -z "$BASE_VERSION" ]; then
+              echo "Could not find version in base branch pubspec.yaml either, defaulting to 0.0.0"
+              BASE_VERSION="0.0.0"
+            fi
+          else
+            # Remove potential 'v' prefix
+            BASE_VERSION=${LATEST_TAG#v}
+            echo "Base version from latest tag: $BASE_VERSION"
+          fi
+          echo "base_version=$BASE_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Get head version
+        id: head
+        run: |
+          HEAD_VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //')
+          echo "head_version=$HEAD_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Auto-increment patch version if needed
+        id: auto-increment
+        run: |
+          BASE_VERSION="${{ steps.base.outputs.base_version }}"
+          HEAD_VERSION="${{ steps.head.outputs.head_version }}"
+          
+          if [ "$BASE_VERSION" = "$HEAD_VERSION" ]; then
+            # Split version into major.minor.patch
+            IFS='.' read -r major minor patch <<< "$BASE_VERSION"
+            # Increment patch version
+            new_patch=$((patch + 1))
+            NEW_VERSION="${major}.${minor}.${new_patch}"
+            
+            # Update pubspec.yaml with new version
+            sed -i "s/^version: .*/version: $NEW_VERSION/" pubspec.yaml
+            
+            # Commit and push the change
+            git config --local user.email "github-actions[bot]@users.noreply.github.com"
+            git config --local user.name "github-actions[bot]"
+            git add pubspec.yaml
+            git commit -m "chore: auto-increment patch version to $NEW_VERSION"
+            git push origin HEAD:${{ github.event.pull_request.head.ref }}
+            
+            echo "Auto-incremented version from $BASE_VERSION to $NEW_VERSION"
+            echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "new_version=$HEAD_VERSION" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Compare versions
+        run: |
+          BASE_VERSION="${{ steps.base.outputs.base_version }}"
+          HEAD_VERSION="${{ steps.auto-increment.outputs.new_version }}"
+          
+          if [ "$BASE_VERSION" = "$HEAD_VERSION" ]; then
+            echo "Error: Version in pubspec.yaml has not been updated in this PR"
+            echo "Current version: $BASE_VERSION"
+            echo "Please update the version number in pubspec.yaml before merging"
+            exit 1
+          fi
+          
+          # Split versions into major.minor.patch
+          IFS='.' read -r base_major base_minor base_patch <<< "$BASE_VERSION"
+          IFS='.' read -r head_major head_minor head_patch <<< "$HEAD_VERSION"
+          
+          # Check if head version is greater than base version
+          if [ "$head_major" -lt "$base_major" ] || \
+             ([ "$head_major" -eq "$base_major" ] && [ "$head_minor" -lt "$base_minor" ]) || \
+             ([ "$head_major" -eq "$base_major" ] && [ "$head_minor" -eq "$base_minor" ] && [ "$head_patch" -le "$base_patch" ]); then
+            echo "Error: New version ($HEAD_VERSION) must be greater than the current version ($BASE_VERSION)"
+            exit 1
+          fi
+          
+          echo "Version check passed: $BASE_VERSION -> $HEAD_VERSION"
