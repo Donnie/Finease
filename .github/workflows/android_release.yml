@@ -17,6 +17,8 @@ jobs:
   build-and-release:
     name: Build and Release Android
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Set env
         run: |
@@ -33,8 +35,9 @@ jobs:
           ref: ${{ env.RELEASE_VERSION }}
 
       - name: Verify version consistency
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          # Extract version from pubspec.yaml (e.g., version: 1.2.3+4 -> 1.2.3)
           PUBSPEC_VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //')
           TAG_VERSION=${RELEASE_VERSION#v}
 
@@ -42,6 +45,8 @@ jobs:
           echo "Tag version: $TAG_VERSION"
 
           if [ "$PUBSPEC_VERSION" != "$TAG_VERSION" ]; then
+            # Delete the tag
+            gh api -X DELETE /repos/${{ github.repository }}/git/refs/tags/${{ env.RELEASE_VERSION }}
             echo "Error: Pubspec version ($PUBSPEC_VERSION) does not match tag version ($TAG_VERSION)."
             exit 1
           fi
