@@ -60,6 +60,7 @@ jobs:
         id: sign_apk
         uses: ilharp/sign-android-release@v1
         with:
+          buildToolsVersion: 35.0.0
           releaseDir: build/app/outputs/flutter-apk
           signingKey: ${{ secrets.SIGNING_KEYSTORE }}
           keyStorePassword: ${{ secrets.SIGNING_KEYSTORE_PASSWORD }}
