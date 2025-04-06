@@ -23,6 +23,11 @@ List<Destination> destinations = [
     icon: Icon(MdiIcons.calendarOutline),
     selectedIcon: Icon(MdiIcons.calendar),
   ),
+  Destination(
+    routeName: RoutesName.chat,
+    icon: const Icon(Icons.chat_outlined),
+    selectedIcon: const Icon(Icons.chat),
+  ),
 ];
 
 class Destination {

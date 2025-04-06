@@ -5,6 +5,7 @@ export "add_entry/entry_body.dart";
 export "add_entry/main.dart";
 export "add_info/main.dart";
 export "add_info/widget.dart";
+export "chat/chat.dart";
 export "edit_account/account_body.dart";
 export "edit_account/main.dart";
 export "edit_entry/main.dart";
