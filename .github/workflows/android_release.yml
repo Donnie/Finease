@@ -32,6 +32,21 @@ jobs:
         with:
           ref: ${{ env.RELEASE_VERSION }}
 
+      - name: Verify version consistency
+        run: |
+          # Extract version from pubspec.yaml (e.g., version: 1.2.3+4 -> 1.2.3)
+          PUBSPEC_VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //')
+          TAG_VERSION=${RELEASE_VERSION#v}
+
+          echo "Pubspec version: $PUBSPEC_VERSION"
+          echo "Tag version: $TAG_VERSION"
+
+          if [ "$PUBSPEC_VERSION" != "$TAG_VERSION" ]; then
+            echo "Error: Pubspec version ($PUBSPEC_VERSION) does not match tag version ($TAG_VERSION)."
+            exit 1
+          fi
+          echo "Version check passed."
+
       - name: Install and set up Java
         uses: actions/setup-java@v3
         with:
