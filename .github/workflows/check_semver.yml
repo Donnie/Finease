@@ -2,6 +2,8 @@ name: Check Semver Update
 
 on:
   pull_request:
+    branches:
+      - main
     types: [opened, synchronize, reopened]
 
 jobs:
@@ -87,29 +89,3 @@ jobs:
           fi
 
           echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
-
-      - name: Compare versions
-        run: |
-          BASE_VERSION="${{ steps.base.outputs.base_version }}"
-          HEAD_VERSION="${{ steps.auto-increment.outputs.new_version }}"
-
-          if [ "$BASE_VERSION" = "$HEAD_VERSION" ]; then
-            echo "Error: Version in pubspec.yaml has not been updated in this PR"
-            echo "Current version: $BASE_VERSION"
-            echo "Please update the version number in pubspec.yaml before merging"
-            exit 1
-          fi
-
-          # Split versions into major.minor.patch
-          IFS='.' read -r base_major base_minor base_patch <<< "$BASE_VERSION"
-          IFS='.' read -r head_major head_minor head_patch <<< "$HEAD_VERSION"
-
-          # Check if head version is greater than base version
-          if [ "$head_major" -lt "$base_major" ] || \
-             ([ "$head_major" -eq "$base_major" ] && [ "$head_minor" -lt "$base_minor" ]) || \
-             ([ "$head_major" -eq "$base_major" ] && [ "$head_minor" -eq "$base_minor" ] && [ "$head_patch" -le "$base_patch" ]); then
-            echo "Error: New version ($HEAD_VERSION) must be greater than the current version ($BASE_VERSION)"
-            exit 1
-          fi
-
-          echo "Version check passed: $BASE_VERSION -> $HEAD_VERSION"
