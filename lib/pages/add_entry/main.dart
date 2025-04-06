@@ -9,10 +9,12 @@ import 'package:go_router/go_router.dart';
 
 class AddEntryScreen extends StatefulWidget {
   final Function onFormSubmitted;
+  final int? initialDebitAccountId;
 
   const AddEntryScreen({
     super.key,
     required this.onFormSubmitted,
+    this.initialDebitAccountId,
   });
 
   @override
@@ -50,6 +52,12 @@ class AddEntryScreenState extends State<AddEntryScreen> {
     setState(() {
       _accounts = accounts;
       _defaultCurrency = curr;
+      if (widget.initialDebitAccountId != null) {
+        _debitAccount = accounts.firstWhere(
+          (account) => account.id == widget.initialDebitAccountId,
+          orElse: () => accounts.first,
+        );
+      }
     });
   }
 
