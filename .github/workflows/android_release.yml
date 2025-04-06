@@ -34,7 +34,6 @@ jobs:
 
       - name: Verify version consistency
         run: |
-          # Extract version from pubspec.yaml (e.g., version: 1.2.3+4 -> 1.2.3)
           PUBSPEC_VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //')
           TAG_VERSION=${RELEASE_VERSION#v}
 
@@ -42,6 +41,8 @@ jobs:
           echo "Tag version: $TAG_VERSION"
 
           if [ "$PUBSPEC_VERSION" != "$TAG_VERSION" ]; then
+            # Delete the tag
+            gh api -X DELETE /repos/${{ github.repository }}/git/refs/tags/$TAG_VERSION
             echo "Error: Pubspec version ($PUBSPEC_VERSION) does not match tag version ($TAG_VERSION)."
             exit 1
           fi
