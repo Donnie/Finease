@@ -106,7 +106,11 @@ final GoRouter goRouter = GoRouter(
       path: RoutesName.addEntry.path,
       builder: (BuildContext context, GoRouterState state) {
         final Function onFormSubmitted = state.extra as Function;
-        return AddEntryScreen(onFormSubmitted: onFormSubmitted);
+        final String? debitAccountId = state.uri.queryParameters['debit_account_id'];
+        return AddEntryScreen(
+          onFormSubmitted: onFormSubmitted,
+          initialDebitAccountId: debitAccountId != null ? int.parse(debitAccountId) : null,
+        );
       },
     ),
     GoRoute(

@@ -127,6 +127,9 @@ class EntriesPageState extends State<EntriesPage> {
         onPressed: () => context.pushNamed(
           RoutesName.addEntry.name,
           extra: loadEntries,
+          queryParameters: widget.accountID != null
+              ? {'debit_account_id': widget.accountID.toString()}
+              : {},
         ),
         icon: Icons.add,
       ),
