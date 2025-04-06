@@ -98,7 +98,7 @@ class NetWorthCard extends StatelessWidget {
                           sections: [
                             PieChartSectionData(
                               color: Colors.green,
-                              value: assetAmount,
+                              value: networthAmount,
                               title: '${(100*(networthAmount/assetAmount)).toStringAsFixed(0)}%',
                             ),
                             PieChartSectionData(
