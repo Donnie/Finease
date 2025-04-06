@@ -77,7 +77,7 @@ jobs:
             if ! git diff --staged --quiet; then
               git commit -m "chore: auto-increment patch version to $NEW_VERSION"
               git push origin HEAD:${{ github.event.pull_request.head.ref }}
-              echo "Auto-incremented version from $BASE_VERSION to $NEW_VERSION"
+              echo "Auto-incremented version from $HEAD_VERSION to $NEW_VERSION"
             else
               echo "No changes to commit for auto-increment."
             fi
