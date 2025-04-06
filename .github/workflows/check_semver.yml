@@ -40,6 +40,7 @@ jobs:
         id: head
         run: |
           HEAD_VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //')
+          echo "Head version from pubspec.yaml: $HEAD_VERSION"
           echo "head_version=$HEAD_VERSION" >> $GITHUB_OUTPUT
 
       - name: Auto-increment patch version if needed
