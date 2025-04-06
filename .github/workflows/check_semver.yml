@@ -47,16 +47,25 @@ jobs:
         run: |
           BASE_VERSION="${{ steps.base.outputs.base_version }}"
           HEAD_VERSION="${{ steps.head.outputs.head_version }}"
-          
-          if [ "$BASE_VERSION" = "$HEAD_VERSION" ]; then
-            # Split version into major.minor.patch
-            IFS='.' read -r major minor patch <<< "$BASE_VERSION"
-            # Increment patch version
-            new_patch=$((patch + 1))
-            NEW_VERSION="${major}.${minor}.${new_patch}"
 
-            echo "Auto-incrementing version from $BASE_VERSION to $NEW_VERSION"
+          # Default output version is the head version
+          NEW_VERSION=$HEAD_VERSION
+
+          # Split versions for comparison
+          IFS='.' read -r base_major base_minor base_patch <<< "$BASE_VERSION"
+          IFS='.' read -r head_major head_minor head_patch <<< "$HEAD_VERSION"
+
+          # Check if head version is NOT greater than base version
+          if ! ([ "$head_major" -gt "$base_major" ] || \
+                ([ "$head_major" -eq "$base_major" ] && [ "$head_minor" -gt "$base_minor" ]) || \
+                ([ "$head_major" -eq "$base_major" ] && [ "$head_minor" -eq "$base_minor" ] && [ "$head_patch" -gt "$base_patch" ])); then
             
+            echo "HEAD version ($HEAD_VERSION) is not ahead of BASE version ($BASE_VERSION)."
+
+            # Increment patch version based on BASE
+            new_patch=$((base_patch + 1))
+            NEW_VERSION="${base_major}.${base_minor}.${new_patch}"
+
             # Update pubspec.yaml with new version
             sed -i "s/^version: .*/version: $NEW_VERSION/" pubspec.yaml
             
@@ -64,31 +73,36 @@ jobs:
             git config --local user.email "github-actions[bot]@users.noreply.github.com"
             git config --local user.name "github-actions[bot]"
             git add pubspec.yaml
-            git commit -m "chore: auto-increment patch version to $NEW_VERSION"
-            git push origin HEAD:${{ github.event.pull_request.head.ref }}
-            
-            echo "Auto-incremented version from $BASE_VERSION to $NEW_VERSION"
-            echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+            # Check if there are changes to commit (sed might not change anything if version line is missing)
+            if ! git diff --staged --quiet; then
+              git commit -m "chore: auto-increment patch version to $NEW_VERSION"
+              git push origin HEAD:${{ github.event.pull_request.head.ref }}
+              echo "Auto-incremented version from $BASE_VERSION to $NEW_VERSION"
+            else
+              echo "No changes to commit for auto-increment."
+            fi
           else
-            echo "new_version=$HEAD_VERSION" >> $GITHUB_OUTPUT
+            echo "HEAD version ($HEAD_VERSION) is already ahead of BASE version ($BASE_VERSION). No auto-increment needed."
           fi
+
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
 
       - name: Compare versions
         run: |
           BASE_VERSION="${{ steps.base.outputs.base_version }}"
           HEAD_VERSION="${{ steps.auto-increment.outputs.new_version }}"
-          
+
           if [ "$BASE_VERSION" = "$HEAD_VERSION" ]; then
             echo "Error: Version in pubspec.yaml has not been updated in this PR"
             echo "Current version: $BASE_VERSION"
             echo "Please update the version number in pubspec.yaml before merging"
             exit 1
           fi
-          
+
           # Split versions into major.minor.patch
           IFS='.' read -r base_major base_minor base_patch <<< "$BASE_VERSION"
           IFS='.' read -r head_major head_minor head_patch <<< "$HEAD_VERSION"
-          
+
           # Check if head version is greater than base version
           if [ "$head_major" -lt "$base_major" ] || \
              ([ "$head_major" -eq "$base_major" ] && [ "$head_minor" -lt "$base_minor" ]) || \
@@ -96,5 +110,5 @@ jobs:
             echo "Error: New version ($HEAD_VERSION) must be greater than the current version ($BASE_VERSION)"
             exit 1
           fi
-          
+
           echo "Version check passed: $BASE_VERSION -> $HEAD_VERSION"
