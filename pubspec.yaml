@@ -10,7 +10,7 @@ dependencies:
   collection: ^1.18.0
   currency_picker: 2.0.20
   dynamic_color: 1.6.9
-  file_picker: ^6.1.1
+  file_picker: ^10.0.0
   fl_chart: 0.66.0
   flutter:
     sdk: flutter
@@ -21,14 +21,14 @@ dependencies:
   intl: 0.17.0
   local_auth: 2.1.8
   material_design_icons_flutter: 7.0.7296
-  package_info_plus: 5.0.1
+  package_info_plus: ^8.3.0
   password_strength: 0.2.0
   path: 1.9.1
   path_provider: 2.1.2
   pointycastle: 3.7.4
   responsive_builder: 0.7.0
   share_plus: 7.0.2
-  sqflite: 2.3.2
+  sqflite: 2.4.2
   url_launcher: 6.2.3
   win32: ^5.12.0
   xml: 6.5.0
