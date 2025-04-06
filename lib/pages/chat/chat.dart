@@ -1,10 +1,11 @@
-import 'package:finease/core/constants/constants.dart';
-import 'package:finease/db/db.dart';
 import 'package:finease/db/messages.dart';
-import 'package:finease/parts/drawer.dart';
+import 'package:finease/parts/app_drawer.dart';
+import 'package:finease/parts/app_top_bar.dart';
 import 'package:finease/parts/input.dart';
 import 'package:finease/parts/list.dart';
+import 'package:finease/pages/home/frame/destinations.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -14,16 +15,9 @@ class ChatScreen extends StatefulWidget {
 }
 
 class ChatScreenState extends State<ChatScreen> {
-  bool isDarkModeEnabled = false;
   final List<Message> messages = [];
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
-
-  void _toggleDarkMode(bool value) {
-    setState(() {
-      isDarkModeEnabled = value;
-    });
-  }
 
   @override
   void initState() {
@@ -31,10 +25,11 @@ class ChatScreenState extends State<ChatScreen> {
     _loadMessages();
   }
 
-  void _loadMessages() async {
+  Future<void> _loadMessages() async {
     var msg = MessageService();
     var loadedMessages = await msg.getMessages();
     setState(() {
+      messages.clear();
       messages.addAll(loadedMessages);
     });
   }
@@ -42,6 +37,7 @@ class ChatScreenState extends State<ChatScreen> {
   @override
   void dispose() {
     _focusNode.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -58,37 +54,49 @@ class ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  void _clearDatabase() async {
-    await DatabaseHelper().clearDatabase();
-    setState(() {
-      messages.clear();
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    final GlobalKey<ScaffoldState> scaffoldStateKey = GlobalKey<ScaffoldState>();
+    int destIndex = 4; // Index of chat in destinations list
+
+    void updateBody(int index) {
+      setState(() {
+        destIndex = index;
+      });
+      context.goNamed(
+        destinations[destIndex].routeName.name,
+        extra: () => {},
+      );
+    }
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text(language["appTitle"]),
+      key: scaffoldStateKey,
+      appBar: appBar(context, "chat"),
+      drawer: AppDrawer(
+        onRefresh: _loadMessages,
+        scaffoldKey: scaffoldStateKey,
+        selectedIndex: destIndex,
+        destinations: destinations,
+        onDestinationSelected: updateBody,
       ),
-      drawer: ChatDrawer(
-        onClearDatabase: _clearDatabase,
-        isDarkModeEnabled: isDarkModeEnabled,
-        onToggleDarkMode: _toggleDarkMode,
-      ),
-      body: Column(
-        children: <Widget>[
-          MessagesListView(messages: messages),
-          ChatInputArea(
-            controller: _controller,
-            focusNode: _focusNode,
-            onSubmitted: (value) {
-              if (value.isNotEmpty) {
-                _sendMessage();
-              }
-            },
-          ),
-        ],
+      body: RefreshIndicator(
+        onRefresh: _loadMessages,
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: MessagesListView(messages: messages),
+            ),
+            ChatInputArea(
+              controller: _controller,
+              focusNode: _focusNode,
+              onSubmitted: (value) {
+                if (value.isNotEmpty) {
+                  _sendMessage();
+                }
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
