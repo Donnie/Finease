@@ -4,10 +4,10 @@
 
 <p align="center">
   <a href="https://flutter.dev/" style="text-decoration:none" area-label="flutter">
-    <img src="https://img.shields.io/badge/Platform-Flutter%203.16.5-blue">
+    <img src="https://img.shields.io/badge/Platform-Flutter%203.29.2-blue">
   </a>
-  <a href="https://github.com/Donnie/Finease/releases/tag/v1.0.28" style="text-decoration:none" area-label="flutter">
-    <img src="https://img.shields.io/badge/Version-1.0.28-orange">
+  <a href="https://github.com/Donnie/Finease/releases/tag/v1.0.29" style="text-decoration:none" area-label="flutter">
+    <img src="https://img.shields.io/badge/Version-1.0.29-orange">
   </a>
   <a href="https://github.com/Donnie/Finease/actions/workflows/android_release.yml" style="text-decoration:none" area-label="flutter">
     <img src="https://github.com/Donnie/Finease/actions/workflows/android_release.yml/badge.svg">
@@ -33,5 +33,17 @@
 Cultivate discipline, enjoy ease of use, and control your financial data.
 
 *\* needs internet only if you have multi currency accounts, to look up exchange rates from ECB.*
+
+### Technical Details
+
+#### Automated Release Process
+The app uses GitHub Actions for automated releases. When a new version tag (e.g., `v1.0.29`) is pushed, the workflow:
+1. Sets up a Flutter 3.22.0 environment
+2. Builds the Android APK
+3. Signs the APK with release keys
+4. Creates a GitHub release with the versioned APK
+5. Generates release notes automatically
+
+The process is fully automated and secured using GitHub Secrets for signing keys.
 
 > Made with ♥ in Berlin
