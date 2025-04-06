@@ -22,15 +22,30 @@ class ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
-    _loadMessages();
+    _loadDemoMessages();
+    // Request focus when the screen is first loaded
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
   }
 
-  Future<void> _loadMessages() async {
-    var msg = MessageService();
-    var loadedMessages = await msg.getMessages();
+  void _loadDemoMessages() {
     setState(() {
       messages.clear();
-      messages.addAll(loadedMessages);
+      messages.addAll([
+        Message(
+          content: "Welcome to the chat!",
+          type: MessageType.automated,
+        ),
+        Message(
+          content: "This is a demo chat interface.",
+          type: MessageType.automated,
+        ),
+        Message(
+          content: "Try sending a message to see how it works.",
+          type: MessageType.automated,
+        ),
+      ]);
     });
   }
 
@@ -41,17 +56,29 @@ class ChatScreenState extends State<ChatScreen> {
     super.dispose();
   }
 
-  void _sendMessage() async {
-    await sendMessage(
-      content: _controller.text,
-      messageList: messages,
-      onStateUpdated: () {
-        setState(() {
-          _controller.clear();
-          _focusNode.requestFocus();
-        });
-      },
-    );
+  void _sendMessage() {
+    if (_controller.text.isEmpty) return;
+    
+    setState(() {
+      // Add user message
+      messages.insert(0, Message(
+        content: _controller.text,
+        type: MessageType.user,
+      ));
+      
+      // Add automated response
+      messages.insert(0, Message(
+        content: "You said: ${_controller.text}",
+        type: MessageType.automated,
+      ));
+      
+      _controller.clear();
+    });
+    
+    // Request focus after state update
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
   }
 
   @override
@@ -73,19 +100,21 @@ class ChatScreenState extends State<ChatScreen> {
       key: scaffoldStateKey,
       appBar: appBar(context, "chat"),
       drawer: AppDrawer(
-        onRefresh: _loadMessages,
+        onRefresh: () {
+          _loadDemoMessages();
+        },
         scaffoldKey: scaffoldStateKey,
         selectedIndex: destIndex,
         destinations: destinations,
         onDestinationSelected: updateBody,
       ),
       body: RefreshIndicator(
-        onRefresh: _loadMessages,
+        onRefresh: () async {
+          _loadDemoMessages();
+        },
         child: Column(
           children: <Widget>[
-            Expanded(
-              child: MessagesListView(messages: messages),
-            ),
+            MessagesListView(messages: messages),
             ChatInputArea(
               controller: _controller,
               focusNode: _focusNode,
