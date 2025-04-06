@@ -4,6 +4,7 @@ import 'package:sqflite/sqflite.dart';
 enum Setting {
   accountSetup,
   capitalGains, // account.id int
+  darkMode,
   dbPassword,
   introDone,
   onboarded,

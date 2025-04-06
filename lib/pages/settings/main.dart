@@ -2,6 +2,7 @@ import 'package:finease/pages/export.dart';
 import 'package:finease/pages/settings/about.dart';
 import 'package:finease/pages/settings/capital_gains.dart';
 import 'package:finease/pages/settings/currency.dart';
+import 'package:finease/pages/settings/dark_mode.dart';
 import 'package:finease/pages/settings/toggle_encryption.dart';
 import 'package:finease/parts/export.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,7 @@ class SettingsPage extends StatelessWidget {
               options: [
                 CurrencySelectorWidget(onChange: onFormSubmitted),
                 const CapGainsSelectorWidget(),
+                DarkModeToggleWidget(onChange: onFormSubmitted),
               ],
             ),
             SettingsGroup(
