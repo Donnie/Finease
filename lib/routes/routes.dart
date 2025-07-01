@@ -142,6 +142,13 @@ final GoRouter goRouter = GoRouter(
         return SettingsPage(onFormSubmitted: onFormSubmitted);
       },
     ),
+    GoRoute(
+      name: RoutesName.chat.name,
+      path: RoutesName.chat.path,
+      builder: (BuildContext context, GoRouterState state) {
+        return const ChatScreen();
+      },
+    ),
   ],
   errorBuilder: (BuildContext context, GoRouterState state) {
     return Center(

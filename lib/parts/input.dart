@@ -4,12 +4,14 @@ class ChatInputArea extends StatelessWidget {
   final TextEditingController controller;
   final FocusNode focusNode;
   final Function(String) onSubmitted;
+  final bool isProcessing;
 
   const ChatInputArea({
     super.key,
     required this.controller,
     required this.focusNode,
     required this.onSubmitted,
+    this.isProcessing = false,
   });
 
   @override
@@ -21,8 +23,9 @@ class ChatInputArea extends StatelessWidget {
           Expanded(
             child: TextField(
               controller: controller,
-              decoration: const InputDecoration(
-                hintText: 'Type a message',
+              enabled: !isProcessing,
+              decoration: InputDecoration(
+                hintText: isProcessing ? 'Processing...' : 'Type a message',
               ),
               focusNode: focusNode,
               onSubmitted: onSubmitted,
@@ -32,8 +35,11 @@ class ChatInputArea extends StatelessWidget {
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.send),
-            onPressed: () => onSubmitted(controller.text),
+            icon: Icon(
+              isProcessing ? Icons.hourglass_top : Icons.send,
+              color: isProcessing ? Colors.grey : Theme.of(context).primaryColor,
+            ),
+            onPressed: isProcessing ? null : () => onSubmitted(controller.text),
           ),
         ],
       ),

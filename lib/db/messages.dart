@@ -17,6 +17,11 @@ class MessageService {
     final list = await dbClient.rawQuery('SELECT * FROM Messages ORDER BY created_at DESC');
     return list.map((item) => Message.fromMap(item)).toList();
   }
+  
+  Future<void> clearMessages() async {
+    final dbClient = await _databaseHelper.db;
+    await dbClient.delete('Messages');
+  }
 }
 
 Future<void> sendMessage({
