@@ -74,6 +74,40 @@ class EntriesPageState extends State<EntriesPage> {
     }).toList();
   }
 
+  Widget _buildSearchField() {
+    return ValueListenableBuilder<String>(
+      valueListenable: _searchNotifier,
+      builder: (context, searchValue, child) {
+        return TextField(
+          key: const Key('search_field'),
+          controller: _searchController,
+          focusNode: _searchFocusNode,
+          onChanged: (value) {
+            // ValueNotifier will trigger rebuild of ValueListenableBuilder
+            // but TextField itself maintains focus
+          },
+          decoration: InputDecoration(
+            hintText: 'Search transactions...',
+            prefixIcon: const Icon(Icons.search),
+            suffixIcon: searchValue.isNotEmpty
+                ? IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {
+                      _searchController.clear();
+                    },
+                  )
+                : null,
+            isDense: true,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 12,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> _loadPreferredCurrency() async {
     final currency = await _settingService.getSetting(Setting.prefCurrency);
     setState(() {
@@ -202,37 +236,7 @@ class EntriesPageState extends State<EntriesPage> {
                       child: Column(
                         children: [
                           // Search input
-                          ValueListenableBuilder<String>(
-                            valueListenable: _searchNotifier,
-                            builder: (context, searchValue, child) {
-                              return TextField(
-                                key: const Key('search_field'),
-                                controller: _searchController,
-                                focusNode: _searchFocusNode,
-                                onChanged: (value) {
-                                  // ValueNotifier will trigger rebuild of ValueListenableBuilder
-                                  // but TextField itself maintains focus
-                                },
-                                decoration: InputDecoration(
-                                  hintText: 'Search entries...',
-                                  prefixIcon: const Icon(Icons.search),
-                                  suffixIcon: searchValue.isNotEmpty
-                                      ? IconButton(
-                                          icon: const Icon(Icons.clear),
-                                          onPressed: () {
-                                            _searchController.clear();
-                                          },
-                                        )
-                                      : null,
-                                  isDense: true,
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 12,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
+                          _buildSearchField(),
                           const SizedBox(height: 8),
                           // Top Expenses Card
                           TopExpensesCard(topExpenses: getTopExpenses()),
@@ -265,37 +269,7 @@ class EntriesPageState extends State<EntriesPage> {
                   // Search input for non-date-filtered view
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: ValueListenableBuilder<String>(
-                      valueListenable: _searchNotifier,
-                      builder: (context, searchValue, child) {
-                        return TextField(
-                          key: const Key('search_field'),
-                          controller: _searchController,
-                          focusNode: _searchFocusNode,
-                          onChanged: (value) {
-                            // ValueNotifier will trigger rebuild of ValueListenableBuilder
-                            // but TextField itself maintains focus
-                          },
-                          decoration: InputDecoration(
-                            hintText: 'Search entries...',
-                            prefixIcon: const Icon(Icons.search),
-                            suffixIcon: searchValue.isNotEmpty
-                                ? IconButton(
-                                    icon: const Icon(Icons.clear),
-                                    onPressed: () {
-                                      _searchController.clear();
-                                    },
-                                  )
-                                : null,
-                            isDense: true,
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 12,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+                    child: _buildSearchField(),
                   ),
                   Expanded(
                     child: ValueListenableBuilder<String>(
