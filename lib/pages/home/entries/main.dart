@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:finease/db/accounts.dart';
 import 'package:finease/db/currency.dart';
 import 'package:finease/db/entries.dart';
@@ -8,6 +9,7 @@ import 'package:finease/parts/export.dart';
 import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 class EntriesPage extends StatefulWidget {
   final DateTime? startDate;
@@ -27,6 +29,9 @@ class EntriesPage extends StatefulWidget {
 class EntriesPageState extends State<EntriesPage> {
   final EntryService _entryService = EntryService();
   final SettingService _settingService = SettingService();
+  final TextEditingController _searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
+  final ValueNotifier<String> _searchNotifier = ValueNotifier<String>('');
   List<Entry> entries = [];
   String? prefCurrency;
 
@@ -35,6 +40,38 @@ class EntriesPageState extends State<EntriesPage> {
     super.initState();
     loadEntries();
     _loadPreferredCurrency();
+    _searchController.addListener(() {
+      _searchNotifier.value = _searchController.text;
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _searchFocusNode.dispose();
+    _searchNotifier.dispose();
+    super.dispose();
+  }
+
+  List<Entry> get filteredEntries {
+    final query = _searchController.text.toLowerCase();
+    if (query.isEmpty) {
+      return entries;
+    }
+    
+    return entries.where((entry) {
+      final fromAccount = entry.debitAccount?.name ?? '';
+      final toAccount = entry.creditAccount?.name ?? '';
+      final notes = entry.notes ?? '';
+      final dateStr = entry.date != null
+          ? DateFormat('yyyy-MM-dd HH:mm').format(entry.date!)
+          : '';
+      
+      return fromAccount.toLowerCase().contains(query) ||
+          toAccount.toLowerCase().contains(query) ||
+          notes.toLowerCase().contains(query) ||
+          dateStr.toLowerCase().contains(query);
+    }).toList();
   }
 
   Future<void> _loadPreferredCurrency() async {
@@ -97,7 +134,7 @@ class EntriesPageState extends State<EntriesPage> {
 
   List<Map<String, dynamic>> getTopExpenses() {
     // Filter expense entries by preferred currency
-    final expenseEntries = entries.where((entry) =>
+    final expenseEntries = filteredEntries.where((entry) =>
         entry.creditAccount?.type == AccountType.expense &&
         entry.creditAccount != null &&
         (prefCurrency == null || entry.creditAccount!.currency == prefCurrency)).toList();
@@ -162,27 +199,117 @@ class EntriesPageState extends State<EntriesPage> {
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: TopExpensesCard(topExpenses: getTopExpenses()),
+                      child: Column(
+                        children: [
+                          // Search input
+                          ValueListenableBuilder<String>(
+                            valueListenable: _searchNotifier,
+                            builder: (context, searchValue, child) {
+                              return TextField(
+                                key: const Key('search_field'),
+                                controller: _searchController,
+                                focusNode: _searchFocusNode,
+                                onChanged: (value) {
+                                  // ValueNotifier will trigger rebuild of ValueListenableBuilder
+                                  // but TextField itself maintains focus
+                                },
+                                decoration: InputDecoration(
+                                  hintText: 'Search entries...',
+                                  prefixIcon: const Icon(Icons.search),
+                                  suffixIcon: searchValue.isNotEmpty
+                                      ? IconButton(
+                                          icon: const Icon(Icons.clear),
+                                          onPressed: () {
+                                            _searchController.clear();
+                                          },
+                                        )
+                                      : null,
+                                  isDense: true,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 12,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 8),
+                          // Top Expenses Card
+                          TopExpensesCard(topExpenses: getTopExpenses()),
+                        ],
+                      ),
                     ),
                   ),
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        return EntryCard(
-                          entry: entries[index],
-                          onDelete: entryOnDelete,
-                          onCardTap: loadEntries,
-                        );
-                      },
-                      childCount: entries.length,
-                    ),
+                  ValueListenableBuilder<String>(
+                    valueListenable: _searchNotifier,
+                    builder: (context, searchValue, child) {
+                      final filtered = filteredEntries;
+                      return SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            return EntryCard(
+                              entry: filtered[index],
+                              onDelete: entryOnDelete,
+                              onCardTap: loadEntries,
+                            );
+                          },
+                          childCount: filtered.length,
+                        ),
+                      );
+                    },
                   ),
                 ],
               )
-            : EntriesListView(
-                entries: entries,
-                onDelete: entryOnDelete,
-                onEdit: loadEntries,
+            : Column(
+                children: [
+                  // Search input for non-date-filtered view
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ValueListenableBuilder<String>(
+                      valueListenable: _searchNotifier,
+                      builder: (context, searchValue, child) {
+                        return TextField(
+                          key: const Key('search_field'),
+                          controller: _searchController,
+                          focusNode: _searchFocusNode,
+                          onChanged: (value) {
+                            // ValueNotifier will trigger rebuild of ValueListenableBuilder
+                            // but TextField itself maintains focus
+                          },
+                          decoration: InputDecoration(
+                            hintText: 'Search entries...',
+                            prefixIcon: const Icon(Icons.search),
+                            suffixIcon: searchValue.isNotEmpty
+                                ? IconButton(
+                                    icon: const Icon(Icons.clear),
+                                    onPressed: () {
+                                      _searchController.clear();
+                                    },
+                                  )
+                                : null,
+                            isDense: true,
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 12,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    child: ValueListenableBuilder<String>(
+                      valueListenable: _searchNotifier,
+                      builder: (context, searchValue, child) {
+                        return EntriesListView(
+                          entries: filteredEntries,
+                          onDelete: entryOnDelete,
+                          onEdit: loadEntries,
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
       ),
       drawer: AppDrawer(
