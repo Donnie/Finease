@@ -32,7 +32,7 @@ class AccountChoiceFormField extends FormField<Account> {
         );
 }
 
-class AccountChoice extends StatelessWidget {
+class AccountChoice extends StatefulWidget {
   final Account? selectedAccount;
   final Function? onAddNew;
   final List<Account> accounts;
@@ -50,41 +50,97 @@ class AccountChoice extends StatelessWidget {
     this.selectedAccount,
   });
 
+  @override
+  State<AccountChoice> createState() => AccountChoiceState();
+}
+
+class AccountChoiceState extends State<AccountChoice> {
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(() {
+      setState(() {
+        _searchQuery = _searchController.text;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
   void _handleAccountSelection(Account account, bool isSelected) {
     Account? selectedAccount = isSelected ? account : null;
 
-    onAccountSelected?.call(selectedAccount);
+    widget.onAccountSelected?.call(selectedAccount);
+  }
+
+  List<Account> get _filteredAccounts {
+    if (_searchQuery.isEmpty) {
+      return widget.accounts;
+    }
+    return widget.accounts.where((account) {
+      return account.name.toLowerCase().contains(_searchQuery.toLowerCase());
+    }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
+    final filteredAccounts = _filteredAccounts;
+    
     return Column(
       children: [
         ListTile(
           title: Text(
-            title,
+            widget.title,
             style: context.titleMedium,
           ),
         ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: TextField(
+            controller: _searchController,
+            decoration: InputDecoration(
+              hintText: 'Search accounts',
+              prefixIcon: const Icon(Icons.search),
+              suffixIcon: _searchQuery.isNotEmpty
+                  ? IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        _searchController.clear();
+                      },
+                    )
+                  : null,
+              isDense: true,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
         SizedBox(
           height: 48,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: accounts.length + 1,
+            itemCount: filteredAccounts.length + 1,
             itemBuilder: (BuildContext context, int index) {
-              if (index == accounts.length) {
-                return AddNewAccount(onSelected: (onAddNew != null) ? (val) => onAddNew?.call() : null);
+              if (index == filteredAccounts.length) {
+                return AddNewAccount(onSelected: (widget.onAddNew != null) ? (val) => widget.onAddNew?.call() : null);
               }
-              Account account = accounts[index];
+              Account account = filteredAccounts[index];
               return AccountChip(
-                invisible: (selectedAccount?.id != null &&
-                    selectedAccount?.id != account.id),
-                selected: selectedAccount?.id == account.id,
+                invisible: (widget.selectedAccount?.id != null &&
+                    widget.selectedAccount?.id != account.id),
+                selected: widget.selectedAccount?.id == account.id,
                 avatar: Text(
                   SupportedCurrency[account.currency]!,
                   style: context.bodyMedium,
                 ),
-                onSelected: (onAccountSelected != null) ? (val) => _handleAccountSelection(account, val) : null,
+                onSelected: (widget.onAccountSelected != null) ? (val) => _handleAccountSelection(account, val) : null,
                 label: Text(
                   account.name,
                   style: context.bodyMedium,
@@ -93,10 +149,10 @@ class AccountChoice extends StatelessWidget {
             },
           ),
         ),
-        if (errorMessage != null)
+        if (widget.errorMessage != null)
           ListTile(
             title: Text(
-              errorMessage!,
+              widget.errorMessage!,
               style: context.bodyMedium!.copyWith(
                 color: context.error,
               ),
