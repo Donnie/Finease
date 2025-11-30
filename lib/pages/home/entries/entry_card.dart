@@ -155,9 +155,9 @@ String getFormattedDate(DateTime entryDate) {
       return 'moments ago';
     }
     return '${difference.inHours} hours ago';
-  } else if (difference.inDays < 7) {
+  } else if (difference.inDays < 2) {
     // Less than a week
-    return '${difference.inDays} days ago';
+    return 'yesterday';
   } else {
     // More than a week - show absolute time
     return DateFormat('yyyy-MM-dd HH:mm').format(entryDate);

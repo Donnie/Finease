@@ -1,4 +1,5 @@
 import 'package:finease/db/accounts.dart';
+import 'package:finease/db/months.dart';
 import 'package:finease/db/settings.dart';
 import 'package:finease/pages/export.dart';
 import 'package:finease/parts/export.dart';
@@ -17,6 +18,7 @@ class SummaryPageState extends State<SummaryPage> {
   final GlobalKey<ScaffoldState> _scaffoldStateKey = GlobalKey<ScaffoldState>();
   final AccountService _accountService = AccountService();
   final SettingService _settingService = SettingService();
+  final MonthService _monthService = MonthService();
 
   int destIndex = 0;
   double networthAmount = 0.0;
@@ -25,6 +27,7 @@ class SummaryPageState extends State<SummaryPage> {
   double liquidAmount = 0.0;
   String currency = "USD";
   bool isLoading = true;
+  List<Month> months = [];
 
   @override
   void initState() {
@@ -41,12 +44,14 @@ class SummaryPageState extends State<SummaryPage> {
       double liabilities =
           await _accountService.getTotalBalance(type: AccountType.liability);
       double liquid = await _accountService.getTotalBalance(liquid: true);
+      List<Month> monthsList = await _monthService.getAllMonthsInsights();
       setState(() {
         currency = prefCurrency;
         networthAmount = asset + liabilities;
         liabilitiesAmount = liabilities;
         assetAmount = asset;
         liquidAmount = liquid;
+        months = monthsList;
         isLoading = false;
       });
     } catch (e) {
@@ -90,6 +95,7 @@ class SummaryPageState extends State<SummaryPage> {
             liabilitiesAmount: liabilitiesAmount,
             liquidAmount: liquidAmount,
             currency: currency,
+            months: months,
           ),
         ),
       ),
