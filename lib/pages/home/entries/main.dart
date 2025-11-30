@@ -1,5 +1,9 @@
+import 'package:finease/db/accounts.dart';
+import 'package:finease/db/currency.dart';
 import 'package:finease/db/entries.dart';
+import 'package:finease/db/settings.dart';
 import 'package:finease/pages/export.dart';
+import 'package:finease/parts/card.dart';
 import 'package:finease/parts/export.dart';
 import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
@@ -22,12 +26,22 @@ class EntriesPage extends StatefulWidget {
 
 class EntriesPageState extends State<EntriesPage> {
   final EntryService _entryService = EntryService();
+  final SettingService _settingService = SettingService();
   List<Entry> entries = [];
+  String? prefCurrency;
 
   @override
   void initState() {
     super.initState();
     loadEntries();
+    _loadPreferredCurrency();
+  }
+
+  Future<void> _loadPreferredCurrency() async {
+    final currency = await _settingService.getSetting(Setting.prefCurrency);
+    setState(() {
+      prefCurrency = currency;
+    });
   }
 
   Future<void> loadEntries() async {
@@ -81,6 +95,38 @@ class EntriesPageState extends State<EntriesPage> {
     );
   }
 
+  List<Map<String, dynamic>> getTopExpenses() {
+    // Filter expense entries by preferred currency
+    final expenseEntries = entries.where((entry) =>
+        entry.creditAccount?.type == AccountType.expense &&
+        entry.creditAccount != null &&
+        (prefCurrency == null || entry.creditAccount!.currency == prefCurrency)).toList();
+
+    // Group by account name and currency, sum amounts
+    final Map<String, Map<String, dynamic>> expenseMap = {};
+    for (var entry in expenseEntries) {
+      final accountName = entry.creditAccount!.name;
+      final currency = entry.creditAccount!.currency;
+      final key = '$accountName|$currency';
+
+      if (expenseMap.containsKey(key)) {
+        expenseMap[key]!['amount'] += entry.amount;
+      } else {
+        expenseMap[key] = {
+          'accountName': accountName,
+          'currency': currency,
+          'amount': entry.amount,
+        };
+      }
+    }
+
+    // Convert to list, sort by amount descending, take top 5
+    final topExpenses = expenseMap.values.toList()
+      ..sort((a, b) => (b['amount'] as double).compareTo(a['amount'] as double));
+
+    return topExpenses.toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> scaffoldStateKey =
@@ -110,11 +156,34 @@ class EntriesPageState extends State<EntriesPage> {
       ),
       body: RefreshIndicator(
         onRefresh: loadEntries,
-        child: EntriesListView(
-          entries: entries,
-          onDelete: entryOnDelete,
-          onEdit: loadEntries,
-        ),
+        child: widget.startDate != null && widget.endDate != null
+            ? CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TopExpensesCard(topExpenses: getTopExpenses()),
+                    ),
+                  ),
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        return EntryCard(
+                          entry: entries[index],
+                          onDelete: entryOnDelete,
+                          onCardTap: loadEntries,
+                        );
+                      },
+                      childCount: entries.length,
+                    ),
+                  ),
+                ],
+              )
+            : EntriesListView(
+                entries: entries,
+                onDelete: entryOnDelete,
+                onEdit: loadEntries,
+              ),
       ),
       drawer: AppDrawer(
         onRefresh: loadEntries,
@@ -132,6 +201,93 @@ class EntriesPageState extends State<EntriesPage> {
               : {},
         ),
         icon: Icons.add,
+      ),
+    );
+  }
+}
+
+class TopExpensesCard extends StatelessWidget {
+  final List<Map<String, dynamic>> topExpenses;
+
+  const TopExpensesCard({
+    super.key,
+    required this.topExpenses,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (topExpenses.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return AppCard(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Top Expenses',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 12),
+            Table(
+              columnWidths: const {
+                0: FlexColumnWidth(2),
+                1: FlexColumnWidth(1),
+              },
+              children: [
+                // Header row
+                TableRow(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Text(
+                        'Account',
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Text(
+                        'Amount',
+                        style: Theme.of(context).textTheme.titleSmall,
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                  ],
+                ),
+                // Data rows (up to 5)
+                ...topExpenses.map((expense) {
+                  final accountName = expense['accountName'] as String;
+                  final currency = expense['currency'] as String;
+                  final amount = expense['amount'] as double;
+                  final symbol = SupportedCurrency[currency] ?? currency;
+
+                  return TableRow(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4.0),
+                        child: Text(
+                          accountName,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4.0),
+                        child: Text(
+                          '$symbol ${amount.toStringAsFixed(2)}',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                          textAlign: TextAlign.right,
+                        ),
+                      ),
+                    ],
+                  );
+                }),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
