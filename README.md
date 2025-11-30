@@ -46,4 +46,13 @@ The app uses GitHub Actions for automated releases. When a new version tag (e.g.
 
 The process is fully automated and secured using GitHub Secrets for signing keys.
 
+#### Local Development
+
+To run the app locally on macOS:
+
+```bash
+flutter pub get
+flutter run -d macos
+```
+
 > Made with ♥ in Berlin

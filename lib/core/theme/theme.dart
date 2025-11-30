@@ -40,8 +40,8 @@ NavigationBarThemeData navigationBarThemeData(
   return NavigationBarThemeData(
     backgroundColor: colorScheme.surface,
     labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-    labelTextStyle: MaterialStateProperty.resolveWith((states) {
-      if (states.contains(MaterialState.selected)) {
+    labelTextStyle: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.selected)) {
         return textTheme?.bodyLarge?.copyWith(
           fontWeight: FontWeight.bold,
           color: colorScheme.onSurface,
@@ -61,8 +61,8 @@ NavigationDrawerThemeData navigationDrawerThemeData(
 ) {
   return NavigationDrawerThemeData(
     backgroundColor: colorScheme.surface,
-    labelTextStyle: MaterialStateProperty.resolveWith((states) {
-      if (states.contains(MaterialState.selected)) {
+    labelTextStyle: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.selected)) {
         return textTheme?.bodyLarge?.copyWith(
           fontWeight: FontWeight.bold,
         );

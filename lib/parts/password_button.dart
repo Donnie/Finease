@@ -35,9 +35,9 @@ class PasswordButton extends StatelessWidget {
         ),
         TextButton(
           style: ButtonStyle(
-            overlayColor: MaterialStateProperty.resolveWith<Color?>(
+            overlayColor: WidgetStateProperty.resolveWith<Color?>(
               (states) {
-                if (states.contains(MaterialState.pressed) && strong) {
+                if (states.contains(WidgetState.pressed) && strong) {
                   return context.primary.withOpacity(0.2);
                 }
                 return null;
