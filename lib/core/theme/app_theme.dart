@@ -20,8 +20,7 @@ ThemeData appTheme(
     dialogTheme: dialogTheme,
     timePickerTheme: timePickerTheme,
     appBarTheme: appBarTheme(systemUiOverlayStyle),
-    scaffoldBackgroundColor: colorScheme.background,
-    dialogBackgroundColor: colorScheme.background,
+    scaffoldBackgroundColor: colorScheme.surface,
     navigationBarTheme: navigationBarThemeData(
       colorScheme,
       textTheme,
