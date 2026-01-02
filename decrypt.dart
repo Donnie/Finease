@@ -1,13 +1,13 @@
 // decrypt.dart
 // A command-line tool to decrypt files that were encrypted with the
-// corresponding encryption script.
+// corresponding encryption function in this app.
 //
 // Please see how to install Dart before using this file: https://dart.dev/get-dart
 // Also do not forget to do `flutter pub get` to get all the dependencies.
 //
-// The script uses a password to derive a cryptographic key and an IV, and
-// decrypts the file that was previously encrypted using the AES encryption
-// standard with CBC mode and PKCS7 padding.
+// The script uses a password to derive a cryptographic key and extracts the IV
+// from the encrypted file. It decrypts files encrypted using AES-CBC with
+// PKCS7 padding. Supports both old format (no IV) and new format (with IV).
 //
 // Usage:
 //   dart decrypt.dart <inputFile> <outputFile> <password>
@@ -18,15 +18,16 @@
 //   <password>   - The password used to generate the key for decryption.
 //
 // Example:
-//   dart decrypt.dart encrypted.dat original.txt "myPassword123"
+//   dart decrypt.dart database.db.enc database.db "myPassword123"
 //
 // Requirements:
-// - The input file must have been encrypted using the enryption function in this app
+// - The input file must have been encrypted using the encryption function in this app
 //   specifically AES-CBC with PKCS7 padding, and a key derived from the given password.
 // - Dart runtime must be installed on the system to run this script.
 //
-// Ensure that 'finease/core/encryption.dart' file is available and contains the
-// necessary encryption logic and dependencies such as the pointycastle package.
+// File Format:
+// - New format: [salt: 32 bytes][IV: 16 bytes][encrypted data]
+// - Old format: [salt: 32 bytes][encrypted data] (backward compatible)
 
 // ignore_for_file: avoid_print
 
