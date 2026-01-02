@@ -294,11 +294,51 @@ class EntryService {
     );
   }
 
+  /// Updates both entries in a forex pair with the same date
+  /// Only updates the credit entry's notes (user notes)
+  Future<void> updateForexPair({
+    required Entry debitEntry,
+    required Entry creditEntry,
+    required DateTime date,
+    required String? creditNotes,
+  }) async {
+    final dbClient = await _databaseHelper.db;
+    
+    // Update both entries' dates
+    debitEntry.date = date;
+    creditEntry.date = date;
+    
+    // Only update credit entry's notes (user notes)
+    if (creditNotes != null) {
+      creditEntry.notes = creditNotes;
+    }
+    
+    // Update both entries in the database
+    await dbClient.update(
+      'Entries',
+      debitEntry.toJson(),
+      where: 'id = ?',
+      whereArgs: [debitEntry.id],
+    );
+    
+    await dbClient.update(
+      'Entries',
+      creditEntry.toJson(),
+      where: 'id = ?',
+      whereArgs: [creditEntry.id],
+    );
+  }
+
   /// Checks if an account is a forex account (name="Forex" and hidden=true)
   bool _isForexAccount(Account? account) {
     return account != null &&
         account.name == "Forex" &&
         account.hidden == true;
+  }
+
+  /// Public method to check if an account is a forex account
+  bool isForexAccount(Account? account) {
+    return _isForexAccount(account);
   }
 
 
