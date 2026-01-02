@@ -58,6 +58,11 @@ class EntryCard extends StatelessWidget {
         pathParameters: {'id': entry.id.toString()},
         extra: onCardTap,
       ),
+      onLongPress: () => context.pushNamed(
+        RoutesName.duplicateEntry.name,
+        pathParameters: {'id': entry.id.toString()},
+        extra: onCardTap,
+      ),
     child: Card(
       color: cardColor,
       child: Padding(

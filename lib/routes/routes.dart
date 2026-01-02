@@ -1,5 +1,6 @@
 import 'package:finease/db/accounts.dart';
 import 'package:finease/db/settings.dart';
+import 'package:finease/pages/duplicate_entry/main.dart';
 import 'package:finease/pages/export.dart';
 import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
@@ -122,6 +123,20 @@ final GoRouter goRouter = GoRouter(
         );
         dynamic Function() onFormSubmitted = state.extra as dynamic Function();
         return EditEntryScreen(
+          entryID: entryID,
+          onFormSubmitted: onFormSubmitted,
+        );
+      },
+    ),
+    GoRoute(
+      name: RoutesName.duplicateEntry.name,
+      path: RoutesName.duplicateEntry.pathWparam,
+      builder: (BuildContext context, GoRouterState state) {
+        final int entryID = int.parse(
+          state.pathParameters[RoutesName.duplicateEntry.param]!,
+        );
+        dynamic Function() onFormSubmitted = state.extra as dynamic Function();
+        return DuplicateEntryScreen(
           entryID: entryID,
           onFormSubmitted: onFormSubmitted,
         );
