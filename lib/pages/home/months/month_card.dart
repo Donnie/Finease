@@ -27,7 +27,7 @@ class MonthCards extends StatelessWidget {
       builder: (context) => AlertDialog(
         title: const Text('Foreign Currency Retranslation'),
         content: const Text(
-            'Do you want to adjust the unrealised amount as Capital Gains?'),
+            'Unrealised gains or losses occur when the value of your accounts in different currencies changes due to exchange rate fluctuations, even though you haven\'t made any transactions.\n\nDo you want to adjust the unrealised amount as Capital Gains?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),

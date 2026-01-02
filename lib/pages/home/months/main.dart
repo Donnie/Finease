@@ -56,7 +56,11 @@ class MonthsPageState extends State<MonthsPage> {
 
     return Scaffold(
       key: scaffoldStateKey,
-      appBar: appBar(context, "months"),
+      appBar: infoBar(
+        context,
+        "months",
+        "Click on a month to see transactions for that month.",
+      ),
       body: RefreshIndicator(
         onRefresh: loadMonths,
         child: MonthCards(
