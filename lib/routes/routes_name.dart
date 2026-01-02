@@ -3,6 +3,7 @@ enum RoutesName {
   addAccount,
   addEntry,
   addName,
+  duplicateEntry,
   editAccount,
   editEntry,
   home,
