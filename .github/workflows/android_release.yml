@@ -35,7 +35,10 @@ jobs:
           ref: ${{ env.RELEASE_VERSION }}
           fetch-depth: 0
 
-      - name: Verify tag is on default branch
+      - name: Verify tag and version
+        id: verify
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           TAG_NAME=${{ env.RELEASE_VERSION }}
           TAG_COMMIT=$(git rev-parse $TAG_NAME^{commit})
@@ -56,11 +59,8 @@ jobs:
           fi
           
           echo "✓ Tag is on $DEFAULT_BRANCH branch"
-
-      - name: Verify version consistency
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
+          
+          # Verify version consistency
           PUBSPEC_VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //')
           TAG_VERSION=${RELEASE_VERSION#v}
 
@@ -68,12 +68,18 @@ jobs:
           echo "Tag version: $TAG_VERSION"
 
           if [ "$PUBSPEC_VERSION" != "$TAG_VERSION" ]; then
-            # Delete the tag
-            gh api -X DELETE /repos/${{ github.repository }}/git/refs/tags/${{ env.RELEASE_VERSION }}
             echo "Error: Pubspec version ($PUBSPEC_VERSION) does not match tag version ($TAG_VERSION)."
             exit 1
           fi
-          echo "Version check passed."
+          echo "✓ Version check passed."
+
+      - name: Delete tag on verification failure
+        if: always() && steps.verify.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "Deleting tag ${{ env.RELEASE_VERSION }} due to verification failure."
+          gh api -X DELETE /repos/${{ github.repository }}/git/refs/tags/${{ env.RELEASE_VERSION }} || echo "Failed to delete tag (may not exist or already deleted)."
 
       - name: Install and set up Java
         uses: actions/setup-java@v3
