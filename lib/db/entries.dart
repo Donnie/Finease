@@ -238,6 +238,16 @@ class EntryService {
     if (userNotes == null || userNotes.isEmpty) {
       userNotes = debitEntry.notes;
     }
+    
+    // Append credit account currency and amount to the notes
+    final creditCurrencySymbol = SupportedCurrency[creditEntry.creditAccount?.currency] ?? creditEntry.creditAccount?.currency ?? '';
+    final creditAmount = creditEntry.amount;
+    final creditInfo = '$creditCurrencySymbol$creditAmount';
+    
+    // Combine user notes with credit currency/amount info
+    final finalNotes = (userNotes != null && userNotes.isNotEmpty) 
+        ? '$userNotes ($creditInfo)'
+        : creditInfo;
 
     return Entry(
       id: debitEntry.id, // Use the debit entry's ID
@@ -245,9 +255,9 @@ class EntryService {
       debitAccount: debitEntry.debitAccount,
       creditAccountId: creditEntry.creditAccountId,
       creditAccount: creditEntry.creditAccount,
-      amount: debitEntry.amount, // Use debit amount to match debit currency
+      amount: debitEntry.amount,
       date: debitEntry.date ?? creditEntry.date,
-      notes: userNotes,
+      notes: finalNotes,
       createdAt: debitEntry.createdAt,
       updatedAt: creditEntry.updatedAt,
     );
