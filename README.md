@@ -6,8 +6,8 @@
   <a href="https://flutter.dev/" style="text-decoration:none" area-label="flutter">
     <img src="https://img.shields.io/badge/Platform-Flutter%203.29.2-blue">
   </a>
-  <a href="https://github.com/Donnie/Finease/releases/tag/v1.2.4" style="text-decoration:none" area-label="flutter">
-    <img src="https://img.shields.io/badge/Version-1.2.4-orange">
+  <a href="https://github.com/Donnie/Finease/releases/tag/v1.2.5" style="text-decoration:none" area-label="flutter">
+    <img src="https://img.shields.io/badge/Version-1.2.5-orange">
   </a>
   <a href="https://github.com/Donnie/Finease/actions/workflows/android_release.yml" style="text-decoration:none" area-label="flutter">
     <img src="https://github.com/Donnie/Finease/actions/workflows/android_release.yml/badge.svg">
