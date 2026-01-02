@@ -51,7 +51,7 @@ class _AccountsPageState extends State<AccountsPage> {
     return Scaffold(
       key: scaffoldStateKey,
       appBar: infoBar(context, "accounts",
-          "Click to see transactions,\nand long press to edit the account."),
+          "Click to see transactions,\nand long press to edit the account.\n\nUse the + button at the bottom to add a new account."),
       body: RefreshIndicator(
         onRefresh: loadAccounts,
         child: BankAccounts(

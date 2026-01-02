@@ -221,9 +221,10 @@ class EntriesPageState extends State<EntriesPage> {
 
     return Scaffold(
       key: scaffoldStateKey,
-      appBar: appBar(
+      appBar: infoBar(
         context,
         "transactions",
+        "Click to edit the transaction,\nand long press to duplicate the transaction.\nTap the delete icon to remove a transaction.\nUse the search field to find transactions.\n\nUse the + button at the bottom to add a new transaction.",
       ),
       body: RefreshIndicator(
         onRefresh: loadEntries,
