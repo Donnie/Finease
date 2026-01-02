@@ -49,7 +49,7 @@ class EntryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String symbol = SupportedCurrency[entry.creditAccount!.currency]!;
+    final String symbol = SupportedCurrency[entry.debitAccount!.currency]!;
     final cardColor = entry.creditAccount?.type == AccountType.expense ? context.secondaryContainer : context.tertiaryContainer;
 
     return InkWell(

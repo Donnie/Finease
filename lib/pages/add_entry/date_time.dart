@@ -26,6 +26,14 @@ class DateTimePickerState extends State<DateTimePicker> {
     selectedDateTime = widget.dateTime ?? DateTime.now();
   }
 
+  @override
+  void didUpdateWidget(DateTimePicker oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.dateTime != oldWidget.dateTime) {
+      selectedDateTime = widget.dateTime ?? DateTime.now();
+    }
+  }
+
   void _pickDateTime() async {
     final DateTime? pickedDateNullable = await showDatePicker(
       context: context,
@@ -59,29 +67,52 @@ class DateTimePickerState extends State<DateTimePicker> {
     widget.onDateTimeChanged(combinedDateTime);
   }
 
+  void _resetDateTime() {
+    final now = DateTime.now();
+    setState(() {
+      selectedDateTime = now;
+    });
+    widget.onDateTimeChanged(now);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ElevatedButton(
-          onPressed: _pickDateTime,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16.0,
-              vertical: 16,
+        Row(
+          children: [
+            Expanded(
+              child: ElevatedButton(
+                onPressed: _pickDateTime,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 16,
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(MdiIcons.calendar),
+                      const SizedBox(width: 16),
+                      Text(
+                        DateFormat('yyyy-MM-dd HH:mm').format(selectedDateTime),
+                        style: context.bodyLarge,
+                      )
+                    ],
+                  ),
+                ),
+              ),
             ),
-            child: Row(
-              children: [
-                Icon(MdiIcons.calendar),
-                const SizedBox(width: 16),
-                Text(
-                  DateFormat('yyyy-MM-dd HH:mm').format(selectedDateTime),
-                  style: context.bodyLarge,
-                )
-              ],
+            const SizedBox(width: 8),
+            IconButton(
+              onPressed: _resetDateTime,
+              icon: Icon(MdiIcons.restore),
+              tooltip: 'Reset to current time',
+              style: IconButton.styleFrom(
+                padding: const EdgeInsets.all(16),
+              ),
             ),
-          ),
+          ],
         ),
       ],
     );

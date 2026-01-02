@@ -292,7 +292,7 @@ class NetWorthGraphCard extends StatelessWidget {
                         interval: (maxY - minY) / 5,
                         getTitlesWidget: (value, meta) {
                           return Text(
-                            '${symbol}${(value / 1000).toStringAsFixed(0)}k',
+                            '$symbol${(value / 1000).toStringAsFixed(0)}k',
                             style: context.bodySmall?.copyWith(
                               color: context.onSurface.withOpacity(0.6),
                             ),
@@ -333,7 +333,7 @@ class NetWorthGraphCard extends StatelessWidget {
                         return touchedSpots.map((LineBarSpot touchedSpot) {
                           final index = touchedSpot.x.toInt();
                           return LineTooltipItem(
-                            '${symbol}${touchedSpot.y.toStringAsFixed(2)}\n${monthLabels[index]}',
+                            '$symbol${touchedSpot.y.toStringAsFixed(2)}\n${monthLabels[index]}',
                             (context.bodyMedium ?? const TextStyle()).copyWith(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
