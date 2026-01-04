@@ -114,38 +114,33 @@ class EntryService {
 
     List<String> conditions = [];
     List<dynamic> whereArguments = [];
-    
-    // If account id is provided, add it to the where clause
-    // Also include forex entries to ensure forex pairs can be properly merged
+
+    // If account id is provided, use SQL query to filter forex pairs
     if (accountId != null) {
-      // Get all forex account IDs
-      final forexAccountsResult = await dbClient.query(
-        'Accounts',
-        columns: ['id'],
-        where: 'name = ? AND hidden = ?',
-        whereArgs: ['Forex', 1],
-      );
-      final forexAccountIds = forexAccountsResult.map((row) => row['id'] as int).toList();
-      
-      if (forexAccountIds.isNotEmpty) {
-        // Include:
-        // 1. Entries where the specified account is involved
-        // 2. Entries where ANY forex account is involved (to capture pairs)
-        final forexPlaceholders = List.filled(forexAccountIds.length, '?').join(',');
-        conditions.add(
-          '(debit_account_id = ? OR credit_account_id = ?) OR ' +
-          '(debit_account_id IN ($forexPlaceholders) OR credit_account_id IN ($forexPlaceholders))'
-        );
-        whereArguments.add(accountId);
-        whereArguments.add(accountId);
-        whereArguments.addAll(forexAccountIds);
-        whereArguments.addAll(forexAccountIds);
-      } else {
-        // No forex accounts found, use regular filter
-        conditions.add('debit_account_id = ? OR credit_account_id = ?');
-        whereArguments.add(accountId);
-        whereArguments.add(accountId);
-      }
+      // only include forex entries that have a pair involving the account
+      conditions.add('''
+        (debit_account_id = ? OR credit_account_id = ?)
+        OR
+        (
+          (debit_account_id IN (SELECT id FROM Accounts WHERE name = 'Forex' AND hidden = 1)
+           OR credit_account_id IN (SELECT id FROM Accounts WHERE name = 'Forex' AND hidden = 1))
+          AND
+          EXISTS (
+            SELECT 1 FROM Entries e2
+            WHERE e2.id != Entries.id
+            AND ABS(CAST(strftime('%s', e2.date) AS INTEGER) - CAST(strftime('%s', Entries.date) AS INTEGER)) <= 1
+            AND (e2.debit_account_id = ? OR e2.credit_account_id = ?)
+            AND (
+              e2.debit_account_id IN (SELECT id FROM Accounts WHERE name = 'Forex' AND hidden = 1)
+              OR e2.credit_account_id IN (SELECT id FROM Accounts WHERE name = 'Forex' AND hidden = 1)
+            )
+          )
+        )
+      ''');
+      whereArguments.add(accountId); // Direct debit match
+      whereArguments.add(accountId); // Direct credit match
+      whereArguments.add(accountId); // Paired entry debit match
+      whereArguments.add(accountId); // Paired entry credit match
     }
 
     // If startDate is provided, add it to the where clause
@@ -220,17 +215,8 @@ class EntryService {
         if (pairedEntry != null) {
           // Merge the two entries
           final mergedEntry = _mergeForexEntries(entry, pairedEntry);
-          
-          // If accountId is specified, only include merged entries that involve the account
-          if (accountId != null) {
-            if (mergedEntry.debitAccountId == accountId || 
-                mergedEntry.creditAccountId == accountId) {
-              mergedEntries.add(mergedEntry);
-            }
-          } else {
-            mergedEntries.add(mergedEntry);
-          }
-          
+
+          mergedEntries.add(mergedEntry);
           processedIds.add(entry.id!);
           processedIds.add(pairedEntry.id!);
         } else {
