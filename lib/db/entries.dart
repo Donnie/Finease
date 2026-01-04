@@ -493,6 +493,127 @@ class EntryService {
 
     await createEntry(entry);
   }
+
+  /// Get entries with running balance for a specific account using SQL
+  /// This properly handles forex transactions and calculates balance in account currency
+  Future<List<Map<String, dynamic>>> getEntriesWithBalance({
+    required int accountId,
+    DateTime? startDate,
+    DateTime? endDate,
+  }) async {
+    final dbClient = await _databaseHelper.db;
+    
+    List<dynamic> whereArguments = [accountId, accountId];
+    String dateFilter = '';
+    
+    if (startDate != null) {
+      dateFilter += ' AND e.date >= ?';
+      whereArguments.add(startDate.toIso8601String());
+    }
+    
+    if (endDate != null) {
+      dateFilter += ' AND e.date <= ?';
+      whereArguments.add(endDate.toIso8601String());
+    }
+    
+    // Add accountId for balance_change calculation and WHERE clause
+    whereArguments.add(accountId);
+    whereArguments.add(accountId);
+    whereArguments.add(accountId);
+    whereArguments.add(accountId);
+    
+    final String query = '''
+      WITH ForexPairs AS (
+        SELECT 
+          ed.id AS debit_entry_id,
+          ec.id AS credit_entry_id,
+          ad.currency AS debit_currency,
+          ac.currency AS credit_currency
+        FROM entries ed
+        JOIN entries ec ON ed.date = ec.date AND ed.id <> ec.id
+        JOIN accounts ad ON ed.debit_account_id = ad.id
+        JOIN accounts ac ON ec.credit_account_id = ac.id
+        JOIN accounts adc ON ed.credit_account_id = adc.id AND adc.name = 'Forex'
+        JOIN accounts acd ON ec.debit_account_id = acd.id AND acd.name = 'Forex'
+      ),
+      ConsolidatedForex AS (
+        SELECT
+          f.debit_entry_id AS id,
+          e1.debit_account_id,
+          e2.credit_account_id,
+          e1.date,
+          e2.notes,
+          -- Use debit amount if account is debit, credit amount if account is credit
+          CASE 
+            WHEN e1.debit_account_id = ? THEN e1.amount
+            WHEN e2.credit_account_id = ? THEN e2.amount
+            ELSE e1.amount
+          END AS amount,
+          ad.name AS debit_account_name,
+          ad.currency AS debit_currency,
+          ac.name AS credit_account_name,
+          ac.currency AS credit_currency
+        FROM ForexPairs f
+        JOIN entries e1 ON f.debit_entry_id = e1.id
+        JOIN entries e2 ON f.credit_entry_id = e2.id
+        JOIN accounts ad ON e1.debit_account_id = ad.id
+        JOIN accounts ac ON e2.credit_account_id = ac.id
+      ),
+      NormalEntries AS (
+        SELECT 
+          e.id,
+          e.debit_account_id,
+          e.credit_account_id,
+          e.date,
+          e.notes,
+          e.amount,
+          ad.name AS debit_account_name,
+          ad.currency AS debit_currency,
+          ac.name AS credit_account_name,
+          ac.currency AS credit_currency
+        FROM entries e
+        JOIN accounts ad ON e.debit_account_id = ad.id
+        JOIN accounts ac ON e.credit_account_id = ac.id
+        WHERE e.id NOT IN (SELECT debit_entry_id FROM ForexPairs)
+          AND e.id NOT IN (SELECT credit_entry_id FROM ForexPairs)
+      ),
+      AllEntries AS (
+        SELECT * FROM ConsolidatedForex
+        UNION ALL
+        SELECT * FROM NormalEntries
+      ),
+      FilteredEntries AS (
+        SELECT 
+          e.*,
+          CASE 
+            WHEN e.credit_account_id = ? THEN e.amount
+            WHEN e.debit_account_id = ? THEN -e.amount
+            ELSE 0
+          END AS balance_change
+        FROM AllEntries e
+        WHERE (e.debit_account_id = ? OR e.credit_account_id = ?)
+        $dateFilter
+      )
+      SELECT 
+        id,
+        date,
+        debit_account_id,
+        debit_account_name,
+        debit_currency,
+        credit_account_id,
+        credit_account_name,
+        credit_currency,
+        amount,
+        notes,
+        balance_change,
+        SUM(balance_change) OVER (ORDER BY date ASC, id ASC) AS running_balance
+      FROM FilteredEntries
+      ORDER BY date ASC, id ASC
+    ''';
+    
+    final result = await dbClient.rawQuery(query, whereArguments);
+    return result;
+  }
 }
 
 class Entry {

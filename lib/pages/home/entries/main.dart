@@ -29,18 +29,21 @@ class EntriesPage extends StatefulWidget {
 
 class EntriesPageState extends State<EntriesPage> {
   final EntryService _entryService = EntryService();
+  final AccountService _accountService = AccountService();
   final SettingService _settingService = SettingService();
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
   final ValueNotifier<String> _searchNotifier = ValueNotifier<String>('');
   List<Entry> entries = [];
   String? prefCurrency;
+  Account? viewingAccount;
 
   @override
   void initState() {
     super.initState();
     loadEntries();
     _loadPreferredCurrency();
+    _loadViewingAccount();
     _searchController.addListener(() {
       _searchNotifier.value = _searchController.text;
     });
@@ -114,6 +117,15 @@ class EntriesPageState extends State<EntriesPage> {
     setState(() {
       prefCurrency = currency;
     });
+  }
+
+  Future<void> _loadViewingAccount() async {
+    if (widget.accountID != null) {
+      final account = await _accountService.getAccount(widget.accountID!);
+      setState(() {
+        viewingAccount = account;
+      });
+    }
   }
 
   Future<void> loadEntries() async {
@@ -197,15 +209,106 @@ class EntriesPageState extends State<EntriesPage> {
   }
 
   Future<void> _exportToClipboard() async {
-    final entriesToExport = filteredEntries;
-    final exportText = _formatTransactionsForExport(entriesToExport);
+    // If viewing a specific account, use SQL-based export with balance
+    if (widget.accountID != null && viewingAccount != null) {
+      await _exportAccountTransactionsWithBalance();
+    } else {
+      // Regular export without balance
+      final entriesToExport = filteredEntries;
+      final exportText = _formatTransactionsForExport(entriesToExport);
+      
+      await Clipboard.setData(ClipboardData(text: exportText));
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${entriesToExport.length} transactions copied to clipboard'),
+            duration: const Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _exportAccountTransactionsWithBalance() async {
+    final entriesWithBalance = await _entryService.getEntriesWithBalance(
+      accountId: widget.accountID!,
+      startDate: widget.startDate,
+      endDate: widget.endDate,
+    );
     
-    await Clipboard.setData(ClipboardData(text: exportText));
+    // Apply search filter if active
+    final searchQuery = _searchController.text.toLowerCase();
+    final filteredData = searchQuery.isEmpty
+        ? entriesWithBalance
+        : entriesWithBalance.where((row) {
+            final fromAccount = row['debit_account_name'] as String? ?? '';
+            final toAccount = row['credit_account_name'] as String? ?? '';
+            final notes = row['notes'] as String? ?? '';
+            final dateStr = row['date'] != null
+                ? DateFormat('yyyy-MM-dd HH:mm').format(DateTime.parse(row['date'] as String))
+                : '';
+            
+            return fromAccount.toLowerCase().contains(searchQuery) ||
+                toAccount.toLowerCase().contains(searchQuery) ||
+                notes.toLowerCase().contains(searchQuery) ||
+                dateStr.toLowerCase().contains(searchQuery);
+          }).toList();
+    
+    if (filteredData.isEmpty) {
+      await Clipboard.setData(const ClipboardData(text: 'No transactions to export.'));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('No transactions to export'),
+            duration: Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+      return;
+    }
+    
+    final buffer = StringBuffer();
+    final now = DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now());
+    final symbol = SupportedCurrency[viewingAccount!.currency] ?? viewingAccount!.currency;
+    
+    buffer.writeln('Transactions Export');
+    buffer.writeln('Exported: $now');
+    buffer.writeln('Account: ${viewingAccount!.name} ($symbol)');
+    buffer.writeln('');
+    buffer.writeln('${'Date'.padRight(20)} ${'From'.padRight(25)} ${'To'.padRight(25)} ${'Amount'.padRight(15)} ${'Balance'.padRight(15)} Notes');
+    buffer.writeln('=' * 120);
+    
+    for (var row in filteredData) {
+      final date = row['date'] != null
+          ? DateFormat('yyyy-MM-dd HH:mm').format(DateTime.parse(row['date'] as String))
+          : 'N/A';
+      final from = row['debit_account_name'] as String? ?? 'N/A';
+      final to = row['credit_account_name'] as String? ?? 'N/A';
+      final notes = row['notes'] as String? ?? '';
+      final amount = (row['amount'] as int) / 100.0;
+      final balance = (row['running_balance'] as int) / 100.0;
+      
+      final amountStr = '$symbol $amount';
+      final balanceStr = '$symbol $balance';
+      
+      buffer.writeln('${date.padRight(20)} ${from.padRight(25)} ${to.padRight(25)} ${amountStr.padRight(15)} ${balanceStr.padRight(15)} $notes');
+    }
+    
+    buffer.writeln('=' * 120);
+    buffer.writeln('Total: ${filteredData.length} transactions');
+    
+    final finalBalance = (filteredData.last['running_balance'] as int) / 100.0;
+    buffer.writeln('Final Balance: $symbol $finalBalance');
+    
+    await Clipboard.setData(ClipboardData(text: buffer.toString()));
     
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('${entriesToExport.length} transactions copied to clipboard'),
+          content: Text('${filteredData.length} transactions copied to clipboard'),
           duration: const Duration(seconds: 2),
           behavior: SnackBarBehavior.floating,
         ),
