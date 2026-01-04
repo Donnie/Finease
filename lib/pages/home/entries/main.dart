@@ -37,6 +37,7 @@ class EntriesPageState extends State<EntriesPage> {
   List<Entry> entries = [];
   String? prefCurrency;
   Account? viewingAccount;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -129,17 +130,34 @@ class EntriesPageState extends State<EntriesPage> {
   }
 
   Future<void> loadEntries() async {
-    // Use the improved merging algorithm from EntryService
-    List<Entry> mergedEntries = await _entryService.getMergedEntries(
-      startDate: widget.startDate,
-      endDate: widget.endDate,
-      accountId: widget.accountID,
-    );
-
-    // Update state
+    if (!mounted) return;
+    
     setState(() {
-      entries = mergedEntries;
+      _isLoading = true;
     });
+
+    try {
+      // Use the improved merging algorithm from EntryService
+      List<Entry> mergedEntries = await _entryService.getMergedEntries(
+        startDate: widget.startDate,
+        endDate: widget.endDate,
+        accountId: widget.accountID,
+      );
+
+      // Update state
+      if (mounted) {
+        setState(() {
+          entries = mergedEntries;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   List<Map<String, dynamic>> getTopExpenses() {
@@ -244,9 +262,38 @@ class EntriesPageState extends State<EntriesPage> {
   Future<void> _exportToClipboard() async {
     // If viewing a specific account, use SQL-based export with balance
     if (widget.accountID != null && viewingAccount != null) {
-      await _exportAccountTransactionsWithBalance();
+      // Show loading dialog during export
+      if (!mounted) return;
+      
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(
+          child: Card(
+            child: Padding(
+              padding: EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 16),
+                  Text('Exporting transactions...'),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+      
+      try {
+        await _exportAccountTransactionsWithBalance();
+      } finally {
+        if (mounted) {
+          Navigator.of(context).pop(); // Close loading dialog
+        }
+      }
     } else {
-      // Regular export without balance
+      // Regular export without balance (fast, no loading needed)
       final entriesToExport = filteredEntries;
       final exportText = _formatTransactionsForExport(entriesToExport);
       
@@ -458,64 +505,68 @@ class EntriesPageState extends State<EntriesPage> {
       ),
       body: RefreshIndicator(
         onRefresh: loadEntries,
-        child: widget.startDate != null && widget.endDate != null
-            ? CustomScrollView(
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          // Search input
-                          _buildSearchField(),
-                          const SizedBox(height: 8),
-                          // Top Expenses Card
-                          TopExpensesCard(topExpenses: getTopExpenses()),
-                        ],
+        child: _isLoading
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : widget.startDate != null && widget.endDate != null
+                ? CustomScrollView(
+                    slivers: [
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              // Search input
+                              _buildSearchField(),
+                              const SizedBox(height: 8),
+                              // Top Expenses Card
+                              TopExpensesCard(topExpenses: getTopExpenses()),
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  ValueListenableBuilder<String>(
-                    valueListenable: _searchNotifier,
-                    builder: (context, searchValue, child) {
-                      final filtered = filteredEntries;
-                      return SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-                            return EntryCard(
-                              entry: filtered[index],
+                      ValueListenableBuilder<String>(
+                        valueListenable: _searchNotifier,
+                        builder: (context, searchValue, child) {
+                          final filtered = filteredEntries;
+                          return SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              (context, index) {
+                                return EntryCard(
+                                  entry: filtered[index],
+                                  onDelete: entryOnDelete,
+                                  onCardTap: loadEntries,
+                                );
+                              },
+                              childCount: filtered.length,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  )
+                : Column(
+                    children: [
+                      // Search input for non-date-filtered view
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: _buildSearchField(),
+                      ),
+                      Expanded(
+                        child: ValueListenableBuilder<String>(
+                          valueListenable: _searchNotifier,
+                          builder: (context, searchValue, child) {
+                            return EntriesListView(
+                              entries: filteredEntries,
                               onDelete: entryOnDelete,
-                              onCardTap: loadEntries,
+                              onEdit: loadEntries,
                             );
                           },
-                          childCount: filtered.length,
                         ),
-                      );
-                    },
+                      ),
+                    ],
                   ),
-                ],
-              )
-            : Column(
-                children: [
-                  // Search input for non-date-filtered view
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: _buildSearchField(),
-                  ),
-                  Expanded(
-                    child: ValueListenableBuilder<String>(
-                      valueListenable: _searchNotifier,
-                      builder: (context, searchValue, child) {
-                        return EntriesListView(
-                          entries: filteredEntries,
-                          onDelete: entryOnDelete,
-                          onEdit: loadEntries,
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
       ),
       drawer: AppDrawer(
         onRefresh: loadEntries,
