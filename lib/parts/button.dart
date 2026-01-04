@@ -21,14 +21,14 @@ class AppBigButton extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(32.0),
         ),
-        foregroundColor: context.onPrimary,
-        backgroundColor: context.primary,
+        foregroundColor: context.onSurface,
+        backgroundColor: context.surfaceContainerHighest,
       ),
       child: Text(
         title,
         style: context.titleLarge?.copyWith(
           fontWeight: FontWeight.w700,
-          color: context.onPrimary,
+          color: context.onSurface,
         ),
       ),
     );
@@ -51,8 +51,8 @@ class AppButton extends StatelessWidget {
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        foregroundColor: context.onPrimary,
-        backgroundColor: context.primary,
+        foregroundColor: context.onSurface,
+        backgroundColor: context.surfaceContainerHighest,
       ),
       child: Text(title),
     );
@@ -77,8 +77,8 @@ class AppIconButton extends StatelessWidget {
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        foregroundColor: context.onPrimary,
-        backgroundColor: context.primary,
+        foregroundColor: context.onSurface,
+        backgroundColor: context.surfaceContainerHighest,
       ),
       label: Text(title),
       icon: Icon(iconData),

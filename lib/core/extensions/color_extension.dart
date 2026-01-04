@@ -26,6 +26,7 @@ extension ColorHelper on BuildContext {
   Color get surface => colorScheme.surface;
   Color get surfaceTint => colorScheme.surfaceTint;
   Color get surfaceVariant => colorScheme.surfaceContainerHighest;
+  Color get surfaceContainerHighest => colorScheme.surfaceContainerHighest;
   Color get tertiary => colorScheme.onTertiary;
   Color get tertiaryContainer => colorScheme.tertiaryContainer;
 }

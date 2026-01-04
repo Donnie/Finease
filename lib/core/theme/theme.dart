@@ -16,9 +16,11 @@ ElevatedButtonThemeData elevatedButtonTheme(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(32.0),
       ),
+      backgroundColor: colorScheme.surfaceContainerHighest,
+      foregroundColor: colorScheme.onSurface,
       textStyle: TextStyle(
         fontWeight: FontWeight.w600,
-        color: colorScheme.onPrimary,
+        color: colorScheme.onSurface,
       ),
     ),
   );

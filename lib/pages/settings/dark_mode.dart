@@ -3,11 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class DarkModeToggleWidget extends StatelessWidget {
-  final Function onChange;
-  const DarkModeToggleWidget({
-    super.key,
-    required this.onChange,
-  });
+  const DarkModeToggleWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +39,6 @@ class DarkModeToggleWidget extends StatelessWidget {
                 ),
               );
             }
-
-            // Call the onChange callback
-            onChange();
           },
           secondary: Icon(
             themeProvider.isDarkMode ? Icons.dark_mode : Icons.light_mode,

@@ -36,7 +36,7 @@ class SettingsPage extends StatelessWidget {
                 CurrencySelectorWidget(onChange: () => _handleChange(context)),
                 const CapGainsSelectorWidget(),
                 const ThemeSelectorWidget(),
-                DarkModeToggleWidget(onChange: () => _handleChange(context)),
+                const DarkModeToggleWidget(),
               ],
             ),
             SettingsGroup(

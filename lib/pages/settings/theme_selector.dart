@@ -121,6 +121,8 @@ class _ThemeColorPickerSheetState extends State<ThemeColorPickerSheet>
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final textColor = themeProvider.currentColorTheme.textColor;
     
     return Container(
       height: screenHeight * 0.85,
@@ -148,12 +150,13 @@ class _ThemeColorPickerSheetState extends State<ThemeColorPickerSheet>
                   children: [
                     Icon(Icons.palette, color: Theme.of(context).colorScheme.primary),
                     const SizedBox(width: 12),
-                    const Expanded(
+                    Expanded(
                       child: Text(
                         "Theme Colors",
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
+                          color: textColor,
                         ),
                       ),
                     ),
@@ -190,6 +193,8 @@ class _ThemeColorPickerSheetState extends State<ThemeColorPickerSheet>
             controller: _tabController,
             isScrollable: true,
             tabAlignment: TabAlignment.start,
+            labelColor: textColor,
+            unselectedLabelColor: textColor.withOpacity(0.6),
             tabs: _colorOptions.map((option) {
               return Tab(
                 child: Row(
@@ -236,6 +241,8 @@ class _ThemeColorPickerSheetState extends State<ThemeColorPickerSheet>
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.all(16),
+                    backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                    foregroundColor: textColor,
                   ),
                   child: const Text("Done"),
                 ),
