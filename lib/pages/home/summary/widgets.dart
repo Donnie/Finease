@@ -2,7 +2,7 @@ import 'package:finease/core/export.dart';
 import 'package:finease/core/theme/custom_color.dart';
 import 'package:finease/db/currency.dart';
 import 'package:finease/db/months.dart';
-import 'package:finease/parts/card.dart';
+import 'package:finease/parts/glassmorphic_card.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -27,9 +27,10 @@ class NetWorthCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final String symbol = SupportedCurrency[currency]!;
 
-    return AppCard(
+    return GlassmorphicCard(
       elevation: 0,
-      color: context.primaryContainer,
+      blurAmount: 15.0,
+      opacity: 0.2,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -240,9 +241,10 @@ class NetWorthGraphCard extends StatelessWidget {
     minY = minY * 0.9;
     maxY = maxY * 1.1;
 
-    return AppCard(
+    return GlassmorphicCard(
       elevation: 0,
-      color: context.surfaceVariant,
+      blurAmount: 15.0,
+      opacity: 0.2,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(

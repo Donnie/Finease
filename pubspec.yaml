@@ -40,3 +40,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - images/nannan.png
+    - images/owl-couple.png

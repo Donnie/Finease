@@ -2,6 +2,7 @@ import 'package:finease/routes/routes.dart';
 import 'package:finease/core/constants/constants.dart';
 import 'package:finease/core/theme/app_theme.dart';
 import 'package:finease/core/theme/theme_provider.dart';
+import 'package:finease/db/background_image_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,8 +13,11 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => ThemeProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => BackgroundImageProvider()..initialize()),
+      ],
       child: const _MainAppContent(),
     );
   }

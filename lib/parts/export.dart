@@ -4,6 +4,7 @@ export 'app_drawer.dart';
 export 'app_top_bar.dart';
 export 'button.dart';
 export 'error_dialog.dart';
+export 'glassmorphic_card.dart';
 export 'icon_title.dart';
 export 'month_parts.dart';
 export 'variable_fab_size.dart';

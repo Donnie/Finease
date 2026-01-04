@@ -20,6 +20,9 @@ enum Setting {
   themeErrorColor,
   themeTextColor,
   themeSubtextColor,
+  // Background image settings
+  backgroundImage,
+  customBackgroundImages, // JSON array of custom image paths
 }
 
 typedef Settings = Map<Setting, String>;

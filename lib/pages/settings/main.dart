@@ -1,5 +1,6 @@
 import 'package:finease/pages/export.dart';
 import 'package:finease/pages/settings/about.dart';
+import 'package:finease/pages/settings/background_image_selector.dart';
 import 'package:finease/pages/settings/capital_gains.dart';
 import 'package:finease/pages/settings/check_updates.dart';
 import 'package:finease/pages/settings/currency.dart';
@@ -37,6 +38,7 @@ class SettingsPage extends StatelessWidget {
                 const CapGainsSelectorWidget(),
                 const ThemeSelectorWidget(),
                 const DarkModeToggleWidget(),
+                const BackgroundImageSelectorWidget(),
               ],
             ),
             SettingsGroup(
