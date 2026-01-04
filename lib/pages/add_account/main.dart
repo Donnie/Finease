@@ -66,8 +66,8 @@ class AddAccountScreenState extends State<AddAccountScreen> {
   }
 
   void _submitForm() async {
-    String accountName = _accountName.text;
-    String accountCurrency = _accountCurrency.text;
+    String accountName = _accountName.text.trim();
+    String accountCurrency = _accountCurrency.text.trim();
     double balance = double.tryParse(_accountBalance.text) ?? 0;
 
     if (_formState.currentState?.validate() ?? false) {

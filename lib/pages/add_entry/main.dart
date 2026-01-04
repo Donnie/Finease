@@ -112,7 +112,7 @@ class AddEntryScreenState extends State<AddEntryScreen> {
   }
 
   Future<void> _submitForm() async {
-    String entryNotes = _entryNotes.text;
+    String entryNotes = _entryNotes.text.trim();
     double creditAmount = double.tryParse(_creditAmount.text) ?? 0;
     if (_formState.currentState?.validate() ?? false) {
       context.pop();

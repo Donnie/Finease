@@ -24,12 +24,13 @@ Future<void> sendMessage({
   required List<Message> messageList,
   required VoidCallback onStateUpdated,
 }) async {
-  if (content.isNotEmpty) {
-    final userMessage = Message(content: content, type: MessageType.user);
+  final trimmedContent = content.trim();
+  if (trimmedContent.isNotEmpty) {
+    final userMessage = Message(content: trimmedContent, type: MessageType.user);
     messageList.insert(0, userMessage);
     await MessageService().saveMessage(userMessage);
 
-    final responseMessage = Message(content: "You said: $content", type: MessageType.automated);
+    final responseMessage = Message(content: "You said: $trimmedContent", type: MessageType.automated);
     messageList.insert(0, responseMessage);
     await MessageService().saveMessage(responseMessage);
 
