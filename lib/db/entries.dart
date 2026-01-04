@@ -114,11 +114,38 @@ class EntryService {
 
     List<String> conditions = [];
     List<dynamic> whereArguments = [];
+    
     // If account id is provided, add it to the where clause
+    // Also include forex entries to ensure forex pairs can be properly merged
     if (accountId != null) {
-      conditions.add('debit_account_id = ? OR credit_account_id = ?');
-      whereArguments.add(accountId);
-      whereArguments.add(accountId);
+      // Get all forex account IDs
+      final forexAccountsResult = await dbClient.query(
+        'Accounts',
+        columns: ['id'],
+        where: 'name = ? AND hidden = ?',
+        whereArgs: ['Forex', 1],
+      );
+      final forexAccountIds = forexAccountsResult.map((row) => row['id'] as int).toList();
+      
+      if (forexAccountIds.isNotEmpty) {
+        // Include:
+        // 1. Entries where the specified account is involved
+        // 2. Entries where ANY forex account is involved (to capture pairs)
+        final forexPlaceholders = List.filled(forexAccountIds.length, '?').join(',');
+        conditions.add(
+          '(debit_account_id = ? OR credit_account_id = ?) OR ' +
+          '(debit_account_id IN ($forexPlaceholders) OR credit_account_id IN ($forexPlaceholders))'
+        );
+        whereArguments.add(accountId);
+        whereArguments.add(accountId);
+        whereArguments.addAll(forexAccountIds);
+        whereArguments.addAll(forexAccountIds);
+      } else {
+        // No forex accounts found, use regular filter
+        conditions.add('debit_account_id = ? OR credit_account_id = ?');
+        whereArguments.add(accountId);
+        whereArguments.add(accountId);
+      }
     }
 
     // If startDate is provided, add it to the where clause
@@ -138,7 +165,7 @@ class EntryService {
       whereClause += conditions.join(' AND ');
     }
 
-    // Fetch all entries according to the provided start and end dates
+    // Fetch all entries according to the provided filters
     final List<Map<String, dynamic>> entriesData = await dbClient.query(
       'Entries',
       where: whereClause.isEmpty ? null : whereClause,
@@ -193,7 +220,17 @@ class EntryService {
         if (pairedEntry != null) {
           // Merge the two entries
           final mergedEntry = _mergeForexEntries(entry, pairedEntry);
-          mergedEntries.add(mergedEntry);
+          
+          // If accountId is specified, only include merged entries that involve the account
+          if (accountId != null) {
+            if (mergedEntry.debitAccountId == accountId || 
+                mergedEntry.creditAccountId == accountId) {
+              mergedEntries.add(mergedEntry);
+            }
+          } else {
+            mergedEntries.add(mergedEntry);
+          }
+          
           processedIds.add(entry.id!);
           processedIds.add(pairedEntry.id!);
         } else {
