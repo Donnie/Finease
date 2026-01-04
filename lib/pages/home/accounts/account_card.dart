@@ -52,11 +52,15 @@ class BankAccounts extends StatelessWidget {
         ...mainAccounts.map(
           (a) => BankAccountCardClickable(
             account: a,
-            onLongPress: () => context.pushNamed(
-              RoutesName.editAccount.name,
-              pathParameters: {'id': a.id.toString()},
-              extra: onEdit,
-            ),
+            onLongPress: () async {
+              final result = await context.pushNamed(
+                RoutesName.editAccount.name,
+                pathParameters: {'id': a.id.toString()},
+              );
+              if (result == true) {
+                onEdit();
+              }
+            },
             onTap: () => context.pushNamed(
               RoutesName.transactionsByAccount.name,
               pathParameters: {RoutesName.transactionsByAccount.accountParam: a.id.toString()},

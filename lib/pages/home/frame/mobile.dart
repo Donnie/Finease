@@ -87,8 +87,12 @@ class SummaryPageState extends State<SummaryPage> {
         ),
       ),
       floatingActionButton: VariableFABSize(
-        onPressed: () =>
-            context.pushNamed(RoutesName.addEntry.name, extra: _fetchNetWorth),
+        onPressed: () async {
+          final result = await context.pushNamed(RoutesName.addEntry.name);
+          if (result == true) {
+            _fetchNetWorth();
+          }
+        },
         icon: Icons.add,
       ),
     );

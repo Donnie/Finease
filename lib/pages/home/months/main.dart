@@ -14,6 +14,7 @@ class MonthsPage extends StatefulWidget {
 }
 
 class MonthsPageState extends State<MonthsPage> {
+  final GlobalKey<ScaffoldState> _scaffoldStateKey = GlobalKey<ScaffoldState>();
   final MonthService _monthService = MonthService();
   List<Month> months = [];
   double networth = 0;
@@ -38,11 +39,8 @@ class MonthsPageState extends State<MonthsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> scaffoldStateKey =
-        GlobalKey<ScaffoldState>();
-
     return Scaffold(
-      key: scaffoldStateKey,
+      key: _scaffoldStateKey,
       appBar: infoBar(
         context,
         "months",
@@ -59,7 +57,7 @@ class MonthsPageState extends State<MonthsPage> {
       ),
       drawer: AppDrawer(
         onRefresh: loadMonths,
-        scaffoldKey: scaffoldStateKey,
+        scaffoldKey: _scaffoldStateKey,
         destinations: destinations,
       ),
     );

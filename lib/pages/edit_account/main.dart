@@ -6,13 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class EditAccountScreen extends StatefulWidget {
-  final Function() onFormSubmitted;
   final int accountID;
 
   const EditAccountScreen({
     super.key,
     required this.accountID,
-    required this.onFormSubmitted,
   });
 
   @override
@@ -62,9 +60,10 @@ class EditAccountScreenState extends State<EditAccountScreen> {
   }
 
   void _onDelete() async {
-    context.pop();
     await _accountService.deleteAccount(_account!.id!);
-    widget.onFormSubmitted();
+    if (mounted) {
+      context.pop(true);
+    }
   }
 
   void _submitForm() async {
@@ -73,9 +72,10 @@ class EditAccountScreenState extends State<EditAccountScreen> {
       _account!.currency = _accountCurrency.text.trim();
     });
     if (_formState.currentState?.validate() ?? false) {
-      context.pop();
       await _accountService.updateAccount(_account!);
-      widget.onFormSubmitted();
+      if (mounted) {
+        context.pop(true);
+      }
     }
   }
 

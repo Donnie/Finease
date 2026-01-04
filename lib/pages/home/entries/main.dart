@@ -28,6 +28,7 @@ class EntriesPage extends StatefulWidget {
 }
 
 class EntriesPageState extends State<EntriesPage> {
+  final GlobalKey<ScaffoldState> _scaffoldStateKey = GlobalKey<ScaffoldState>();
   final EntryService _entryService = EntryService();
   final AccountService _accountService = AccountService();
   final SettingService _settingService = SettingService();
@@ -458,11 +459,8 @@ class EntriesPageState extends State<EntriesPage> {
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> scaffoldStateKey =
-        GlobalKey<ScaffoldState>();
-
     return Scaffold(
-      key: scaffoldStateKey,
+      key: _scaffoldStateKey,
       appBar: infoBar(
         context,
         widget.accountID != null && viewingAccount != null
@@ -562,18 +560,22 @@ class EntriesPageState extends State<EntriesPage> {
       drawer: widget.accountID == null
           ? AppDrawer(
               onRefresh: loadEntries,
-              scaffoldKey: scaffoldStateKey,
+              scaffoldKey: _scaffoldStateKey,
               destinations: destinations,
             )
           : null,
       floatingActionButton: VariableFABSize(
-        onPressed: () => context.pushNamed(
-          RoutesName.addEntry.name,
-          extra: loadEntries,
-          queryParameters: widget.accountID != null
-              ? {'debit_account_id': widget.accountID.toString()}
-              : {},
-        ),
+        onPressed: () async {
+          final result = await context.pushNamed(
+            RoutesName.addEntry.name,
+            queryParameters: widget.accountID != null
+                ? {'debit_account_id': widget.accountID.toString()}
+                : {},
+          );
+          if (result == true) {
+            loadEntries();
+          }
+        },
         icon: Icons.add,
       ),
     );

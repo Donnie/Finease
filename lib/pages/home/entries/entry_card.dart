@@ -53,16 +53,24 @@ class EntryCard extends StatelessWidget {
     final cardColor = entry.creditAccount?.type == AccountType.expense ? context.secondaryContainer : context.tertiaryContainer;
 
     return InkWell(
-      onTap: () => context.pushNamed(
-        RoutesName.editEntry.name,
-        pathParameters: {'id': entry.id.toString()},
-        extra: onCardTap,
-      ),
-      onLongPress: () => context.pushNamed(
-        RoutesName.duplicateEntry.name,
-        pathParameters: {'id': entry.id.toString()},
-        extra: onCardTap,
-      ),
+      onTap: () async {
+        final result = await context.pushNamed(
+          RoutesName.editEntry.name,
+          pathParameters: {'id': entry.id.toString()},
+        );
+        if (result == true && onCardTap != null) {
+          onCardTap!();
+        }
+      },
+      onLongPress: () async {
+        final result = await context.pushNamed(
+          RoutesName.duplicateEntry.name,
+          pathParameters: {'id': entry.id.toString()},
+        );
+        if (result == true && onCardTap != null) {
+          onCardTap!();
+        }
+      },
     child: Card(
       color: cardColor,
       child: Padding(

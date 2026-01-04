@@ -64,10 +64,10 @@ class AppDrawer extends StatelessWidget {
           child: ListTile(
             onTap: () async {
               scaffoldKey.currentState?.closeDrawer();
-              await context.pushNamed(
-                RoutesName.settings.name,
-                extra: onRefresh,
-              );
+              final result = await context.pushNamed(RoutesName.settings.name);
+              if (result == true && context.mounted) {
+                onRefresh();
+              }
             },
             leading: const Icon(Icons.settings),
             title: Text("settings", style: context.bodyLarge),

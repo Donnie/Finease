@@ -70,10 +70,10 @@ class HomePageTabletState extends State<HomePageTablet> {
           ],
           trailing: Column(children: [
             IconButton(
-              onPressed: () => context.pushNamed(
-                RoutesName.settings.name,
-                extra: () => {},
-              ),
+              onPressed: () async {
+                await context.pushNamed(RoutesName.settings.name);
+                // Settings will handle its own refresh on pop
+              },
               icon: Icon(MdiIcons.cog),
               color: context.onSurface.withOpacity(0.75),
             ),

@@ -6,13 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class EditEntryScreen extends StatefulWidget {
-  final Function() onFormSubmitted;
   final int entryID;
 
   const EditEntryScreen({
     super.key,
     required this.entryID,
-    required this.onFormSubmitted,
   });
 
   @override
@@ -107,8 +105,6 @@ class EditEntryScreenState extends State<EditEntryScreen> {
   Future<void> _submitForm() async {
     String entryNotes = _entryNotes.text.trim();
     if (_formState.currentState?.validate() ?? false) {
-      context.pop();
-      
       final newDate = _entryDate ?? _entry!.date ?? DateTime.now();
       
       // For forex transactions, update the credit entry's notes and sync dates on both entries
@@ -155,7 +151,9 @@ class EditEntryScreenState extends State<EditEntryScreen> {
         await _entryService.updateEntry(_entry!);
       }
       
-      widget.onFormSubmitted();
+      if (mounted) {
+        context.pop(true); // Return true to indicate successful submission
+      }
     }
   }
 }

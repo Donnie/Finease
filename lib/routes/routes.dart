@@ -1,4 +1,3 @@
-import 'package:finease/db/accounts.dart';
 import 'package:finease/db/settings.dart';
 import 'package:finease/pages/duplicate_entry/main.dart';
 import 'package:finease/pages/export.dart';
@@ -88,9 +87,7 @@ final GoRouter goRouter = GoRouter(
       name: RoutesName.addAccount.name,
       path: RoutesName.addAccount.path,
       builder: (BuildContext context, GoRouterState state) {
-        dynamic Function(Account) onFormSubmitted =
-            state.extra as dynamic Function(Account);
-        return AddAccountScreen(onFormSubmitted: onFormSubmitted);
+        return const AddAccountScreen();
       },
     ),
     GoRoute(
@@ -100,10 +97,8 @@ final GoRouter goRouter = GoRouter(
         final int accountID = int.parse(
           state.pathParameters[RoutesName.editAccount.param]!,
         );
-        dynamic Function() onFormSubmitted = state.extra as dynamic Function();
         return EditAccountScreen(
           accountID: accountID,
-          onFormSubmitted: onFormSubmitted,
         );
       },
     ),
@@ -111,10 +106,8 @@ final GoRouter goRouter = GoRouter(
       name: RoutesName.addEntry.name,
       path: RoutesName.addEntry.path,
       builder: (BuildContext context, GoRouterState state) {
-        final Function onFormSubmitted = state.extra as Function;
         final String? debitAccountId = state.uri.queryParameters['debit_account_id'];
         return AddEntryScreen(
-          onFormSubmitted: onFormSubmitted,
           initialDebitAccountId: debitAccountId != null ? int.parse(debitAccountId) : null,
         );
       },
@@ -126,10 +119,8 @@ final GoRouter goRouter = GoRouter(
         final int entryID = int.parse(
           state.pathParameters[RoutesName.editEntry.param]!,
         );
-        dynamic Function() onFormSubmitted = state.extra as dynamic Function();
         return EditEntryScreen(
           entryID: entryID,
-          onFormSubmitted: onFormSubmitted,
         );
       },
     ),
@@ -140,10 +131,8 @@ final GoRouter goRouter = GoRouter(
         final int entryID = int.parse(
           state.pathParameters[RoutesName.duplicateEntry.param]!,
         );
-        dynamic Function() onFormSubmitted = state.extra as dynamic Function();
         return DuplicateEntryScreen(
           entryID: entryID,
-          onFormSubmitted: onFormSubmitted,
         );
       },
     ),
@@ -158,8 +147,7 @@ final GoRouter goRouter = GoRouter(
       name: RoutesName.settings.name,
       path: RoutesName.settings.path,
       builder: (BuildContext context, GoRouterState state) {
-        final Function onFormSubmitted = state.extra as Function;
-        return SettingsPage(onFormSubmitted: onFormSubmitted);
+        return const SettingsPage();
       },
     ),
   ],
