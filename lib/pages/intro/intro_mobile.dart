@@ -45,7 +45,7 @@ class IntroMobileWidget extends StatelessWidget {
                   Text(
                     language["introTitle"],
                     style: context.headlineSmall?.copyWith(
-                      color: context.secondary,
+                      color: context.primary,
                     ),
                   ),
                   const SizedBox(height: 24),

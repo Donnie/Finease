@@ -41,13 +41,13 @@ class _ThemeColorPickerSheetState extends State<ThemeColorPickerSheet>
   late TabController _tabController;
   
   final List<_ColorOption> _colorOptions = [
-    _ColorOption('primary', 'Primary', 'Buttons & key elements', Icons.radio_button_checked),
-    _ColorOption('secondary', 'Secondary', 'Supporting accents', Icons.lens),
-    _ColorOption('tertiary', 'Tertiary', 'Additional accents', Icons.circle_outlined),
-    _ColorOption('surface', 'Surface', 'Cards & backgrounds', Icons.crop_square),
-    _ColorOption('error', 'Error', 'Warnings & errors', Icons.error_outline),
-    _ColorOption('text', 'Text', 'Main text color', Icons.text_fields),
-    _ColorOption('subtext', 'Subtext', 'Secondary text color', Icons.notes),
+    _ColorOption('primary', 'Primary', 'Main brand color for buttons & highlights', Icons.radio_button_checked),
+    _ColorOption('secondary', 'Accent', 'Container backgrounds & supporting elements', Icons.lens),
+    _ColorOption('tertiary', 'Success', 'Positive indicators & success states', Icons.circle_outlined),
+    _ColorOption('surface', 'Surface', 'Main background color for pages & cards', Icons.crop_square),
+    _ColorOption('error', 'Error', 'Warnings, errors & negative indicators', Icons.error_outline),
+    _ColorOption('text', 'Text', 'Primary text color throughout the app', Icons.text_fields),
+    _ColorOption('subtext', 'Subtext', 'Secondary text for labels & subtitles', Icons.notes),
   ];
 
   @override
@@ -146,40 +146,52 @@ class _ThemeColorPickerSheetState extends State<ThemeColorPickerSheet>
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Row(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(Icons.palette, color: Theme.of(context).colorScheme.primary),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        "Theme Colors",
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: textColor,
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.refresh),
-                      tooltip: "Reset",
-                      onPressed: () {
-                        final themeProvider = Provider.of<ThemeProvider>(
-                          context,
-                          listen: false,
-                        );
-                        themeProvider.resetToDefaultColors();
-                        setState(() {
-                          _tempColorTheme = themeProvider.isDarkMode 
-                              ? ColorThemeModel.defaultDark 
-                              : ColorThemeModel.defaultLight;
-                        });
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Reset to default"),
-                            duration: Duration(seconds: 1),
+                    Row(
+                      children: [
+                        Icon(Icons.palette, color: Theme.of(context).colorScheme.primary),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            "Theme Colors",
+                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: textColor,
+                            ),
                           ),
-                        );
-                      },
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.refresh),
+                          tooltip: "Reset to default",
+                          onPressed: () {
+                            final themeProvider = Provider.of<ThemeProvider>(
+                              context,
+                              listen: false,
+                            );
+                            themeProvider.resetToDefaultColors();
+                            setState(() {
+                              _tempColorTheme = themeProvider.isDarkMode 
+                                  ? ColorThemeModel.defaultDark 
+                                  : ColorThemeModel.defaultLight;
+                            });
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Reset to default"),
+                                duration: Duration(seconds: 1),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "These 7 colors control your entire app theme.",
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                     ),
                   ],
                 ),

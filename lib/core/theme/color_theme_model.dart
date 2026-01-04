@@ -2,6 +2,40 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 /// Model to store custom theme colors
+/// 
+/// These 7 base colors control the entire app's color scheme through Material 3's
+/// color system, which automatically generates additional color variants.
+/// 
+/// Color Usage Breakdown:
+/// 
+/// **Primary** (Highly Used - 31 times)
+/// - Main brand color for buttons, links, and key UI elements
+/// - Auto-generates: primaryContainer, onPrimary, onPrimaryContainer
+/// 
+/// **Secondary** (Container Used - 11 times) 
+/// - Supporting accent for containers, chips, FABs, and app bars
+/// - Used for expense/neutral items
+/// - Auto-generates: secondaryContainer (used for badges, FABs, app bars, expense items)
+/// 
+/// **Tertiary** (Container Used - 3 times)
+/// - Additional accent for success/positive states
+/// - Used for income/positive indicators and as fallback for "green" states
+/// - Auto-generates: tertiaryContainer (used for income entries, success states)
+/// 
+/// **Surface** (Highly Used - 17 times)
+/// - Main background color for pages, cards, and surfaces
+/// - Auto-generates: surfaceVariant, surfaceContainerHighest, surfaceTint, onSurface
+/// 
+/// **Error** (Moderately Used - 5 times)
+/// - Error, warning, and negative indicator color
+/// - Used for validation errors and negative states
+/// - Auto-generates: errorContainer, onError, onErrorContainer
+/// 
+/// **Text** (maps to onSurface - Highly Used - 28 times)
+/// - Primary text color throughout the app
+/// 
+/// **Subtext** (maps to onSurfaceVariant - Highly Used - 27 times)
+/// - Secondary text for labels, subtitles, and less prominent text
 class ColorThemeModel {
   final Color primaryColor;
   final Color secondaryColor;
