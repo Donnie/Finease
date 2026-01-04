@@ -1,0 +1,116 @@
+import 'dart:convert';
+import 'package:flutter/material.dart';
+
+/// Model to store custom theme colors
+class ColorThemeModel {
+  final Color primaryColor;
+  final Color secondaryColor;
+  final Color tertiaryColor;
+  final Color surfaceColor;
+  final Color errorColor;
+
+  const ColorThemeModel({
+    required this.primaryColor,
+    required this.secondaryColor,
+    required this.tertiaryColor,
+    required this.surfaceColor,
+    required this.errorColor,
+  });
+
+  // Default theme colors (brown-based)
+  static const ColorThemeModel defaultLight = ColorThemeModel(
+    primaryColor: Color(0xFF795548),
+    secondaryColor: Color(0xFF8D6E63),
+    tertiaryColor: Color(0xFFA1887F),
+    surfaceColor: Color(0xFFFFFBFE),
+    errorColor: Color(0xFFB3261E),
+  );
+
+  static const ColorThemeModel defaultDark = ColorThemeModel(
+    primaryColor: Color(0xFF795548),
+    secondaryColor: Color(0xFF8D6E63),
+    tertiaryColor: Color(0xFFA1887F),
+    surfaceColor: Color(0xFF1C1B1F),
+    errorColor: Color(0xFFF2B8B5),
+  );
+
+  // Convert to JSON string for storage
+  String toJson() {
+    return jsonEncode({
+      'primary': primaryColor.value,
+      'secondary': secondaryColor.value,
+      'tertiary': tertiaryColor.value,
+      'surface': surfaceColor.value,
+      'error': errorColor.value,
+    });
+  }
+
+  // Create from JSON string
+  factory ColorThemeModel.fromJson(String jsonString) {
+    try {
+      final Map<String, dynamic> json = jsonDecode(jsonString);
+      return ColorThemeModel(
+        primaryColor: Color(json['primary'] as int),
+        secondaryColor: Color(json['secondary'] as int),
+        tertiaryColor: Color(json['tertiary'] as int),
+        surfaceColor: Color(json['surface'] as int),
+        errorColor: Color(json['error'] as int),
+      );
+    } catch (e) {
+      // Return default if parsing fails
+      return defaultLight;
+    }
+  }
+
+  // Create a ColorScheme from this model
+  ColorScheme toColorScheme(Brightness brightness) {
+    return ColorScheme.fromSeed(
+      seedColor: primaryColor,
+      brightness: brightness,
+      primary: primaryColor,
+      secondary: secondaryColor,
+      tertiary: tertiaryColor,
+      surface: surfaceColor,
+      error: errorColor,
+    );
+  }
+
+  ColorThemeModel copyWith({
+    Color? primaryColor,
+    Color? secondaryColor,
+    Color? tertiaryColor,
+    Color? surfaceColor,
+    Color? errorColor,
+  }) {
+    return ColorThemeModel(
+      primaryColor: primaryColor ?? this.primaryColor,
+      secondaryColor: secondaryColor ?? this.secondaryColor,
+      tertiaryColor: tertiaryColor ?? this.tertiaryColor,
+      surfaceColor: surfaceColor ?? this.surfaceColor,
+      errorColor: errorColor ?? this.errorColor,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is ColorThemeModel &&
+        other.primaryColor == primaryColor &&
+        other.secondaryColor == secondaryColor &&
+        other.tertiaryColor == tertiaryColor &&
+        other.surfaceColor == surfaceColor &&
+        other.errorColor == errorColor;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(
+      primaryColor,
+      secondaryColor,
+      tertiaryColor,
+      surfaceColor,
+      errorColor,
+    );
+  }
+}
+
