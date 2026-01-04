@@ -184,54 +184,146 @@ class EntryService {
   }
 
   /// Merges forex transaction pairs into single entries for display
-  /// This method intelligently finds and merges forex pairs regardless of order
+  /// Optimized version using SQL CTEs for better performance
   Future<List<Entry>> getMergedEntries({
     DateTime? startDate,
     DateTime? endDate,
     int? accountId,
   }) async {
-    final allEntries = await getAllEntries(
-      startDate: startDate,
-      endDate: endDate,
-      accountId: accountId,
+    final dbClient = await _databaseHelper.db;
+    
+    List<dynamic> whereArguments = [];
+    String dateFilter = '';
+    
+    if (startDate != null) {
+      dateFilter += ' AND e.date >= ?';
+      whereArguments.add(startDate.toIso8601String());
+    }
+    
+    if (endDate != null) {
+      dateFilter += ' AND e.date <= ?';
+      whereArguments.add(endDate.toIso8601String());
+    }
+    
+    if (accountId != null) {
+      dateFilter += ' AND (e.debit_account_id = ? OR e.credit_account_id = ?)';
+      whereArguments.add(accountId);
+      whereArguments.add(accountId);
+    }
+    
+    // Optimized SQL query that merges forex pairs in SQL
+    final String query = '''
+      WITH ForexPairs AS (
+        SELECT 
+          ed.id AS debit_entry_id,
+          ec.id AS credit_entry_id
+        FROM entries ed
+        JOIN entries ec ON ed.date = ec.date AND ed.id <> ec.id
+        JOIN accounts adc ON ed.credit_account_id = adc.id AND adc.name = 'Forex' AND adc.hidden = 1
+        JOIN accounts acd ON ec.debit_account_id = acd.id AND acd.name = 'Forex' AND acd.hidden = 1
+      ),
+      ConsolidatedForex AS (
+        SELECT
+          f.debit_entry_id AS id,
+          e1.debit_account_id,
+          e2.credit_account_id,
+          e1.date,
+          e2.notes AS user_notes,
+          e2.amount AS credit_amount,
+          e2.credit_account_id AS credit_account_id_for_currency,
+          e1.amount,
+          e1.created_at,
+          e2.updated_at
+        FROM ForexPairs f
+        JOIN entries e1 ON f.debit_entry_id = e1.id
+        JOIN entries e2 ON f.credit_entry_id = e2.id
+      ),
+      NormalEntries AS (
+        SELECT 
+          e.id,
+          e.debit_account_id,
+          e.credit_account_id,
+          e.date,
+          e.notes AS user_notes,
+          0 AS credit_amount,
+          NULL AS credit_account_id_for_currency,
+          e.amount,
+          e.created_at,
+          e.updated_at
+        FROM entries e
+        LEFT JOIN ForexPairs fp_debit ON e.id = fp_debit.debit_entry_id
+        LEFT JOIN ForexPairs fp_credit ON e.id = fp_credit.credit_entry_id
+        WHERE fp_debit.debit_entry_id IS NULL
+          AND fp_credit.credit_entry_id IS NULL
+      ),
+      AllEntries AS (
+        SELECT * FROM ConsolidatedForex
+        UNION ALL
+        SELECT * FROM NormalEntries
+      )
+      SELECT 
+        e.id,
+        e.debit_account_id,
+        e.credit_account_id,
+        e.date,
+        e.user_notes,
+        e.credit_amount,
+        e.credit_account_id_for_currency,
+        e.amount,
+        e.created_at,
+        e.updated_at
+      FROM AllEntries e
+      WHERE 1=1
+      $dateFilter
+      ORDER BY e.date DESC, e.id DESC
+    ''';
+    
+    final List<Map<String, dynamic>> entriesData = await dbClient.rawQuery(
+      query,
+      whereArguments,
     );
 
-    // Sort by date descending
-    allEntries.sort((a, b) => (b.date ?? DateTime(0))
-        .compareTo(a.date ?? DateTime(0)));
+    final List<Account> allAccounts = await AccountService().getAllAccounts();
+    var accountsMap = {for (var account in allAccounts) account.id: account};
 
-    final List<Entry> mergedEntries = [];
-    final Set<int> processedIds = {};
-
-    for (var entry in allEntries) {
-      // Skip if already processed
-      if (processedIds.contains(entry.id)) continue;
-
-      // Check if this is a forex pair entry
-      if (isForexPairEntry(entry)) {
-        // Try to find its pair
-        final pairedEntry = await findForexPairEntry(entry, allEntries);
-
-        if (pairedEntry != null) {
-          // Merge the two entries
-          final mergedEntry = _mergeForexEntries(entry, pairedEntry);
-
-          mergedEntries.add(mergedEntry);
-          processedIds.add(entry.id!);
-          processedIds.add(pairedEntry.id!);
-        } else {
-          // No pair found, add as-is (shouldn't happen, but handle gracefully)
-          mergedEntries.add(entry);
-          processedIds.add(entry.id!);
+    // Convert to Entry objects and format forex notes like _mergeForexEntries
+    List<Entry> entries = entriesData.map((json) {
+      Entry entry = Entry.fromJson({
+        'id': json['id'],
+        'created_at': json['created_at'],
+        'updated_at': json['updated_at'],
+        'debit_account_id': json['debit_account_id'],
+        'credit_account_id': json['credit_account_id'],
+        'amount': json['amount'],
+        'date': json['date'],
+        'notes': json['user_notes'],
+      });
+      
+      entry.creditAccount = accountsMap[json['credit_account_id']];
+      entry.debitAccount = accountsMap[json['debit_account_id']];
+      
+      // Format forex notes like _mergeForexEntries
+      final creditAmount = json['credit_amount'] as int?;
+      final creditAccountIdForCurrency = json['credit_account_id_for_currency'] as int?;
+      
+      if (creditAmount != null && creditAmount > 0 && creditAccountIdForCurrency != null) {
+        final creditAccount = accountsMap[creditAccountIdForCurrency];
+        if (creditAccount != null) {
+          final creditSymbol = SupportedCurrency[creditAccount.currency] ?? creditAccount.currency;
+          final creditAmountDecimal = creditAmount / 100.0;
+          final creditInfo = '$creditSymbol$creditAmountDecimal';
+          
+          final userNotes = entry.notes ?? '';
+          entry.notes = (userNotes.isNotEmpty) 
+              ? '$userNotes ($creditInfo)'
+              : creditInfo;
         }
-      } else {
-        // Regular entry, add as-is
-        mergedEntries.add(entry);
-        processedIds.add(entry.id!);
       }
-    }
+      
+      return entry;
+    }).toList();
 
-    return mergedEntries;
+    return entries;
   }
 
   /// Merges two forex entries into a single display entry

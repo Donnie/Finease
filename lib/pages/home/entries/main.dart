@@ -262,9 +262,38 @@ class EntriesPageState extends State<EntriesPage> {
   Future<void> _exportToClipboard() async {
     // If viewing a specific account, use SQL-based export with balance
     if (widget.accountID != null && viewingAccount != null) {
-      await _exportAccountTransactionsWithBalance();
+      // Show loading dialog during export
+      if (!mounted) return;
+      
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(
+          child: Card(
+            child: Padding(
+              padding: EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 16),
+                  Text('Exporting transactions...'),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+      
+      try {
+        await _exportAccountTransactionsWithBalance();
+      } finally {
+        if (mounted) {
+          Navigator.of(context).pop(); // Close loading dialog
+        }
+      }
     } else {
-      // Regular export without balance
+      // Regular export without balance (fast, no loading needed)
       final entriesToExport = filteredEntries;
       final exportText = _formatTransactionsForExport(entriesToExport);
       
