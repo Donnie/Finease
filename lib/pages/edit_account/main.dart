@@ -69,8 +69,8 @@ class EditAccountScreenState extends State<EditAccountScreen> {
 
   void _submitForm() async {
     setState(() {
-      _account!.name = _accountName.text;
-      _account!.currency = _accountCurrency.text;
+      _account!.name = _accountName.text.trim();
+      _account!.currency = _accountCurrency.text.trim();
     });
     if (_formState.currentState?.validate() ?? false) {
       context.pop();

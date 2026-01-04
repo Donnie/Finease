@@ -105,7 +105,7 @@ class EditEntryScreenState extends State<EditEntryScreen> {
   }
 
   Future<void> _submitForm() async {
-    String entryNotes = _entryNotes.text;
+    String entryNotes = _entryNotes.text.trim();
     if (_formState.currentState?.validate() ?? false) {
       context.pop();
       

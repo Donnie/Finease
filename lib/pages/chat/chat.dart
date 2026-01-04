@@ -47,7 +47,7 @@ class ChatScreenState extends State<ChatScreen> {
 
   void _sendMessage() async {
     await sendMessage(
-      content: _controller.text,
+      content: _controller.text.trim(),
       messageList: messages,
       onStateUpdated: () {
         setState(() {

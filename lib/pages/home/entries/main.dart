@@ -183,6 +183,7 @@ class EntriesPageState extends State<EntriesPage> {
     int maxDateWidth = 'Date'.length;
     int maxFromWidth = 'From'.length;
     int maxToWidth = 'To'.length;
+    int maxAmountWidth = 'Amount'.length;
     
     final formattedRows = <Map<String, String>>[];
     
@@ -194,18 +195,19 @@ class EntriesPageState extends State<EntriesPage> {
       final to = entry.creditAccount?.name ?? 'N/A';
       final notes = entry.notes ?? '';
       final symbol = SupportedCurrency[entry.debitAccount?.currency ?? ''] ?? '';
-      final amountLine = 'Amount: $symbol ${entry.amount}';
+      final amountStr = '$symbol ${entry.amount}';
       
       maxDateWidth = maxDateWidth > date.length ? maxDateWidth : date.length;
       maxFromWidth = maxFromWidth > from.length ? maxFromWidth : from.length;
       maxToWidth = maxToWidth > to.length ? maxToWidth : to.length;
+      maxAmountWidth = maxAmountWidth > amountStr.length ? maxAmountWidth : amountStr.length;
       
       formattedRows.add({
         'date': date,
         'from': from,
         'to': to,
+        'amount': amountStr,
         'notes': notes,
-        'amount': amountLine,
       });
     }
     
@@ -213,8 +215,9 @@ class EntriesPageState extends State<EntriesPage> {
     final dateColWidth = maxDateWidth + 2;
     final fromColWidth = maxFromWidth + 2;
     final toColWidth = maxToWidth + 2;
+    final amountColWidth = maxAmountWidth + 2;
     
-    final totalWidth = dateColWidth + fromColWidth + toColWidth + 20;
+    final totalWidth = dateColWidth + fromColWidth + toColWidth + amountColWidth + 5;
 
     final buffer = StringBuffer();
     final now = DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now());
@@ -224,14 +227,12 @@ class EntriesPageState extends State<EntriesPage> {
     buffer.writeln('');
     
     // Header
-    buffer.writeln('${'Date'.padRight(dateColWidth)}${'From'.padRight(fromColWidth)}${'To'.padRight(toColWidth)}Notes');
+    buffer.writeln('${'Date'.padRight(dateColWidth)}${'From'.padRight(fromColWidth)}${'To'.padRight(toColWidth)}${'Amount'.padRight(amountColWidth)}Notes');
     buffer.writeln('=' * totalWidth);
     
     // Data rows
     for (var row in formattedRows) {
-      buffer.writeln('${row['date']!.padRight(dateColWidth)}${row['from']!.padRight(fromColWidth)}${row['to']!.padRight(toColWidth)}${row['notes']}');
-      buffer.writeln('${''.padRight(dateColWidth)}${row['amount']}');
-      buffer.writeln('');
+      buffer.writeln('${row['date']!.padRight(dateColWidth)}${row['from']!.padRight(fromColWidth)}${row['to']!.padRight(toColWidth)}${row['amount']!.padRight(amountColWidth)}${row['notes']}');
     }
     
     buffer.writeln('=' * totalWidth);

@@ -45,11 +45,11 @@ class _AddInfoPageState extends State<AddInfoPage> {
   void saveForm() async {
     if (_formState.currentState!.validate()) {
       context.go(RoutesName.setupAccounts.path);
-      await _settingService.setSetting(Setting.userName, _name.text);
+      await _settingService.setSetting(Setting.userName, _name.text.trim());
 
       Account account = await _accountService.createAccount(Account(
         balance: 0,
-        currency: _currency.text,
+        currency: _currency.text.trim(),
         liquid: false,
         name: "Past",
         hidden: true,
@@ -91,7 +91,7 @@ class _AddInfoPageState extends State<AddInfoPage> {
                   // to avoid race condition with next page
                   // next page needs the currency
                   await _settingService.setSetting(
-                      Setting.prefCurrency, _currency.text);
+                      Setting.prefCurrency, _currency.text.trim());
 
                   saveForm();
                 },
