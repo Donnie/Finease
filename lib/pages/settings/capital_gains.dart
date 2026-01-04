@@ -78,7 +78,10 @@ class CapGainsSelectorWidgetState extends State<CapGainsSelectorWidget> {
     return ListTile(
       title: const Text("Capital Gains Account"),
       subtitle: Text(subtitle ?? 'Unlinked'),
-      leading: const Icon(Icons.moving),
+      leading: Icon(
+        Icons.moving,
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+      ),
       onTap: () => _showCapGainsPicker(),
     );
   }

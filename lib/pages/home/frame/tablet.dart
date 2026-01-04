@@ -17,12 +17,24 @@ class HomePageTablet extends StatefulWidget {
 }
 
 class HomePageTabletState extends State<HomePageTablet> {
-  int destIndex = 0;
+  int _getSelectedIndex(BuildContext context) {
+    final location = GoRouterState.of(context).uri.path;
+    final normalizedLocation = location.startsWith('/') ? location.substring(1) : location;
+    
+    for (int i = 0; i < destinations.length; i++) {
+      final routePath = destinations[i].routeName.path;
+      final normalizedRoutePath = routePath.startsWith('/') ? routePath.substring(1) : routePath;
+      
+      if (normalizedLocation == normalizedRoutePath ||
+          normalizedLocation.startsWith('$normalizedRoutePath/')) {
+        return i;
+      }
+    }
+    return 0; // Default to home
+  }
 
-  void _updateBody(int index) {
-    setState(() {
-      destIndex = index;
-    });
+  void _updateBody(BuildContext context, int index) {
+    context.goNamed(destinations[index].routeName.name);
   }
 
   @override
@@ -38,15 +50,15 @@ class HomePageTabletState extends State<HomePageTablet> {
             color: context.primary,
           ),
           unselectedLabelTextStyle: context.bodyLarge?.copyWith(
-            color: context.onSurface.withOpacity(0.75),
+            color: context.onSurfaceVariant,
           ),
           unselectedIconTheme: IconThemeData(
-            color: context.onSurface.withOpacity(0.75),
+            color: context.onSurfaceVariant,
           ),
           labelType: NavigationRailLabelType.all,
           backgroundColor: context.surface,
-          selectedIndex: destIndex,
-          onDestinationSelected: _updateBody,
+          selectedIndex: _getSelectedIndex(context),
+          onDestinationSelected: (int index) => _updateBody(context, index),
           minWidth: 55,
           useIndicator: true,
           destinations: [
@@ -58,16 +70,16 @@ class HomePageTabletState extends State<HomePageTablet> {
           ],
           trailing: Column(children: [
             IconButton(
-              onPressed: () => context.pushNamed(
-                RoutesName.settings.name,
-                extra: () => {},
-              ),
+              onPressed: () async {
+                await context.pushNamed(RoutesName.settings.name);
+                // Settings will handle its own refresh on pop
+              },
               icon: Icon(MdiIcons.cog),
-              color: context.onSurface.withOpacity(0.75),
+              color: context.onSurfaceVariant,
             ),
             Text(
               "settings",
-              style: TextStyle(color: context.onSurface.withOpacity(0.75)),
+              style: TextStyle(color: context.onSurfaceVariant),
             ),
           ]),
         ),
@@ -84,7 +96,7 @@ class HomePageTabletState extends State<HomePageTablet> {
                 child: AppIconTitle(),
               ),
               leadingWidth: 180,
-              title: Text(destinations[destIndex].routeName.name),
+              title: Text(destinations[_getSelectedIndex(context)].routeName.name),
               actions: const [
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8.0),

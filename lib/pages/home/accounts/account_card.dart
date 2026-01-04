@@ -52,15 +52,23 @@ class BankAccounts extends StatelessWidget {
         ...mainAccounts.map(
           (a) => BankAccountCardClickable(
             account: a,
-            onLongPress: () => context.pushNamed(
-              RoutesName.editAccount.name,
-              pathParameters: {'id': a.id.toString()},
-              extra: onEdit,
-            ),
-            onTap: () => context.pushNamed(
-              RoutesName.transactionsByAccount.name,
-              extra: {'account_id': a.id.toString()},
-            ),
+            onLongPress: () async {
+              final result = await context.pushNamed(
+                RoutesName.editAccount.name,
+                pathParameters: {'id': a.id.toString()},
+              );
+              if (result == true) {
+                onEdit();
+              }
+            },
+            onTap: () async {
+              await context.pushNamed(
+                RoutesName.transactionsByAccount.name,
+                pathParameters: {RoutesName.transactionsByAccount.accountParam: a.id.toString()},
+              );
+              // Refresh accounts when returning from transaction screen
+              onEdit();
+            },
           ),
         ),
         const Divider(),
@@ -88,10 +96,14 @@ class BankAccounts extends StatelessWidget {
                     pathParameters: {'id': a.id.toString()},
                     extra: onEdit,
                   ),
-                  onTap: () => context.pushNamed(
-                    RoutesName.transactionsByAccount.name,
-                    extra: {'account_id': a.id.toString()},
-                  ),
+                  onTap: () async {
+                    await context.pushNamed(
+                      RoutesName.transactionsByAccount.name,
+                      pathParameters: {RoutesName.transactionsByAccount.accountParam: a.id.toString()},
+                    );
+                    // Refresh accounts when returning from transaction screen
+                    onEdit();
+                  },
                 ),
               ),
             ],
@@ -116,10 +128,14 @@ class BankAccounts extends StatelessWidget {
                     pathParameters: {'id': a.id.toString()},
                     extra: onEdit,
                   ),
-                  onTap: () => context.pushNamed(
-                    RoutesName.transactionsByAccount.name,
-                    extra: {'account_id': a.id.toString()},
-                  ),
+                  onTap: () async {
+                    await context.pushNamed(
+                      RoutesName.transactionsByAccount.name,
+                      pathParameters: {RoutesName.transactionsByAccount.accountParam: a.id.toString()},
+                    );
+                    // Refresh accounts when returning from transaction screen
+                    onEdit();
+                  },
                 ),
               ),
             ],

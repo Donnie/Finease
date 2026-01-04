@@ -12,6 +12,14 @@ enum Setting {
   prefCurrency,
   useEncryption,
   userName,
+  // Theme color settings
+  themePrimaryColor,
+  themeSecondaryColor,
+  themeTertiaryColor,
+  themeSurfaceColor,
+  themeErrorColor,
+  themeTextColor,
+  themeSubtextColor,
 }
 
 typedef Settings = Map<Setting, String>;

@@ -50,7 +50,7 @@ class IntroTabletWidget extends StatelessWidget {
                       language["introTitle"],
                       textAlign: TextAlign.center,
                       style: context.headlineMedium?.copyWith(
-                        color: context.secondary,
+                        color: context.primary,
                       ),
                     ),
                     const SizedBox(height: 24),

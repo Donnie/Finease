@@ -8,7 +8,10 @@ class AboutWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: const Text('About'),
-      leading: const Icon(Icons.info_outline),
+      leading: Icon(
+        Icons.info_outline,
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+      ),
       onTap: () => _showAboutDialog(context),
     );
   }
@@ -27,9 +30,11 @@ class AboutWidget extends StatelessWidget {
                   onTap: () => launchUrl(
                     Uri.parse('https://github.com/Donnie/Finease'),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Free and Open Source',
-                    style: TextStyle(decoration: TextDecoration.underline),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      decoration: TextDecoration.underline,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16.0),

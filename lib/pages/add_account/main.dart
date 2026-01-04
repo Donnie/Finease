@@ -6,10 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class AddAccountScreen extends StatefulWidget {
-  final Function(Account) onFormSubmitted;
   const AddAccountScreen({
     super.key,
-    required this.onFormSubmitted,
   });
 
   @override
@@ -71,7 +69,6 @@ class AddAccountScreenState extends State<AddAccountScreen> {
     double balance = double.tryParse(_accountBalance.text) ?? 0;
 
     if (_formState.currentState?.validate() ?? false) {
-      context.pop();
       Account account = Account(
         name: accountName,
         currency: accountCurrency,
@@ -81,7 +78,9 @@ class AddAccountScreenState extends State<AddAccountScreen> {
       );
       try {
         account = await _accountService.createAccount(account);
-        widget.onFormSubmitted(account);
+        if (mounted) {
+          context.pop(account);
+        }
       } catch (e) {
         _showError(e);
       }

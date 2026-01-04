@@ -11,27 +11,33 @@ ThemeData appTheme(
   Color dividerColor,
   SystemUiOverlayStyle systemUiOverlayStyle,
 ) {
+  // Apply custom text colors to text theme
+  final customTextTheme = textTheme.apply(
+    bodyColor: colorScheme.onSurface,
+    displayColor: colorScheme.onSurface,
+  );
+
   return ThemeData.from(
     colorScheme: colorScheme,
     useMaterial3: true,
   ).copyWith(
-    textTheme: textTheme,
+    textTheme: customTextTheme,
     colorScheme: colorScheme,
-    dialogTheme: dialogTheme,
-    timePickerTheme: timePickerTheme,
+    dialogTheme: dialogTheme(colorScheme, customTextTheme),
+    timePickerTheme: timePickerTheme(customTextTheme),
     appBarTheme: appBarTheme(systemUiOverlayStyle),
     scaffoldBackgroundColor: colorScheme.surface,
     navigationBarTheme: navigationBarThemeData(
       colorScheme,
-      textTheme,
+      customTextTheme,
     ),
     navigationDrawerTheme: navigationDrawerThemeData(
       colorScheme,
-      textTheme,
+      customTextTheme,
     ),
     drawerTheme: drawerThemeData(
       colorScheme,
-      textTheme,
+      customTextTheme,
     ),
     applyElevationOverlayColor: true,
     inputDecorationTheme: inputDecorationTheme,
@@ -41,5 +47,12 @@ ThemeData appTheme(
     ),
     extensions: [lightCustomColor],
     dividerTheme: DividerThemeData(color: dividerColor),
+    // Ensure ListTile uses custom text colors
+    listTileTheme: ListTileThemeData(
+      textColor: colorScheme.onSurface,
+      subtitleTextStyle: customTextTheme.bodyMedium?.copyWith(
+        color: colorScheme.onSurfaceVariant,
+      ),
+    ),
   );
 }

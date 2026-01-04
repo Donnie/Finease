@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:finease/core/export.dart';
 
 class ChatDrawer extends StatelessWidget {
   final Function onClearDatabase;
@@ -18,14 +19,14 @@ class ChatDrawer extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          const DrawerHeader(
+          DrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.blue,
+              color: context.primary,
             ),
             child: Text(
               'Chat Options',
               style: TextStyle(
-                color: Colors.white,
+                color: context.onPrimary,
                 fontSize: 24,
               ),
             ),

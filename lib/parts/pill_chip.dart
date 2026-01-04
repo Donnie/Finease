@@ -33,7 +33,7 @@ class AppPillChip extends StatelessWidget {
               border: Border.all(
                 strokeAlign: BorderSide.strokeAlignInside,
                 width: 1.5,
-                color: borderColor ?? Colors.white.withOpacity(0),
+                color: borderColor ?? context.surface,
               ),
             ),
             child: Padding(

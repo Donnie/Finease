@@ -78,7 +78,7 @@ class MonthCard extends StatelessWidget {
       onTap: () {
         context.pushNamed(
           RoutesName.transactionsByDate.name,
-          extra: {
+          queryParameters: {
             'startDate': startDate.toIso8601String(),
             'endDate': endDate.toIso8601String(),
           },
@@ -105,9 +105,9 @@ class MonthCard extends StatelessWidget {
               LinearProgressIndicator(
                 value: month.factor,
                 minHeight: 2.0,
-                backgroundColor: Colors.grey[300],
+                backgroundColor: context.surfaceVariant,
                 valueColor: AlwaysStoppedAnimation<Color>(
-                  month.good ? Colors.green : Colors.red,
+                  month.good ? context.tertiary : context.error,
                 ),
               ),
               const SizedBox(height: 8),

@@ -1,4 +1,5 @@
 import 'package:finease/core/extensions/color_extension.dart';
+import 'package:finease/core/extensions/text_style_extension.dart';
 import 'package:finease/db/accounts.dart';
 import 'package:finease/db/currency.dart';
 import 'package:finease/db/entries.dart';
@@ -53,16 +54,24 @@ class EntryCard extends StatelessWidget {
     final cardColor = entry.creditAccount?.type == AccountType.expense ? context.secondaryContainer : context.tertiaryContainer;
 
     return InkWell(
-      onTap: () => context.pushNamed(
-        RoutesName.editEntry.name,
-        pathParameters: {'id': entry.id.toString()},
-        extra: onCardTap,
-      ),
-      onLongPress: () => context.pushNamed(
-        RoutesName.duplicateEntry.name,
-        pathParameters: {'id': entry.id.toString()},
-        extra: onCardTap,
-      ),
+      onTap: () async {
+        final result = await context.pushNamed(
+          RoutesName.editEntry.name,
+          pathParameters: {'id': entry.id.toString()},
+        );
+        if (result == true && onCardTap != null) {
+          onCardTap!();
+        }
+      },
+      onLongPress: () async {
+        final result = await context.pushNamed(
+          RoutesName.duplicateEntry.name,
+          pathParameters: {'id': entry.id.toString()},
+        );
+        if (result == true && onCardTap != null) {
+          onCardTap!();
+        }
+      },
     child: Card(
       color: cardColor,
       child: Padding(
@@ -87,15 +96,13 @@ class EntryCard extends StatelessWidget {
                   children: [
                     Text(
                       '$symbol ${entry.amount}',
-                      style: const TextStyle(
-                        fontSize: 20,
+                      style: context.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
                       entry.notes!,
-                      style: const TextStyle(
-                        fontSize: 14,
+                      style: context.bodyMedium?.copyWith(
                         fontStyle: FontStyle.italic,
                       ),
                     ),

@@ -28,6 +28,7 @@ class EntriesPage extends StatefulWidget {
 }
 
 class EntriesPageState extends State<EntriesPage> {
+  final GlobalKey<ScaffoldState> _scaffoldStateKey = GlobalKey<ScaffoldState>();
   final EntryService _entryService = EntryService();
   final AccountService _accountService = AccountService();
   final SettingService _settingService = SettingService();
@@ -451,32 +452,20 @@ class EntriesPageState extends State<EntriesPage> {
     }
   }
 
+  Future<void> entryOnDelete(int id) async {
+    await _entryService.deleteEntry(id);
+    await loadEntries();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> scaffoldStateKey =
-        GlobalKey<ScaffoldState>();
-    int destIndex = 0;
-
-    void updateBody(int index) {
-      setState(() {
-        destIndex = index;
-      });
-      context.goNamed(
-        destinations[destIndex].routeName.name,
-        extra: () => {},
-      );
-    }
-
-    void entryOnDelete(int id) {
-      _entryService.deleteEntry(id);
-      loadEntries();
-    }
-
     return Scaffold(
-      key: scaffoldStateKey,
+      key: _scaffoldStateKey,
       appBar: infoBar(
         context,
-        "transactions",
+        widget.accountID != null && viewingAccount != null
+            ? viewingAccount!.name
+            : "transactions",
         "Click to edit the transaction,\nand long press to duplicate the transaction.\nTap the delete icon to remove a transaction.\nUse the search field to find transactions.\n\nUse the + button at the bottom to add a new transaction.",
         additionalActions: [
           PopupMenuButton<String>(
@@ -568,21 +557,25 @@ class EntriesPageState extends State<EntriesPage> {
                     ],
                   ),
       ),
-      drawer: AppDrawer(
-        onRefresh: loadEntries,
-        scaffoldKey: scaffoldStateKey,
-        selectedIndex: 2,
-        destinations: destinations,
-        onDestinationSelected: updateBody,
-      ),
+      drawer: widget.accountID == null
+          ? AppDrawer(
+              onRefresh: loadEntries,
+              scaffoldKey: _scaffoldStateKey,
+              destinations: destinations,
+            )
+          : null,
       floatingActionButton: VariableFABSize(
-        onPressed: () => context.pushNamed(
-          RoutesName.addEntry.name,
-          extra: loadEntries,
-          queryParameters: widget.accountID != null
-              ? {'debit_account_id': widget.accountID.toString()}
-              : {},
-        ),
+        onPressed: () async {
+          final result = await context.pushNamed(
+            RoutesName.addEntry.name,
+            queryParameters: widget.accountID != null
+                ? {'debit_account_id': widget.accountID.toString()}
+                : {},
+          );
+          if (result == true) {
+            loadEntries();
+          }
+        },
         icon: Icons.add,
       ),
     );

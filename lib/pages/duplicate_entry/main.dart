@@ -9,12 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class DuplicateEntryScreen extends StatefulWidget {
-  final Function onFormSubmitted;
   final int entryID;
 
   const DuplicateEntryScreen({
     super.key,
-    required this.onFormSubmitted,
     required this.entryID,
   });
 
@@ -190,7 +188,6 @@ class DuplicateEntryScreenState extends State<DuplicateEntryScreen> {
     String entryNotes = _entryNotes.text.trim();
     double creditAmount = double.tryParse(_creditAmount.text) ?? 0;
     if (_formState.currentState?.validate() ?? false) {
-      context.pop();
       Entry entry = Entry(
         debitAccountId: _debitAccount!.id!,
         creditAccountId: _creditAccount!.id!,
@@ -204,7 +201,9 @@ class DuplicateEntryScreenState extends State<DuplicateEntryScreen> {
       } else {
         await _entryService.createEntry(entry);
       }
-      widget.onFormSubmitted();
+      if (mounted) {
+        context.pop(true);
+      }
     }
   }
 }

@@ -1,3 +1,4 @@
+import 'package:finease/core/export.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -15,7 +16,10 @@ class _CheckUpdatesWidgetState extends State<CheckUpdatesWidget> {
   Widget build(BuildContext context) {
     return ListTile(
       title: const Text('Check Updates'),
-      leading: const Icon(Icons.system_update),
+      leading: Icon(
+        Icons.system_update,
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+      ),
       onTap: () => _checkForUpdates(context),
     );
   }
@@ -107,9 +111,9 @@ class _CheckUpdatesWidgetState extends State<CheckUpdatesWidget> {
                     },
                     child: Text(
                       'Download $tagToShow',
-                      style: const TextStyle(
+                      style: context.bodyMedium?.copyWith(
                         decoration: TextDecoration.underline,
-                        color: Colors.blue,
+                        color: context.primary,
                       ),
                     ),
                   ),

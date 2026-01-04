@@ -3,11 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class DarkModeToggleWidget extends StatelessWidget {
-  final Function onChange;
-  const DarkModeToggleWidget({
-    super.key,
-    required this.onChange,
-  });
+  const DarkModeToggleWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,29 +23,26 @@ class DarkModeToggleWidget extends StatelessWidget {
           subtitle: Text(themeProvider.isDarkMode ? "Enabled" : "Disabled"),
           value: themeProvider.isDarkMode,
           onChanged: (value) async {
-            // Show a snackbar to indicate the change
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  value
-                      ? "Switching to dark mode..."
-                      : "Switching to light mode...",
-                ),
-                duration: const Duration(seconds: 1),
-              ),
-            );
-
             // Toggle the theme
-            await themeProvider.toggleDarkMode(value).then((value) {
-              Navigator.pop(context); // Close the settings page
-            });
+            await themeProvider.toggleDarkMode(value);
 
-            // Call the onChange callback
-            onChange();
+            // Show a snackbar to indicate the change
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    value
+                        ? "Dark mode enabled"
+                        : "Light mode enabled",
+                  ),
+                  duration: const Duration(seconds: 1),
+                ),
+              );
+            }
           },
           secondary: Icon(
             themeProvider.isDarkMode ? Icons.dark_mode : Icons.light_mode,
-            color: Theme.of(context).colorScheme.primary,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
         );
       },

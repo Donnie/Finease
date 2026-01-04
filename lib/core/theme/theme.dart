@@ -16,9 +16,11 @@ ElevatedButtonThemeData elevatedButtonTheme(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(32.0),
       ),
+      backgroundColor: colorScheme.surfaceContainerHighest,
+      foregroundColor: colorScheme.onSurface,
       textStyle: TextStyle(
         fontWeight: FontWeight.w600,
-        color: colorScheme.onPrimary,
+        color: colorScheme.onSurface,
       ),
     ),
   );
@@ -116,10 +118,14 @@ AppBarTheme appBarThemeDark(ColorScheme colorScheme) {
   );
 }
 
-DialogTheme get dialogTheme {
+DialogTheme dialogTheme(ColorScheme colorScheme, TextTheme? textTheme) {
   return DialogTheme(
-    titleTextStyle: const TextStyle(
+    titleTextStyle: textTheme?.titleLarge?.copyWith(
       fontWeight: FontWeight.bold,
+      color: colorScheme.onSurface,
+    ),
+    contentTextStyle: textTheme?.bodyMedium?.copyWith(
+      color: colorScheme.onSurfaceVariant,
     ),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(24),
@@ -127,12 +133,12 @@ DialogTheme get dialogTheme {
   );
 }
 
-TimePickerThemeData get timePickerTheme {
+TimePickerThemeData timePickerTheme(TextTheme? textTheme) {
   return TimePickerThemeData(
-    helpTextStyle: const TextStyle(
+    helpTextStyle: textTheme?.bodyLarge?.copyWith(
       fontWeight: FontWeight.bold,
     ),
-    hourMinuteTextStyle: const TextStyle(
+    hourMinuteTextStyle: textTheme?.headlineMedium?.copyWith(
       fontWeight: FontWeight.bold,
     ),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),

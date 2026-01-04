@@ -15,6 +15,7 @@ class AccountsPage extends StatefulWidget {
 }
 
 class _AccountsPageState extends State<AccountsPage> {
+  final GlobalKey<ScaffoldState> _scaffoldStateKey = GlobalKey<ScaffoldState>();
   List<Account> accounts = [];
 
   @override
@@ -34,22 +35,8 @@ class _AccountsPageState extends State<AccountsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> scaffoldStateKey =
-        GlobalKey<ScaffoldState>();
-    int destIndex = 0;
-
-    void updateBody(int index) {
-      setState(() {
-        destIndex = index;
-      });
-      context.goNamed(
-        destinations[destIndex].routeName.name,
-        extra: () => {},
-      );
-    }
-
     return Scaffold(
-      key: scaffoldStateKey,
+      key: _scaffoldStateKey,
       appBar: infoBar(context, "accounts",
           "Click to see transactions,\nand long press to edit the account.\n\nUse the + button at the bottom to add a new account."),
       body: RefreshIndicator(
@@ -61,16 +48,16 @@ class _AccountsPageState extends State<AccountsPage> {
       ),
       drawer: AppDrawer(
         onRefresh: loadAccounts,
-        scaffoldKey: scaffoldStateKey,
-        selectedIndex: 1,
+        scaffoldKey: _scaffoldStateKey,
         destinations: destinations,
-        onDestinationSelected: updateBody,
       ),
       floatingActionButton: VariableFABSize(
-        onPressed: () => context.pushNamed(
-          RoutesName.addAccount.name,
-          extra: (Account ac) => loadAccounts(),
-        ),
+        onPressed: () async {
+          final result = await context.pushNamed(RoutesName.addAccount.name);
+          if (result != null) {
+            loadAccounts();
+          }
+        },
         icon: Icons.add,
       ),
     );

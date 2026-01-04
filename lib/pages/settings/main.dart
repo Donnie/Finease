@@ -4,16 +4,21 @@ import 'package:finease/pages/settings/capital_gains.dart';
 import 'package:finease/pages/settings/check_updates.dart';
 import 'package:finease/pages/settings/currency.dart';
 import 'package:finease/pages/settings/dark_mode.dart';
+import 'package:finease/pages/settings/theme_selector.dart';
 import 'package:finease/pages/settings/toggle_encryption.dart';
 import 'package:finease/parts/export.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class SettingsPage extends StatelessWidget {
-  final Function onFormSubmitted;
   const SettingsPage({
     super.key,
-    required this.onFormSubmitted,
   });
+
+  void _handleChange(BuildContext context) {
+    // Pop back with true to indicate a change was made
+    context.pop(true);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +33,10 @@ class SettingsPage extends StatelessWidget {
             SettingsGroup(
               title: "Personalise",
               options: [
-                CurrencySelectorWidget(onChange: onFormSubmitted),
+                CurrencySelectorWidget(onChange: () => _handleChange(context)),
                 const CapGainsSelectorWidget(),
-                DarkModeToggleWidget(onChange: onFormSubmitted),
+                const ThemeSelectorWidget(),
+                const DarkModeToggleWidget(),
               ],
             ),
             SettingsGroup(
@@ -38,7 +44,7 @@ class SettingsPage extends StatelessWidget {
               options: [
                 const ToggleEncryptionWidget(),
                 const ExportDatabaseWidget(),
-                ImportDatabaseWidget(onImport: onFormSubmitted),
+                ImportDatabaseWidget(onImport: () => _handleChange(context)),
                 const ResetAppWidget(),
               ],
             ),

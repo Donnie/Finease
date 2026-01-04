@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:finease/db/messages.dart';
+import 'package:finease/core/export.dart';
 
 class MessagesListView extends StatelessWidget {
   final List<Message> messages;
@@ -23,13 +24,16 @@ class MessagesListView extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
               decoration: BoxDecoration(
                 color: message.type == MessageType.automated
-                    ? Colors.lightBlueAccent
-                    : Colors.lightGreenAccent,
+                    ? context.secondaryContainer
+                    : context.tertiaryContainer,
                 borderRadius: BorderRadius.circular(5),
               ),
               child: Text(
                 message.content,
-                style: const TextStyle(color: Colors.black, fontSize: 10),
+                style: TextStyle(
+                  color: context.onSurface, 
+                  fontSize: 10,
+                ),
               ),
             ),
           );

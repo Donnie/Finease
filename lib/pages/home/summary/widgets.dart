@@ -50,15 +50,14 @@ class NetWorthCard extends StatelessWidget {
                           Text(
                             "Net Worth",
                             style: context.titleMedium?.copyWith(
-                              color:
-                                  context.onPrimaryContainer.withOpacity(0.85),
+                              color: context.onSurfaceVariant,
                             ),
                           ),
                           const SizedBox(height: 8),
                           Text(
                             "$symbol${networthAmount.toStringAsFixed(2)}",
                             style: context.headlineMedium?.copyWith(
-                              color: context.onPrimaryContainer,
+                              color: context.onSurface,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -73,15 +72,14 @@ class NetWorthCard extends StatelessWidget {
                           Text(
                             "Liquid",
                             style: context.titleMedium?.copyWith(
-                              color:
-                                  context.onPrimaryContainer.withOpacity(0.85),
+                              color: context.onSurfaceVariant,
                             ),
                           ),
                           const SizedBox(height: 8),
                           Text(
                             "$symbol${liquidAmount.toStringAsFixed(2)}",
                             style: context.headlineMedium?.copyWith(
-                              color: context.onPrimaryContainer,
+                              color: context.onSurface,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -99,12 +97,12 @@ class NetWorthCard extends StatelessWidget {
                         PieChartData(
                           sections: [
                             PieChartSectionData(
-                              color: Colors.green,
+                              color: Theme.of(context).extension<CustomColors>()!.green,
                               value: networthAmount,
                               title: '${(100*(networthAmount/assetAmount)).toStringAsFixed(0)}%',
                             ),
                             PieChartSectionData(
-                              color: Colors.red,
+                              color: Theme.of(context).extension<CustomColors>()!.red,
                               value: liabilitiesAmount * -1,
                               title: '${(100*(liabilitiesAmount * -1)/assetAmount).toStringAsFixed(0)}%',
                             ),
@@ -139,8 +137,7 @@ class NetWorthCard extends StatelessWidget {
                                 TextSpan(
                                   text: "Assets",
                                   style: context.labelLarge?.copyWith(
-                                    color: context.onPrimaryContainer
-                                        .withOpacity(0.75),
+                                    color: context.onSurfaceVariant,
                                   ),
                                 )
                               ],
@@ -149,7 +146,7 @@ class NetWorthCard extends StatelessWidget {
                           Text(
                             '$symbol${assetAmount.toStringAsFixed(2)}',
                             style: context.titleLarge?.copyWith(
-                              color: context.onPrimaryContainer,
+                              color: context.onSurface,
                             ),
                           ),
                         ],
@@ -171,8 +168,7 @@ class NetWorthCard extends StatelessWidget {
                                 TextSpan(
                                   text: "Liabilities",
                                   style: context.labelLarge?.copyWith(
-                                    color: context.onPrimaryContainer
-                                        .withOpacity(0.75),
+                                    color: context.onSurfaceVariant,
                                   ),
                                 )
                               ],
@@ -181,7 +177,7 @@ class NetWorthCard extends StatelessWidget {
                           Text(
                             '$symbol${(liabilitiesAmount * -1).toStringAsFixed(2)}',
                             style: context.titleLarge?.copyWith(
-                              color: context.onPrimaryContainer,
+                              color: context.onSurface,
                             ),
                           ),
                         ],
@@ -255,7 +251,7 @@ class NetWorthGraphCard extends StatelessWidget {
             Text(
               "Net Worth Over Time",
               style: context.titleMedium?.copyWith(
-                color: context.onPrimaryContainer.withOpacity(0.85),
+                color: context.onSurfaceVariant,
               ),
             ),
             const SizedBox(height: 16),
@@ -294,7 +290,7 @@ class NetWorthGraphCard extends StatelessWidget {
                           return Text(
                             '$symbol${(value / 1000).toStringAsFixed(0)}k',
                             style: context.bodySmall?.copyWith(
-                              color: context.onSurface.withOpacity(0.6),
+                              color: context.onSurfaceVariant,
                             ),
                           );
                         },
@@ -335,7 +331,7 @@ class NetWorthGraphCard extends StatelessWidget {
                           return LineTooltipItem(
                             '$symbol${touchedSpot.y.toStringAsFixed(2)}\n${monthLabels[index]}',
                             (context.bodyMedium ?? const TextStyle()).copyWith(
-                              color: Colors.white,
+                              color: context.onPrimary,
                               fontWeight: FontWeight.bold,
                             ),
                           );
