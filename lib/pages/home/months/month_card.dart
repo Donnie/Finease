@@ -1,8 +1,12 @@
+import 'dart:ui';
+import 'package:finease/core/glassmorphic_opacity_provider.dart';
+import 'package:finease/core/glassmorphic_blur_provider.dart';
 import 'package:finease/db/currency.dart';
 import 'package:finease/db/entries.dart';
 import 'package:finease/db/months.dart';
 import 'package:finease/parts/export.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MonthCards extends StatelessWidget {
   final List<Month> months;
@@ -54,6 +58,9 @@ class MonthCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final opacity = context.watch<GlassmorphicOpacityProvider>().opacity;
+    final blur = context.watch<GlassmorphicBlurProvider>().blurAmount;
+
     if (isLoading) {
       return const Center(
         child: CircularProgressIndicator(),
@@ -61,8 +68,29 @@ class MonthCards extends StatelessWidget {
     }
 
     if (months.isEmpty) {
-      return const Center(
-        child: Text('No data available'),
+      return Center(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8.0),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+              decoration: BoxDecoration(
+                gradient: RadialGradient(
+                  colors: [
+                    Theme.of(context).colorScheme.surface.withOpacity(opacity * 0.8),
+                    Theme.of(context).colorScheme.surface.withOpacity(opacity * 0.4),
+                    Theme.of(context).colorScheme.surface.withOpacity(0.0),
+                  ],
+                  stops: const [0.0, 0.7, 1.0],
+                  radius: 1.5,
+                ),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: const Text('No data available'),
+            ),
+          ),
+        ),
       );
     }
 

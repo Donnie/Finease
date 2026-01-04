@@ -459,124 +459,127 @@ class EntriesPageState extends State<EntriesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldStateKey,
-      appBar: infoBar(
-        context,
-        widget.accountID != null && viewingAccount != null
-            ? viewingAccount!.name
-            : "transactions",
-        "Click to edit the transaction,\nand long press to duplicate the transaction.\nTap the delete icon to remove a transaction.\nUse the search field to find transactions.\n\nUse the + button at the bottom to add a new transaction.",
-        additionalActions: [
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.more_vert),
-            onSelected: (value) {
-              if (value == 'export') {
-                _exportToClipboard();
-              }
-            },
-            itemBuilder: (context) => [
-              PopupMenuItem<String>(
-                value: 'export',
-                child: Row(
-                  children: [
-                    const Icon(Icons.copy),
-                    const SizedBox(width: 12),
-                    Text(_searchController.text.isNotEmpty 
-                        ? 'Copy Filtered (${filteredEntries.length})'
-                        : 'Copy All (${filteredEntries.length})'),
-                  ],
+    return BackgroundWrapper(
+      child: Scaffold(
+        key: _scaffoldStateKey,
+        backgroundColor: Colors.transparent,
+        appBar: infoBar(
+          context,
+          widget.accountID != null && viewingAccount != null
+              ? viewingAccount!.name
+              : "transactions",
+          "Click to edit the transaction,\nand long press to duplicate the transaction.\nTap the delete icon to remove a transaction.\nUse the search field to find transactions.\n\nUse the + button at the bottom to add a new transaction.",
+          additionalActions: [
+            PopupMenuButton<String>(
+              icon: const Icon(Icons.more_vert),
+              onSelected: (value) {
+                if (value == 'export') {
+                  _exportToClipboard();
+                }
+              },
+              itemBuilder: (context) => [
+                PopupMenuItem<String>(
+                  value: 'export',
+                  child: Row(
+                    children: [
+                      const Icon(Icons.copy),
+                      const SizedBox(width: 12),
+                      Text(_searchController.text.isNotEmpty 
+                          ? 'Copy Filtered (${filteredEntries.length})'
+                          : 'Copy All (${filteredEntries.length})'),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ],
-      ),
-      body: RefreshIndicator(
-        onRefresh: loadEntries,
-        child: _isLoading
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : widget.startDate != null && widget.endDate != null
-                ? CustomScrollView(
-                    slivers: [
-                      SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                              // Search input
-                              _buildSearchField(),
-                              const SizedBox(height: 8),
-                              // Top Expenses Card
-                              TopExpensesCard(topExpenses: getTopExpenses()),
-                            ],
+              ],
+            ),
+          ],
+        ),
+        body: RefreshIndicator(
+          onRefresh: loadEntries,
+          child: _isLoading
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : widget.startDate != null && widget.endDate != null
+                  ? CustomScrollView(
+                      slivers: [
+                        SliverToBoxAdapter(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                // Search input
+                                _buildSearchField(),
+                                const SizedBox(height: 8),
+                                // Top Expenses Card
+                                TopExpensesCard(topExpenses: getTopExpenses()),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      ValueListenableBuilder<String>(
-                        valueListenable: _searchNotifier,
-                        builder: (context, searchValue, child) {
-                          final filtered = filteredEntries;
-                          return SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                              (context, index) {
-                                return EntryCard(
-                                  entry: filtered[index],
-                                  onDelete: entryOnDelete,
-                                  onCardTap: loadEntries,
-                                );
-                              },
-                              childCount: filtered.length,
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  )
-                : Column(
-                    children: [
-                      // Search input for non-date-filtered view
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: _buildSearchField(),
-                      ),
-                      Expanded(
-                        child: ValueListenableBuilder<String>(
+                        ValueListenableBuilder<String>(
                           valueListenable: _searchNotifier,
                           builder: (context, searchValue, child) {
-                            return EntriesListView(
-                              entries: filteredEntries,
-                              onDelete: entryOnDelete,
-                              onEdit: loadEntries,
+                            final filtered = filteredEntries;
+                            return SliverList(
+                              delegate: SliverChildBuilderDelegate(
+                                (context, index) {
+                                  return EntryCard(
+                                    entry: filtered[index],
+                                    onDelete: entryOnDelete,
+                                    onCardTap: loadEntries,
+                                  );
+                                },
+                                childCount: filtered.length,
+                              ),
                             );
                           },
                         ),
-                      ),
-                    ],
-                  ),
-      ),
-      drawer: widget.accountID == null
-          ? AppDrawer(
-              onRefresh: loadEntries,
-              scaffoldKey: _scaffoldStateKey,
-              destinations: destinations,
-            )
-          : null,
-      floatingActionButton: VariableFABSize(
-        onPressed: () async {
-          final result = await context.pushNamed(
-            RoutesName.addEntry.name,
-            queryParameters: widget.accountID != null
-                ? {'debit_account_id': widget.accountID.toString()}
-                : {},
-          );
-          if (result == true) {
-            loadEntries();
-          }
-        },
-        icon: Icons.add,
+                      ],
+                    )
+                  : Column(
+                      children: [
+                        // Search input for non-date-filtered view
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: _buildSearchField(),
+                        ),
+                        Expanded(
+                          child: ValueListenableBuilder<String>(
+                            valueListenable: _searchNotifier,
+                            builder: (context, searchValue, child) {
+                              return EntriesListView(
+                                entries: filteredEntries,
+                                onDelete: entryOnDelete,
+                                onEdit: loadEntries,
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+        ),
+        drawer: widget.accountID == null
+            ? AppDrawer(
+                onRefresh: loadEntries,
+                scaffoldKey: _scaffoldStateKey,
+                destinations: destinations,
+              )
+            : null,
+        floatingActionButton: VariableFABSize(
+          onPressed: () async {
+            final result = await context.pushNamed(
+              RoutesName.addEntry.name,
+              queryParameters: widget.accountID != null
+                  ? {'debit_account_id': widget.accountID.toString()}
+                  : {},
+            );
+            if (result == true) {
+              loadEntries();
+            }
+          },
+          icon: Icons.add,
+        ),
       ),
     );
   }

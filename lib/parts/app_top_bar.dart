@@ -1,7 +1,11 @@
+import 'dart:ui';
 import 'package:finease/core/export.dart';
+import 'package:finease/core/glassmorphic_opacity_provider.dart';
+import 'package:finease/core/glassmorphic_blur_provider.dart';
 import 'package:finease/parts/user_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 const double toolbarHeight = kToolbarHeight + 8;
 
@@ -25,17 +29,22 @@ bool _shouldShowBackButton(BuildContext context) {
 PreferredSize appBar(
   BuildContext context,
   String title,
-) =>
-    PreferredSize(
-      preferredSize: const Size.fromHeight(toolbarHeight),
-      child: SafeArea(
-        top: true,
-        child: Container(
-          margin: const EdgeInsets.only(top: 8, bottom: 8),
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(32),
-            clipBehavior: Clip.antiAlias,
+) {
+  final opacity = context.watch<GlassmorphicOpacityProvider>().opacity;
+  final blur = context.watch<GlassmorphicBlurProvider>().blurAmount;
+  
+  return PreferredSize(
+    preferredSize: const Size.fromHeight(toolbarHeight),
+    child: SafeArea(
+      top: true,
+      child: Container(
+        margin: const EdgeInsets.only(top: 8, bottom: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(32),
+          clipBehavior: Clip.antiAlias,
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
             child: AppBar(
               leading: _shouldShowBackButton(context)
                   ? IconButton(
@@ -44,31 +53,38 @@ PreferredSize appBar(
                     )
                   : null,
               automaticallyImplyLeading: true,
-              backgroundColor: context.secondaryContainer.withOpacity(0.5),
+              backgroundColor: context.surface.withOpacity(opacity),
               scrolledUnderElevation: 0,
               title: Text(title, style: context.titleMedium),
             ),
           ),
         ),
       ),
-    );
+    ),
+  );
+}
 
 PreferredSize infoBar(
   BuildContext context,
   String title,
   String info, {
   List<Widget>? additionalActions,
-}) =>
-    PreferredSize(
-      preferredSize: const Size.fromHeight(toolbarHeight),
-      child: SafeArea(
-        top: true,
-        child: Container(
-          margin: const EdgeInsets.only(top: 8, bottom: 8),
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(32),
-            clipBehavior: Clip.antiAlias,
+}) {
+  final opacity = context.watch<GlassmorphicOpacityProvider>().opacity;
+  final blur = context.watch<GlassmorphicBlurProvider>().blurAmount;
+  
+  return PreferredSize(
+    preferredSize: const Size.fromHeight(toolbarHeight),
+    child: SafeArea(
+      top: true,
+      child: Container(
+        margin: const EdgeInsets.only(top: 8, bottom: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(32),
+          clipBehavior: Clip.antiAlias,
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
             child: AppBar(
               leading: _shouldShowBackButton(context)
                   ? IconButton(
@@ -77,7 +93,7 @@ PreferredSize infoBar(
                     )
                   : null,
               automaticallyImplyLeading: true,
-              backgroundColor: context.secondaryContainer.withOpacity(0.5),
+              backgroundColor: context.surface.withOpacity(opacity),
               scrolledUnderElevation: 0,
               title: Text(title, style: context.titleMedium),
               actions: [
@@ -106,7 +122,9 @@ PreferredSize infoBar(
           ),
         ),
       ),
-    );
+    ),
+  );
+}
 
 class TopBar extends StatelessWidget {
   const TopBar({
@@ -118,6 +136,9 @@ class TopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final opacity = context.watch<GlassmorphicOpacityProvider>().opacity;
+    final blur = context.watch<GlassmorphicBlurProvider>().blurAmount;
+    
     return SafeArea(
       top: true,
       child: Container(
@@ -126,17 +147,20 @@ class TopBar extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(32),
           clipBehavior: Clip.antiAlias,
-          child: AppBar(
-            backgroundColor: context.secondaryContainer.withOpacity(0.5),
-            scrolledUnderElevation: 0,
-            title: Text(
-              title,
-              style: context.titleMedium,
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+            child: AppBar(
+              backgroundColor: context.surface.withOpacity(opacity),
+              scrolledUnderElevation: 0,
+              title: Text(
+                title,
+                style: context.titleMedium,
+              ),
+              actions: const [
+                AppUserWidget(),
+                SizedBox(width: 8),
+              ],
             ),
-            actions: const [
-              AppUserWidget(),
-              SizedBox(width: 8),
-            ],
           ),
         ),
       ),

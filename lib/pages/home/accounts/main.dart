@@ -35,30 +35,33 @@ class _AccountsPageState extends State<AccountsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldStateKey,
-      appBar: infoBar(context, "accounts",
-          "Click to see transactions,\nand long press to edit the account.\n\nUse the + button at the bottom to add a new account."),
-      body: RefreshIndicator(
-        onRefresh: loadAccounts,
-        child: BankAccounts(
-          accounts: accounts,
-          onEdit: loadAccounts,
+    return BackgroundWrapper(
+      child: Scaffold(
+        key: _scaffoldStateKey,
+        backgroundColor: Colors.transparent,
+        appBar: infoBar(context, "accounts",
+            "Click to see transactions,\nand long press to edit the account.\n\nUse the + button at the bottom to add a new account."),
+        body: RefreshIndicator(
+          onRefresh: loadAccounts,
+          child: BankAccounts(
+            accounts: accounts,
+            onEdit: loadAccounts,
+          ),
         ),
-      ),
-      drawer: AppDrawer(
-        onRefresh: loadAccounts,
-        scaffoldKey: _scaffoldStateKey,
-        destinations: destinations,
-      ),
-      floatingActionButton: VariableFABSize(
-        onPressed: () async {
-          final result = await context.pushNamed(RoutesName.addAccount.name);
-          if (result != null) {
-            loadAccounts();
-          }
-        },
-        icon: Icons.add,
+        drawer: AppDrawer(
+          onRefresh: loadAccounts,
+          scaffoldKey: _scaffoldStateKey,
+          destinations: destinations,
+        ),
+        floatingActionButton: VariableFABSize(
+          onPressed: () async {
+            final result = await context.pushNamed(RoutesName.addAccount.name);
+            if (result != null) {
+              loadAccounts();
+            }
+          },
+          icon: Icons.add,
+        ),
       ),
     );
   }

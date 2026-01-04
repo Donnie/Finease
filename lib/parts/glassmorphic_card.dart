@@ -1,41 +1,39 @@
 import 'dart:ui';
-import 'package:finease/core/glassmorphic_opacity_provider.dart';
-import 'package:finease/core/glassmorphic_blur_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:finease/core/export.dart';
+import 'package:finease/core/glassmorphic_opacity_provider.dart';
+import 'package:finease/core/glassmorphic_blur_provider.dart';
 import 'package:provider/provider.dart';
 
-class AppCard extends StatelessWidget {
-  const AppCard({
+class GlassmorphicCard extends StatelessWidget {
+  const GlassmorphicCard({
     super.key,
     required this.child,
     this.elevation,
-    this.color,
     this.shape,
+    this.blurAmount,
+    this.opacity,
   });
 
   final Widget child;
-  final Color? color;
   final double? elevation;
   final ShapeBorder? shape;
+  final double? blurAmount;
+  final double? opacity;
 
   @override
   Widget build(BuildContext context) {
-    final opacity = context.watch<GlassmorphicOpacityProvider>().opacity;
-    final blur = context.watch<GlassmorphicBlurProvider>().blurAmount;
+    final effectiveOpacity = opacity ?? context.watch<GlassmorphicOpacityProvider>().opacity;
+    final effectiveBlur = blurAmount ?? context.watch<GlassmorphicBlurProvider>().blurAmount;
     
     return ClipRRect(
-      borderRadius: shape != null 
-          ? BorderRadius.zero 
-          : BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(16),
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+        filter: ImageFilter.blur(sigmaX: effectiveBlur, sigmaY: effectiveBlur),
         child: Container(
           decoration: BoxDecoration(
-            color: (color ?? context.surface).withOpacity(opacity),
-            borderRadius: shape != null 
-                ? null 
-                : BorderRadius.circular(16),
+            color: context.surface.withOpacity(effectiveOpacity),
+            borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: context.onSurface.withOpacity(0.1),
               width: 1.5,
@@ -56,3 +54,4 @@ class AppCard extends StatelessWidget {
     );
   }
 }
+

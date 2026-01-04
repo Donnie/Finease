@@ -20,6 +20,12 @@ enum Setting {
   themeErrorColor,
   themeTextColor,
   themeSubtextColor,
+  // Background image settings
+  backgroundImage,
+  customBackgroundImages, // JSON array of custom image paths
+  // Glassmorphic settings
+  glassmorphicBlur,
+  glassmorphicOpacity,
 }
 
 typedef Settings = Map<Setting, String>;

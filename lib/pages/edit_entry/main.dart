@@ -72,24 +72,27 @@ class EditEntryScreenState extends State<EditEntryScreen> {
     if (_entry == null) {
       return Container();
     }
-    return Scaffold(
-      appBar: AppBar(title: const Text('Edit Transaction')),
-      body: EditEntryBody(
-        creditAccount: _creditAccount!,
-        dateTime: _entryDate!,
-        debitAccount: _debitAccount!,
-        entryAmount: _entry!.amount.toString(),
-        entryNotes: _entryNotes,
-        formState: _formState,
-        onDateTimeChanged: _onDateTimeChanged,
-      ),
-      // body: const Card(),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: AppBigButton(
-            onPressed: _submitForm,
-            title: "Save",
+    return BackgroundWrapper(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(title: const Text('Edit Transaction')),
+        body: EditEntryBody(
+          creditAccount: _creditAccount!,
+          dateTime: _entryDate!,
+          debitAccount: _debitAccount!,
+          entryAmount: _entry!.amount.toString(),
+          entryNotes: _entryNotes,
+          formState: _formState,
+          onDateTimeChanged: _onDateTimeChanged,
+        ),
+        // body: const Card(),
+        bottomNavigationBar: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: AppBigButton(
+              onPressed: _submitForm,
+              title: "Save",
+            ),
           ),
         ),
       ),

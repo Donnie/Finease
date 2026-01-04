@@ -62,38 +62,41 @@ class SummaryPageState extends State<SummaryPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldStateKey,
-      resizeToAvoidBottomInset: true,
-      appBar: appBar(context, "home"),
-      drawer: AppDrawer(
-        onRefresh: _fetchNetWorth,
-        scaffoldKey: _scaffoldStateKey,
-        destinations: destinations,
-      ),
-      body: RefreshIndicator(
-        onRefresh: _fetchNetWorth,
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: SummaryBody(
-            isLoading: isLoading,
-            networthAmount: networthAmount,
-            assetAmount: assetAmount,
-            liabilitiesAmount: liabilitiesAmount,
-            liquidAmount: liquidAmount,
-            currency: currency,
-            months: months,
+    return BackgroundWrapper(
+      child: Scaffold(
+        key: _scaffoldStateKey,
+        resizeToAvoidBottomInset: true,
+        backgroundColor: Colors.transparent,
+        appBar: appBar(context, "home"),
+        drawer: AppDrawer(
+          onRefresh: _fetchNetWorth,
+          scaffoldKey: _scaffoldStateKey,
+          destinations: destinations,
+        ),
+        body: RefreshIndicator(
+          onRefresh: _fetchNetWorth,
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: SummaryBody(
+              isLoading: isLoading,
+              networthAmount: networthAmount,
+              assetAmount: assetAmount,
+              liabilitiesAmount: liabilitiesAmount,
+              liquidAmount: liquidAmount,
+              currency: currency,
+              months: months,
+            ),
           ),
         ),
-      ),
-      floatingActionButton: VariableFABSize(
-        onPressed: () async {
-          final result = await context.pushNamed(RoutesName.addEntry.name);
-          if (result == true) {
-            _fetchNetWorth();
-          }
-        },
-        icon: Icons.add,
+        floatingActionButton: VariableFABSize(
+          onPressed: () async {
+            final result = await context.pushNamed(RoutesName.addEntry.name);
+            if (result == true) {
+              _fetchNetWorth();
+            }
+          },
+          icon: Icons.add,
+        ),
       ),
     );
   }

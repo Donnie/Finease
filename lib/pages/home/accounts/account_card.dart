@@ -1,11 +1,14 @@
-import 'package:finease/core/extensions/color_extension.dart';
-import 'package:finease/core/extensions/text_style_extension.dart';
+import 'dart:ui';
+import 'package:finease/core/export.dart';
+import 'package:finease/core/glassmorphic_opacity_provider.dart';
+import 'package:finease/core/glassmorphic_blur_provider.dart';
 import 'package:finease/db/accounts.dart';
 import 'package:finease/db/currency.dart';
 import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:provider/provider.dart';
 
 class BankAccounts extends StatelessWidget {
   const BankAccounts({
@@ -19,6 +22,9 @@ class BankAccounts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final opacity = context.watch<GlassmorphicOpacityProvider>().opacity;
+    final blur = context.watch<GlassmorphicBlurProvider>().blurAmount;
+
     List<Account> mainAccounts = accounts
         .where((a) => [
               AccountType.asset,
@@ -39,14 +45,56 @@ class BankAccounts extends StatelessWidget {
 
     return ListView(
       children: [
-        const Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Text("Assets and Liabilities"),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8.0),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                decoration: BoxDecoration(
+                  gradient: RadialGradient(
+                    colors: [
+                      context.surface.withOpacity(opacity * 0.8),
+                      context.surface.withOpacity(opacity * 0.4),
+                      context.surface.withOpacity(0.0),
+                    ],
+                    stops: const [0.0, 0.7, 1.0],
+                    radius: 1.5,
+                  ),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: const Text("Assets and Liabilities"),
+              ),
+            ),
+          ),
         ),
         Visibility(
           visible: mainAccounts.isEmpty,
-          child: const Center(
-            child: Text('Accounts yet to be set up'),
+          child: Center(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                  decoration: BoxDecoration(
+                    gradient: RadialGradient(
+                      colors: [
+                        context.surface.withOpacity(opacity * 0.8),
+                        context.surface.withOpacity(opacity * 0.4),
+                        context.surface.withOpacity(0.0),
+                      ],
+                      stops: const [0.0, 0.7, 1.0],
+                      radius: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: const Text('Accounts yet to be set up'),
+                ),
+              ),
+            ),
           ),
         ),
         ...mainAccounts.map(
@@ -72,14 +120,56 @@ class BankAccounts extends StatelessWidget {
           ),
         ),
         const Divider(),
-        const Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Text("Incomes and Expenses"),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8.0),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                decoration: BoxDecoration(
+                  gradient: RadialGradient(
+                    colors: [
+                      context.surface.withOpacity(opacity * 0.8),
+                      context.surface.withOpacity(opacity * 0.4),
+                      context.surface.withOpacity(0.0),
+                    ],
+                    stops: const [0.0, 0.7, 1.0],
+                    radius: 1.5,
+                  ),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: const Text("Incomes and Expenses"),
+              ),
+            ),
+          ),
         ),
         Visibility(
           visible: extAccounts.isEmpty,
-          child: const Center(
-            child: Text('Accounts yet to be set up'),
+          child: Center(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                  decoration: BoxDecoration(
+                    gradient: RadialGradient(
+                      colors: [
+                        context.surface.withOpacity(opacity * 0.8),
+                        context.surface.withOpacity(opacity * 0.4),
+                        context.surface.withOpacity(0.0),
+                      ],
+                      stops: const [0.0, 0.7, 1.0],
+                      radius: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: const Text('Accounts yet to be set up'),
+                ),
+              ),
+            ),
           ),
         ),
         Padding(
@@ -110,9 +200,30 @@ class BankAccounts extends StatelessWidget {
           ),
         ),
         const Divider(),
-        const Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Text("Hidden Accounts"),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8.0),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                decoration: BoxDecoration(
+                  gradient: RadialGradient(
+                    colors: [
+                      context.surface.withOpacity(opacity * 0.8),
+                      context.surface.withOpacity(opacity * 0.4),
+                      context.surface.withOpacity(0.0),
+                    ],
+                    stops: const [0.0, 0.7, 1.0],
+                    radius: 1.5,
+                  ),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: const Text("Hidden Accounts"),
+              ),
+            ),
+          ),
         ),
         Padding(
           padding: const EdgeInsets.all(16.0),
@@ -181,68 +292,85 @@ class BankAccountCard extends StatelessWidget {
     final String symbol = SupportedCurrency[account.currency]!;
     final bool green =
         [AccountType.asset, AccountType.income].contains(account.type);
+    final opacity = context.watch<GlassmorphicOpacityProvider>().opacity;
+    final blur = context.watch<GlassmorphicBlurProvider>().blurAmount;
 
-    return Card(
-      elevation: 4.0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: Container(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Flex(
-              direction: Axis.horizontal,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(account.name),
-                Row(
-                  children: [
-                    Icon(
-                      green ? MdiIcons.arrowBottomLeft : MdiIcons.arrowTopRight,
-                      color: green ? Colors.green : Colors.red,
-                    ),
-                    const SizedBox(width: 16),
-                    Text(account.currency),
-                  ],
-                )
-              ],
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(10.0),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+        child: Container(
+          decoration: BoxDecoration(
+            color: context.surface.withOpacity(opacity),
+            borderRadius: BorderRadius.circular(10.0),
+            border: Border.all(
+              color: context.onSurface.withOpacity(0.1),
+              width: 1.5,
             ),
-            const SizedBox(height: 16.0),
-            Flex(
-              direction: Axis.horizontal,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "$symbol${account.balance.toStringAsFixed(2)}",
-                  style: context.titleLarge,
-                ),
-                Row(
-                  children: [
-                    Chip(
-                      label: Text(account.type.name),
-                      backgroundColor:
-                          context.secondaryContainer.withOpacity(0.5),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(28),
-                        side: BorderSide(
-                          width: 1,
-                          color: context.primary,
+            boxShadow: [
+              BoxShadow(
+                color: context.shadow.withOpacity(0.1),
+                blurRadius: 4.0,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Flex(
+                direction: Axis.horizontal,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(account.name),
+                  Row(
+                    children: [
+                      Icon(
+                        green ? MdiIcons.arrowBottomLeft : MdiIcons.arrowTopRight,
+                        color: green ? Colors.green : Colors.red,
+                      ),
+                      const SizedBox(width: 16),
+                      Text(account.currency),
+                    ],
+                  )
+                ],
+              ),
+              const SizedBox(height: 16.0),
+              Flex(
+                direction: Axis.horizontal,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "$symbol${account.balance.toStringAsFixed(2)}",
+                    style: context.titleLarge,
+                  ),
+                  Row(
+                    children: [
+                      Chip(
+                        label: Text(account.type.name),
+                        backgroundColor:
+                            context.secondaryContainer.withOpacity(0.5),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(28),
+                          side: BorderSide(
+                            width: 1,
+                            color: context.primary,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 16.0),
-                    Icon(
-                      account.liquid
-                          ? Icons.invert_colors
-                          : Icons.invert_colors_off,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
+                      const SizedBox(width: 16.0),
+                      Icon(
+                        account.liquid
+                            ? Icons.invert_colors
+                            : Icons.invert_colors_off,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
