@@ -578,8 +578,10 @@ class EntryService {
         FROM entries e
         JOIN accounts ad ON e.debit_account_id = ad.id
         JOIN accounts ac ON e.credit_account_id = ac.id
-        WHERE e.id NOT IN (SELECT debit_entry_id FROM ForexPairs)
-          AND e.id NOT IN (SELECT credit_entry_id FROM ForexPairs)
+        LEFT JOIN ForexPairs fp_debit ON e.id = fp_debit.debit_entry_id
+        LEFT JOIN ForexPairs fp_credit ON e.id = fp_credit.credit_entry_id
+        WHERE fp_debit.debit_entry_id IS NULL
+          AND fp_credit.credit_entry_id IS NULL
       ),
       AllEntries AS (
         SELECT * FROM ConsolidatedForex
