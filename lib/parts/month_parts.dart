@@ -78,7 +78,7 @@ class MonthCard extends StatelessWidget {
       onTap: () {
         context.pushNamed(
           RoutesName.transactionsByDate.name,
-          extra: {
+          queryParameters: {
             'startDate': startDate.toIso8601String(),
             'endDate': endDate.toIso8601String(),
           },

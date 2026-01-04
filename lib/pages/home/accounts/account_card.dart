@@ -59,7 +59,7 @@ class BankAccounts extends StatelessWidget {
             ),
             onTap: () => context.pushNamed(
               RoutesName.transactionsByAccount.name,
-              extra: {'account_id': a.id.toString()},
+              pathParameters: {RoutesName.transactionsByAccount.accountParam: a.id.toString()},
             ),
           ),
         ),
@@ -90,7 +90,7 @@ class BankAccounts extends StatelessWidget {
                   ),
                   onTap: () => context.pushNamed(
                     RoutesName.transactionsByAccount.name,
-                    extra: {'account_id': a.id.toString()},
+                    pathParameters: {RoutesName.transactionsByAccount.accountParam: a.id.toString()},
                   ),
                 ),
               ),
@@ -118,7 +118,7 @@ class BankAccounts extends StatelessWidget {
                   ),
                   onTap: () => context.pushNamed(
                     RoutesName.transactionsByAccount.name,
-                    extra: {'account_id': a.id.toString()},
+                    pathParameters: {RoutesName.transactionsByAccount.accountParam: a.id.toString()},
                   ),
                 ),
               ),

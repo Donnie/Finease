@@ -21,4 +21,6 @@ extension RoutesNameHelper on RoutesName {
   String get path => '/$name';
   String get param => 'id';
   String get pathWparam => '$path/:$param';
+  String get accountParam => 'account_id';
+  String get pathWaccountParam => '$path/:$accountParam';
 }

@@ -20,7 +20,6 @@ class SummaryPageState extends State<SummaryPage> {
   final SettingService _settingService = SettingService();
   final MonthService _monthService = MonthService();
 
-  int destIndex = 0;
   double networthAmount = 0.0;
   double assetAmount = 0.0;
   double liabilitiesAmount = 0.0;
@@ -61,16 +60,6 @@ class SummaryPageState extends State<SummaryPage> {
 
   Future<void> _showError(e) async => showErrorDialog(e.toString(), context);
 
-  void _updateBody(int index) {
-    setState(() {
-      destIndex = index;
-    });
-    context.goNamed(
-      destinations[destIndex].routeName.name,
-      extra: () => {},
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,9 +69,7 @@ class SummaryPageState extends State<SummaryPage> {
       drawer: AppDrawer(
         onRefresh: _fetchNetWorth,
         scaffoldKey: _scaffoldStateKey,
-        selectedIndex: destIndex,
         destinations: destinations,
-        onDestinationSelected: _updateBody,
       ),
       body: RefreshIndicator(
         onRefresh: _fetchNetWorth,

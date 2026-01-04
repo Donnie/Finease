@@ -36,17 +36,6 @@ class _AccountsPageState extends State<AccountsPage> {
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> scaffoldStateKey =
         GlobalKey<ScaffoldState>();
-    int destIndex = 0;
-
-    void updateBody(int index) {
-      setState(() {
-        destIndex = index;
-      });
-      context.goNamed(
-        destinations[destIndex].routeName.name,
-        extra: () => {},
-      );
-    }
 
     return Scaffold(
       key: scaffoldStateKey,
@@ -62,9 +51,7 @@ class _AccountsPageState extends State<AccountsPage> {
       drawer: AppDrawer(
         onRefresh: loadAccounts,
         scaffoldKey: scaffoldStateKey,
-        selectedIndex: 1,
         destinations: destinations,
-        onDestinationSelected: updateBody,
       ),
       floatingActionButton: VariableFABSize(
         onPressed: () => context.pushNamed(

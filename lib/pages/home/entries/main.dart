@@ -451,32 +451,23 @@ class EntriesPageState extends State<EntriesPage> {
     }
   }
 
+  void entryOnDelete(int id) {
+    _entryService.deleteEntry(id);
+    loadEntries();
+  }
+
   @override
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> scaffoldStateKey =
         GlobalKey<ScaffoldState>();
-    int destIndex = 0;
-
-    void updateBody(int index) {
-      setState(() {
-        destIndex = index;
-      });
-      context.goNamed(
-        destinations[destIndex].routeName.name,
-        extra: () => {},
-      );
-    }
-
-    void entryOnDelete(int id) {
-      _entryService.deleteEntry(id);
-      loadEntries();
-    }
 
     return Scaffold(
       key: scaffoldStateKey,
       appBar: infoBar(
         context,
-        "transactions",
+        widget.accountID != null && viewingAccount != null
+            ? viewingAccount!.name
+            : "transactions",
         "Click to edit the transaction,\nand long press to duplicate the transaction.\nTap the delete icon to remove a transaction.\nUse the search field to find transactions.\n\nUse the + button at the bottom to add a new transaction.",
         additionalActions: [
           PopupMenuButton<String>(
@@ -568,13 +559,13 @@ class EntriesPageState extends State<EntriesPage> {
                     ],
                   ),
       ),
-      drawer: AppDrawer(
-        onRefresh: loadEntries,
-        scaffoldKey: scaffoldStateKey,
-        selectedIndex: 2,
-        destinations: destinations,
-        onDestinationSelected: updateBody,
-      ),
+      drawer: widget.accountID == null
+          ? AppDrawer(
+              onRefresh: loadEntries,
+              scaffoldKey: scaffoldStateKey,
+              destinations: destinations,
+            )
+          : null,
       floatingActionButton: VariableFABSize(
         onPressed: () => context.pushNamed(
           RoutesName.addEntry.name,

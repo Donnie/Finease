@@ -57,18 +57,23 @@ final GoRouter goRouter = GoRouter(
       name: RoutesName.transactionsByDate.name,
       path: RoutesName.transactionsByDate.path,
       builder: (BuildContext context, GoRouterState state) {
-        Map<String, String> range = state.extra as Map<String, String>;
-        final DateTime startDate = DateTime.parse(range['startDate']!);
-        final DateTime endDate = DateTime.parse(range['endDate']!);
+        final String? startDateStr = state.uri.queryParameters['startDate'];
+        final String? endDateStr = state.uri.queryParameters['endDate'];
+        if (startDateStr == null || endDateStr == null) {
+          return const EntriesPage();
+        }
+        final DateTime startDate = DateTime.parse(startDateStr);
+        final DateTime endDate = DateTime.parse(endDateStr);
         return EntriesPage(startDate: startDate, endDate: endDate);
       },
     ),
     GoRoute(
       name: RoutesName.transactionsByAccount.name,
-      path: RoutesName.transactionsByAccount.path,
+      path: RoutesName.transactionsByAccount.pathWaccountParam,
       builder: (BuildContext context, GoRouterState state) {
-        Map<String, String> range = state.extra as Map<String, String>;
-        final int accountID = int.tryParse(range['account_id']!) ?? 0;
+        final int accountID = int.tryParse(
+          state.pathParameters[RoutesName.transactionsByAccount.accountParam]!,
+        ) ?? 0;
         return EntriesPage(accountID: accountID);
       },
     ),

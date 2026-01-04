@@ -11,24 +11,42 @@ class AppDrawer extends StatelessWidget {
     super.key,
     required this.destinations,
     required this.scaffoldKey,
-    required this.onDestinationSelected,
     required this.onRefresh,
-    this.selectedIndex = 0,
   });
 
   final List<Destination> destinations;
   final GlobalKey<ScaffoldState> scaffoldKey;
-  final Function(int) onDestinationSelected;
-  final int selectedIndex;
+
+  int _getSelectedIndex(BuildContext context) {
+    final location = GoRouterState.of(context).uri.path;
+    // Remove leading slash for comparison
+    final normalizedLocation = location.startsWith('/') ? location.substring(1) : location;
+    
+    for (int i = 0; i < destinations.length; i++) {
+      final routePath = destinations[i].routeName.path;
+      final normalizedRoutePath = routePath.startsWith('/') ? routePath.substring(1) : routePath;
+      
+      // Exact match or starts with route path followed by /
+      if (normalizedLocation == normalizedRoutePath ||
+          normalizedLocation.startsWith('$normalizedRoutePath/')) {
+        return i;
+      }
+    }
+    return 0; // Default to home
+  }
+
+  void _onDestinationSelected(BuildContext context, int index) {
+    scaffoldKey.currentState?.closeDrawer();
+    context.goNamed(destinations[index].routeName.name);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final selectedIndex = _getSelectedIndex(context);
+    
     return NavigationDrawer(
       selectedIndex: selectedIndex,
-      onDestinationSelected: (int i) {
-        onDestinationSelected(i);
-        scaffoldKey.currentState?.closeDrawer();
-      },
+      onDestinationSelected: (int i) => _onDestinationSelected(context, i),
       children: [
         const Padding(
           padding: EdgeInsets.all(24.0),
