@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:finease/core/export.dart';
 import 'package:finease/core/glassmorphic_opacity_provider.dart';
+import 'package:finease/core/glassmorphic_blur_provider.dart';
 import 'package:finease/db/accounts.dart';
 import 'package:finease/db/currency.dart';
 import 'package:finease/routes/routes_name.dart';
@@ -184,11 +185,12 @@ class BankAccountCard extends StatelessWidget {
     final bool green =
         [AccountType.asset, AccountType.income].contains(account.type);
     final opacity = context.watch<GlassmorphicOpacityProvider>().opacity;
+    final blur = context.watch<GlassmorphicBlurProvider>().blurAmount;
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(10.0),
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
         child: Container(
           decoration: BoxDecoration(
             color: context.surface.withOpacity(opacity),

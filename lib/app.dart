@@ -1,6 +1,7 @@
 import 'package:finease/routes/routes.dart';
 import 'package:finease/core/constants/constants.dart';
 import 'package:finease/core/glassmorphic_opacity_provider.dart';
+import 'package:finease/core/glassmorphic_blur_provider.dart';
 import 'package:finease/core/theme/app_theme.dart';
 import 'package:finease/core/theme/theme_provider.dart';
 import 'package:finease/db/background_image_provider.dart';
@@ -19,6 +20,7 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => BackgroundImageProvider()..initialize()),
         ChangeNotifierProvider(create: (_) => GlassmorphicOpacityProvider()..initialize()),
+        ChangeNotifierProvider(create: (_) => GlassmorphicBlurProvider()..initialize()),
       ],
       child: const _MainAppContent(),
     );

@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:finease/core/export.dart';
 import 'package:finease/core/glassmorphic_opacity_provider.dart';
+import 'package:finease/core/glassmorphic_blur_provider.dart';
 import 'package:finease/parts/user_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -30,6 +31,7 @@ PreferredSize appBar(
   String title,
 ) {
   final opacity = context.watch<GlassmorphicOpacityProvider>().opacity;
+  final blur = context.watch<GlassmorphicBlurProvider>().blurAmount;
   
   return PreferredSize(
     preferredSize: const Size.fromHeight(toolbarHeight),
@@ -42,7 +44,7 @@ PreferredSize appBar(
           borderRadius: BorderRadius.circular(32),
           clipBehavior: Clip.antiAlias,
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+            filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
             child: AppBar(
               leading: _shouldShowBackButton(context)
                   ? IconButton(
@@ -69,6 +71,7 @@ PreferredSize infoBar(
   List<Widget>? additionalActions,
 }) {
   final opacity = context.watch<GlassmorphicOpacityProvider>().opacity;
+  final blur = context.watch<GlassmorphicBlurProvider>().blurAmount;
   
   return PreferredSize(
     preferredSize: const Size.fromHeight(toolbarHeight),
@@ -81,7 +84,7 @@ PreferredSize infoBar(
           borderRadius: BorderRadius.circular(32),
           clipBehavior: Clip.antiAlias,
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+            filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
             child: AppBar(
               leading: _shouldShowBackButton(context)
                   ? IconButton(
@@ -134,6 +137,7 @@ class TopBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final opacity = context.watch<GlassmorphicOpacityProvider>().opacity;
+    final blur = context.watch<GlassmorphicBlurProvider>().blurAmount;
     
     return SafeArea(
       top: true,
@@ -144,7 +148,7 @@ class TopBar extends StatelessWidget {
           borderRadius: BorderRadius.circular(32),
           clipBehavior: Clip.antiAlias,
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+            filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
             child: AppBar(
               backgroundColor: context.surface.withOpacity(opacity),
               scrolledUnderElevation: 0,

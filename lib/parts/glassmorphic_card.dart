@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:finease/core/export.dart';
 import 'package:finease/core/glassmorphic_opacity_provider.dart';
+import 'package:finease/core/glassmorphic_blur_provider.dart';
 import 'package:provider/provider.dart';
 
 class GlassmorphicCard extends StatelessWidget {
@@ -10,24 +11,25 @@ class GlassmorphicCard extends StatelessWidget {
     required this.child,
     this.elevation,
     this.shape,
-    this.blurAmount = 10.0,
+    this.blurAmount,
     this.opacity,
   });
 
   final Widget child;
   final double? elevation;
   final ShapeBorder? shape;
-  final double blurAmount;
+  final double? blurAmount;
   final double? opacity;
 
   @override
   Widget build(BuildContext context) {
     final effectiveOpacity = opacity ?? context.watch<GlassmorphicOpacityProvider>().opacity;
+    final effectiveBlur = blurAmount ?? context.watch<GlassmorphicBlurProvider>().blurAmount;
     
     return ClipRRect(
       borderRadius: BorderRadius.circular(16),
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: blurAmount, sigmaY: blurAmount),
+        filter: ImageFilter.blur(sigmaX: effectiveBlur, sigmaY: effectiveBlur),
         child: Container(
           decoration: BoxDecoration(
             color: context.surface.withOpacity(effectiveOpacity),

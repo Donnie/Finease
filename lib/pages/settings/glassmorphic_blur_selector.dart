@@ -1,34 +1,26 @@
 import 'dart:ui';
 import 'package:finease/core/export.dart';
-import 'package:finease/core/glassmorphic_opacity_provider.dart';
+import 'package:finease/core/glassmorphic_blur_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class GlassmorphicOpacitySelectorWidget extends StatefulWidget {
-  const GlassmorphicOpacitySelectorWidget({super.key});
+class GlassmorphicBlurSelectorWidget extends StatelessWidget {
+  const GlassmorphicBlurSelectorWidget({super.key});
 
-  @override
-  State<GlassmorphicOpacitySelectorWidget> createState() =>
-      _GlassmorphicOpacitySelectorWidgetState();
-}
+  void _showBlurDialog(BuildContext context) {
+    final blurProvider = context.read<GlassmorphicBlurProvider>();
+    double currentBlur = blurProvider.blurAmount;
 
-class _GlassmorphicOpacitySelectorWidgetState
-    extends State<GlassmorphicOpacitySelectorWidget> {
-  
-  Future<void> _showOpacityDialog() async {
-    final opacityProvider = context.read<GlassmorphicOpacityProvider>();
-    double currentOpacity = opacityProvider.opacity;
-
-    await showDialog(
+    showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          title: const Text('Glass Opacity'),
+          title: const Text('Glass Blur'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Adjust the opacity of glassmorphic elements',
+                'Adjust the blur intensity of glassmorphic elements',
                 style: context.bodyMedium?.copyWith(
                   color: context.onSurfaceVariant,
                 ),
@@ -36,22 +28,22 @@ class _GlassmorphicOpacitySelectorWidgetState
               const SizedBox(height: 24),
               Row(
                 children: [
-                  const Icon(Icons.opacity),
+                  const Icon(Icons.blur_on),
                   Expanded(
                     child: Slider(
-                      value: currentOpacity,
-                      min: 0.05,
-                      max: 0.8,
+                      value: currentBlur,
+                      min: 0.0,
+                      max: 30.0,
                       divisions: 30,
-                      label: '${(currentOpacity * 100).round()}%',
+                      label: currentBlur.toStringAsFixed(0),
                       onChanged: (value) {
                         setState(() {
-                          currentOpacity = value;
+                          currentBlur = value;
                         });
                       },
                     ),
                   ),
-                  Text('${(currentOpacity * 100).round()}%'),
+                  Text(currentBlur.toStringAsFixed(0)),
                 ],
               ),
               const SizedBox(height: 16),
@@ -68,10 +60,10 @@ class _GlassmorphicOpacitySelectorWidgetState
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                    filter: ImageFilter.blur(sigmaX: currentBlur, sigmaY: currentBlur),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surface.withOpacity(currentOpacity),
+                        color: Theme.of(context).colorScheme.surface.withOpacity(0.25),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
                           color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
@@ -99,12 +91,12 @@ class _GlassmorphicOpacitySelectorWidgetState
             ),
             TextButton(
               onPressed: () async {
-                await opacityProvider.setOpacity(currentOpacity);
+                await blurProvider.setBlurAmount(currentBlur);
                 if (context.mounted) {
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Glass opacity updated'),
+                      content: Text('Glass blur updated'),
                       duration: Duration(seconds: 1),
                     ),
                   );
@@ -120,14 +112,14 @@ class _GlassmorphicOpacitySelectorWidgetState
 
   @override
   Widget build(BuildContext context) {
-    final opacityProvider = context.watch<GlassmorphicOpacityProvider>();
+    final blurProvider = context.watch<GlassmorphicBlurProvider>();
     
     return ListTile(
-      leading: const Icon(Icons.blur_on),
-      title: const Text('Glass Opacity'),
-      subtitle: Text('${(opacityProvider.opacity * 100).round()}%'),
+      leading: const Icon(Icons.blur_circular),
+      title: const Text('Glass Blur'),
+      subtitle: Text(blurProvider.blurAmount.toStringAsFixed(0)),
       trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-      onTap: _showOpacityDialog,
+      onTap: () => _showBlurDialog(context),
     );
   }
 }

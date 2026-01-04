@@ -23,7 +23,8 @@ enum Setting {
   // Background image settings
   backgroundImage,
   customBackgroundImages, // JSON array of custom image paths
-  // Glassmorphic opacity setting
+  // Glassmorphic settings
+  glassmorphicBlur,
   glassmorphicOpacity,
 }
 

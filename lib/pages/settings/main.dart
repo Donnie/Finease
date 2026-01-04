@@ -6,6 +6,7 @@ import 'package:finease/pages/settings/check_updates.dart';
 import 'package:finease/pages/settings/currency.dart';
 import 'package:finease/pages/settings/dark_mode.dart';
 import 'package:finease/pages/settings/glassmorphic_opacity_selector.dart';
+import 'package:finease/pages/settings/glassmorphic_blur_selector.dart';
 import 'package:finease/pages/settings/theme_selector.dart';
 import 'package:finease/pages/settings/toggle_encryption.dart';
 import 'package:finease/parts/export.dart';
@@ -46,6 +47,7 @@ class SettingsPage extends StatelessWidget {
                 options: [
                   BackgroundImageSelectorWidget(),
                   DarkModeToggleWidget(),
+                  GlassmorphicBlurSelectorWidget(),
                   GlassmorphicOpacitySelectorWidget(),
                   ThemeSelectorWidget(),
                 ],

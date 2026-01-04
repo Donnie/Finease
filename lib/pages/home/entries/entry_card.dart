@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:finease/core/export.dart';
 import 'package:finease/core/glassmorphic_opacity_provider.dart';
+import 'package:finease/core/glassmorphic_blur_provider.dart';
 import 'package:finease/db/accounts.dart';
 import 'package:finease/db/currency.dart';
 import 'package:finease/db/entries.dart';
@@ -55,6 +56,7 @@ class EntryCard extends StatelessWidget {
     final String symbol = SupportedCurrency[entry.debitAccount!.currency]!;
     final cardColor = entry.creditAccount?.type == AccountType.expense ? context.secondaryContainer : context.tertiaryContainer;
     final opacity = context.watch<GlassmorphicOpacityProvider>().opacity;
+    final blur = context.watch<GlassmorphicBlurProvider>().blurAmount;
 
     return InkWell(
       onTap: () async {
@@ -78,7 +80,7 @@ class EntryCard extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16.0),
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+          filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
           child: Container(
             decoration: BoxDecoration(
               color: cardColor.withOpacity(opacity),
