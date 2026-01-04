@@ -1,6 +1,7 @@
 import 'package:finease/pages/export.dart';
 import 'package:finease/pages/settings/about.dart';
 import 'package:finease/pages/settings/capital_gains.dart';
+import 'package:finease/pages/settings/check_updates.dart';
 import 'package:finease/pages/settings/currency.dart';
 import 'package:finease/pages/settings/dark_mode.dart';
 import 'package:finease/pages/settings/toggle_encryption.dart';
@@ -45,6 +46,7 @@ class SettingsPage extends StatelessWidget {
               title: "Dev Info",
               options: [
                 AboutWidget(),
+                CheckUpdatesWidget(),
                 VersionWidget(),
               ],
             ),
