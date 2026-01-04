@@ -179,14 +179,12 @@ class EntriesPageState extends State<EntriesPage> {
       return 'No transactions to export.';
     }
 
-    final buffer = StringBuffer();
-    final now = DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now());
+    // Calculate maximum column widths
+    int maxDateWidth = 'Date'.length;
+    int maxFromWidth = 'From'.length;
+    int maxToWidth = 'To'.length;
     
-    buffer.writeln('Transactions Export');
-    buffer.writeln('Exported: $now');
-    buffer.writeln('');
-    buffer.writeln('${'Date'.padRight(20)} ${'From'.padRight(25)} ${'To'.padRight(25)} Notes');
-    buffer.writeln('=' * 100);
+    final formattedRows = <Map<String, String>>[];
     
     for (var entry in entriesToExport) {
       final date = entry.date != null 
@@ -196,13 +194,47 @@ class EntriesPageState extends State<EntriesPage> {
       final to = entry.creditAccount?.name ?? 'N/A';
       final notes = entry.notes ?? '';
       final symbol = SupportedCurrency[entry.debitAccount?.currency ?? ''] ?? '';
+      final amountLine = 'Amount: $symbol ${entry.amount}';
       
-      buffer.writeln('${date.padRight(20)} ${from.padRight(25)} ${to.padRight(25)} $notes');
-      buffer.writeln('${''.padRight(20)} Amount: $symbol ${entry.amount}');
+      maxDateWidth = maxDateWidth > date.length ? maxDateWidth : date.length;
+      maxFromWidth = maxFromWidth > from.length ? maxFromWidth : from.length;
+      maxToWidth = maxToWidth > to.length ? maxToWidth : to.length;
+      
+      formattedRows.add({
+        'date': date,
+        'from': from,
+        'to': to,
+        'notes': notes,
+        'amount': amountLine,
+      });
+    }
+    
+    // Add padding (2 spaces between columns)
+    final dateColWidth = maxDateWidth + 2;
+    final fromColWidth = maxFromWidth + 2;
+    final toColWidth = maxToWidth + 2;
+    
+    final totalWidth = dateColWidth + fromColWidth + toColWidth + 20;
+
+    final buffer = StringBuffer();
+    final now = DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now());
+    
+    buffer.writeln('Transactions Export');
+    buffer.writeln('Exported: $now');
+    buffer.writeln('');
+    
+    // Header
+    buffer.writeln('${'Date'.padRight(dateColWidth)}${'From'.padRight(fromColWidth)}${'To'.padRight(toColWidth)}Notes');
+    buffer.writeln('=' * totalWidth);
+    
+    // Data rows
+    for (var row in formattedRows) {
+      buffer.writeln('${row['date']!.padRight(dateColWidth)}${row['from']!.padRight(fromColWidth)}${row['to']!.padRight(toColWidth)}${row['notes']}');
+      buffer.writeln('${''.padRight(dateColWidth)}${row['amount']}');
       buffer.writeln('');
     }
     
-    buffer.writeln('=' * 100);
+    buffer.writeln('=' * totalWidth);
     buffer.writeln('Total: ${entriesToExport.length} transactions');
     
     return buffer.toString();
@@ -270,16 +302,16 @@ class EntriesPageState extends State<EntriesPage> {
       return;
     }
     
-    final buffer = StringBuffer();
-    final now = DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now());
     final symbol = SupportedCurrency[viewingAccount!.currency] ?? viewingAccount!.currency;
     
-    buffer.writeln('Transactions Export');
-    buffer.writeln('Exported: $now');
-    buffer.writeln('Account: ${viewingAccount!.name} ($symbol)');
-    buffer.writeln('');
-    buffer.writeln('${'Date'.padRight(20)} ${'From'.padRight(25)} ${'To'.padRight(25)} ${'Amount'.padRight(15)} ${'Balance'.padRight(15)} Notes');
-    buffer.writeln('=' * 120);
+    // Calculate maximum column widths
+    int maxDateWidth = 'Date'.length;
+    int maxFromWidth = 'From'.length;
+    int maxToWidth = 'To'.length;
+    int maxAmountWidth = 'Amount'.length;
+    int maxBalanceWidth = 'Balance'.length;
+    
+    final formattedRows = <Map<String, String>>[];
     
     for (var row in filteredData) {
       final date = row['date'] != null
@@ -294,10 +326,49 @@ class EntriesPageState extends State<EntriesPage> {
       final amountStr = '$symbol $amount';
       final balanceStr = '$symbol $balance';
       
-      buffer.writeln('${date.padRight(20)} ${from.padRight(25)} ${to.padRight(25)} ${amountStr.padRight(15)} ${balanceStr.padRight(15)} $notes');
+      maxDateWidth = maxDateWidth > date.length ? maxDateWidth : date.length;
+      maxFromWidth = maxFromWidth > from.length ? maxFromWidth : from.length;
+      maxToWidth = maxToWidth > to.length ? maxToWidth : to.length;
+      maxAmountWidth = maxAmountWidth > amountStr.length ? maxAmountWidth : amountStr.length;
+      maxBalanceWidth = maxBalanceWidth > balanceStr.length ? maxBalanceWidth : balanceStr.length;
+      
+      formattedRows.add({
+        'date': date,
+        'from': from,
+        'to': to,
+        'amount': amountStr,
+        'balance': balanceStr,
+        'notes': notes,
+      });
     }
     
-    buffer.writeln('=' * 120);
+    // Add padding (2 spaces between columns)
+    final dateColWidth = maxDateWidth + 2;
+    final fromColWidth = maxFromWidth + 2;
+    final toColWidth = maxToWidth + 2;
+    final amountColWidth = maxAmountWidth + 2;
+    final balanceColWidth = maxBalanceWidth + 2;
+    
+    final totalWidth = dateColWidth + fromColWidth + toColWidth + amountColWidth + balanceColWidth + 5;
+    
+    final buffer = StringBuffer();
+    final now = DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now());
+    
+    buffer.writeln('Transactions Export');
+    buffer.writeln('Exported: $now');
+    buffer.writeln('Account: ${viewingAccount!.name} ($symbol)');
+    buffer.writeln('');
+    
+    // Header
+    buffer.writeln('${'Date'.padRight(dateColWidth)}${'From'.padRight(fromColWidth)}${'To'.padRight(toColWidth)}${'Amount'.padRight(amountColWidth)}${'Balance'.padRight(balanceColWidth)}Notes');
+    buffer.writeln('=' * totalWidth);
+    
+    // Data rows
+    for (var row in formattedRows) {
+      buffer.writeln('${row['date']!.padRight(dateColWidth)}${row['from']!.padRight(fromColWidth)}${row['to']!.padRight(toColWidth)}${row['amount']!.padRight(amountColWidth)}${row['balance']!.padRight(balanceColWidth)}${row['notes']}');
+    }
+    
+    buffer.writeln('=' * totalWidth);
     buffer.writeln('Total: ${filteredData.length} transactions');
     
     final finalBalance = (filteredData.last['running_balance'] as int) / 100.0;
