@@ -1,7 +1,4 @@
-import 'dart:io';
 import 'package:finease/db/accounts.dart';
-import 'package:finease/db/background_images.dart';
-import 'package:finease/db/background_image_provider.dart';
 import 'package:finease/db/months.dart';
 import 'package:finease/db/settings.dart';
 import 'package:finease/pages/export.dart';
@@ -9,7 +6,6 @@ import 'package:finease/parts/export.dart';
 import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
 class SummaryPage extends StatefulWidget {
   const SummaryPage({super.key});
@@ -66,83 +62,42 @@ class SummaryPageState extends State<SummaryPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<BackgroundImageProvider>(
-      builder: (context, backgroundProvider, child) {
-        final backgroundImagePath = backgroundProvider.currentBackground;
-        
-        return Scaffold(
-          key: _scaffoldStateKey,
-          resizeToAvoidBottomInset: true,
-          appBar: appBar(context, "home"),
-          drawer: AppDrawer(
-            onRefresh: _fetchNetWorth,
-            scaffoldKey: _scaffoldStateKey,
-            destinations: destinations,
+    return BackgroundWrapper(
+      child: Scaffold(
+        key: _scaffoldStateKey,
+        resizeToAvoidBottomInset: true,
+        backgroundColor: Colors.transparent,
+        appBar: appBar(context, "home"),
+        drawer: AppDrawer(
+          onRefresh: _fetchNetWorth,
+          scaffoldKey: _scaffoldStateKey,
+          destinations: destinations,
+        ),
+        body: RefreshIndicator(
+          onRefresh: _fetchNetWorth,
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: SummaryBody(
+              isLoading: isLoading,
+              networthAmount: networthAmount,
+              assetAmount: assetAmount,
+              liabilitiesAmount: liabilitiesAmount,
+              liquidAmount: liquidAmount,
+              currency: currency,
+              months: months,
+            ),
           ),
-          body: Stack(
-            children: [
-              // Background image - only show if set and not "none"
-              if (backgroundImagePath != null && 
-                  backgroundImagePath != BackgroundImageService.noneBackground)
-                Positioned.fill(
-                  child: _buildBackgroundImage(
-                    backgroundImagePath, 
-                    backgroundProvider.isDefaultImage(backgroundImagePath),
-                  ),
-                ),
-              // Content with RefreshIndicator
-              RefreshIndicator(
-                onRefresh: _fetchNetWorth,
-                child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  child: SummaryBody(
-                    isLoading: isLoading,
-                    networthAmount: networthAmount,
-                    assetAmount: assetAmount,
-                    liabilitiesAmount: liabilitiesAmount,
-                    liquidAmount: liquidAmount,
-                    currency: currency,
-                    months: months,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          floatingActionButton: VariableFABSize(
-            onPressed: () async {
-              final result = await context.pushNamed(RoutesName.addEntry.name);
-              if (result == true) {
-                _fetchNetWorth();
-              }
-            },
-            icon: Icons.add,
-          ),
-        );
-      },
+        ),
+        floatingActionButton: VariableFABSize(
+          onPressed: () async {
+            final result = await context.pushNamed(RoutesName.addEntry.name);
+            if (result == true) {
+              _fetchNetWorth();
+            }
+          },
+          icon: Icons.add,
+        ),
+      ),
     );
-  }
-
-  Widget _buildBackgroundImage(String imagePath, bool isDefault) {
-    if (isDefault) {
-      return Image.asset(
-        imagePath,
-        fit: BoxFit.cover,
-        opacity: const AlwaysStoppedAnimation(0.4),
-      );
-    } else {
-      return Image.file(
-        File(imagePath),
-        fit: BoxFit.cover,
-        opacity: const AlwaysStoppedAnimation(0.4),
-        errorBuilder: (context, error, stackTrace) {
-          // Fallback to default image if custom image fails to load
-          return Image.asset(
-            BackgroundImageService.defaultImages[0],
-            fit: BoxFit.cover,
-            opacity: const AlwaysStoppedAnimation(0.4),
-          );
-        },
-      );
-    }
   }
 }

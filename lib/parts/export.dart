@@ -2,6 +2,7 @@ export 'account_item.dart';
 export 'annotate_region_widget.dart';
 export 'app_drawer.dart';
 export 'app_top_bar.dart';
+export 'background_wrapper.dart';
 export 'button.dart';
 export 'error_dialog.dart';
 export 'glassmorphic_card.dart';

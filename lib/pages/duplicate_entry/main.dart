@@ -122,36 +122,42 @@ class DuplicateEntryScreenState extends State<DuplicateEntryScreen> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return Scaffold(
-        appBar: AppBar(title: const Text('Duplicate Transaction')),
-        body: const Center(child: CircularProgressIndicator()),
+      return BackgroundWrapper(
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(title: const Text('Duplicate Transaction')),
+          body: const Center(child: CircularProgressIndicator()),
+        ),
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Duplicate Transaction')),
-      body: AddEntryBody(
-        accounts: _accounts,
-        creditAccount: _creditAccount,
-        dateTime: _dateTime,
-        debitAccount: _debitAccount,
-        defaultCurrency: _defaultCurrency,
-        creditAmount: _creditAmount,
-        debitAmount: _debitAmount,
-        entryNotes: _entryNotes,
-        formState: _formState,
-        onCreditAccountSelected: _onCreditAccountSelected,
-        onDateTimeChanged: _onDateTimeChanged,
-        onDebitAccountSelected: _onDebitAccountSelected,
-        addNewRoute: RoutesName.addAccount.name,
-        routeArg: _fetchAccounts,
-      ),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: AppBigButton(
-            onPressed: _submitForm,
-            title: "Add",
+    return BackgroundWrapper(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(title: const Text('Duplicate Transaction')),
+        body: AddEntryBody(
+          accounts: _accounts,
+          creditAccount: _creditAccount,
+          dateTime: _dateTime,
+          debitAccount: _debitAccount,
+          defaultCurrency: _defaultCurrency,
+          creditAmount: _creditAmount,
+          debitAmount: _debitAmount,
+          entryNotes: _entryNotes,
+          formState: _formState,
+          onCreditAccountSelected: _onCreditAccountSelected,
+          onDateTimeChanged: _onDateTimeChanged,
+          onDebitAccountSelected: _onDebitAccountSelected,
+          addNewRoute: RoutesName.addAccount.name,
+          routeArg: _fetchAccounts,
+        ),
+        bottomNavigationBar: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: AppBigButton(
+              onPressed: _submitForm,
+              title: "Add",
+            ),
           ),
         ),
       ),

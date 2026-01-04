@@ -9,7 +9,7 @@ class GlassmorphicCard extends StatelessWidget {
     this.elevation,
     this.shape,
     this.blurAmount = 10.0,
-    this.opacity = 0.15,
+    this.opacity = 0.25,
   });
 
   final Widget child;

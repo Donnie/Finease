@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:finease/core/extensions/color_extension.dart';
 import 'package:finease/core/extensions/text_style_extension.dart';
 import 'package:finease/db/accounts.dart';
@@ -182,67 +183,82 @@ class BankAccountCard extends StatelessWidget {
     final bool green =
         [AccountType.asset, AccountType.income].contains(account.type);
 
-    return Card(
-      elevation: 4.0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: Container(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Flex(
-              direction: Axis.horizontal,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(account.name),
-                Row(
-                  children: [
-                    Icon(
-                      green ? MdiIcons.arrowBottomLeft : MdiIcons.arrowTopRight,
-                      color: green ? Colors.green : Colors.red,
-                    ),
-                    const SizedBox(width: 16),
-                    Text(account.currency),
-                  ],
-                )
-              ],
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(10.0),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        child: Container(
+          decoration: BoxDecoration(
+            color: context.surface.withOpacity(0.25),
+            borderRadius: BorderRadius.circular(10.0),
+            border: Border.all(
+              color: context.onSurface.withOpacity(0.1),
+              width: 1.5,
             ),
-            const SizedBox(height: 16.0),
-            Flex(
-              direction: Axis.horizontal,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "$symbol${account.balance.toStringAsFixed(2)}",
-                  style: context.titleLarge,
-                ),
-                Row(
-                  children: [
-                    Chip(
-                      label: Text(account.type.name),
-                      backgroundColor:
-                          context.secondaryContainer.withOpacity(0.5),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(28),
-                        side: BorderSide(
-                          width: 1,
-                          color: context.primary,
+            boxShadow: [
+              BoxShadow(
+                color: context.shadow.withOpacity(0.1),
+                blurRadius: 4.0,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Flex(
+                direction: Axis.horizontal,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(account.name),
+                  Row(
+                    children: [
+                      Icon(
+                        green ? MdiIcons.arrowBottomLeft : MdiIcons.arrowTopRight,
+                        color: green ? Colors.green : Colors.red,
+                      ),
+                      const SizedBox(width: 16),
+                      Text(account.currency),
+                    ],
+                  )
+                ],
+              ),
+              const SizedBox(height: 16.0),
+              Flex(
+                direction: Axis.horizontal,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "$symbol${account.balance.toStringAsFixed(2)}",
+                    style: context.titleLarge,
+                  ),
+                  Row(
+                    children: [
+                      Chip(
+                        label: Text(account.type.name),
+                        backgroundColor:
+                            context.secondaryContainer.withOpacity(0.5),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(28),
+                          side: BorderSide(
+                            width: 1,
+                            color: context.primary,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 16.0),
-                    Icon(
-                      account.liquid
-                          ? Icons.invert_colors
-                          : Icons.invert_colors_off,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
+                      const SizedBox(width: 16.0),
+                      Icon(
+                        account.liquid
+                            ? Icons.invert_colors
+                            : Icons.invert_colors_off,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -28,22 +28,25 @@ class AddAccountScreenState extends State<AddAccountScreen> {
   Widget build(BuildContext context) {
     return AppAnnotatedRegionWidget(
       color: context.surface,
-      child: Scaffold(
-        appBar: AppBar(title: const Text('add account')),
-        body: AddAccountBody(
-          formState: _formState,
-          accountName: _accountName,
-          accountBalance: _accountBalance,
-          accountCurrency: _accountCurrency,
-          onAccountType: _accountType,
-          onLiquidAssetsSaved: _accountLiquid,
-        ),
-        bottomNavigationBar: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: AppBigButton(
-              onPressed: _submitForm,
-              title: "Add",
+      child: BackgroundWrapper(
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(title: const Text('add account')),
+          body: AddAccountBody(
+            formState: _formState,
+            accountName: _accountName,
+            accountBalance: _accountBalance,
+            accountCurrency: _accountCurrency,
+            onAccountType: _accountType,
+            onLiquidAssetsSaved: _accountLiquid,
+          ),
+          bottomNavigationBar: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: AppBigButton(
+                onPressed: _submitForm,
+                title: "Add",
+              ),
             ),
           ),
         ),

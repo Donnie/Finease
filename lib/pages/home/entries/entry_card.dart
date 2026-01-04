@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:finease/core/extensions/color_extension.dart';
 import 'package:finease/core/extensions/text_style_extension.dart';
 import 'package:finease/db/accounts.dart';
@@ -72,84 +73,95 @@ class EntryCard extends StatelessWidget {
           onCardTap!();
         }
       },
-    child: Card(
-      color: cardColor,
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('From: ${entry.debitAccount!.name}'),
-                Text(getFormattedDate(entry.date!)),
-                Text('To: ${entry.creditAccount!.name}'),
-              ],
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16.0),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+          child: Container(
+            decoration: BoxDecoration(
+              color: cardColor.withOpacity(0.25),
+              borderRadius: BorderRadius.circular(16.0),
+              border: Border.all(
+                color: context.onSurface.withOpacity(0.1),
+                width: 1.5,
+              ),
             ),
-            Flex(
-              direction: Axis.horizontal,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      '$symbol ${entry.amount}',
-                      style: context.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      entry.notes!,
-                      style: context.bodyMedium?.copyWith(
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
+                    Text('From: ${entry.debitAccount!.name}'),
+                    Text(getFormattedDate(entry.date!)),
+                    Text('To: ${entry.creditAccount!.name}'),
                   ],
                 ),
-                InkWell(
-                  onTap: () async {
-                    final bool confirm = await showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text('Confirm'),
-                          content: const Text(
-                            'Once you delete a transaction the balance '
-                            'in related accounts would be automatically '
-                            'readjusted',
+                Flex(
+                  direction: Axis.horizontal,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '$symbol ${entry.amount}',
+                          style: context.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
                           ),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.of(context).pop(false),
-                              child: const Text('Cancel'),
-                            ),
-                            TextButton(
-                              onPressed: () => Navigator.of(context).pop(true),
-                              child: const Text('Delete'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-
-                    if (confirm) {
-                      onDelete?.call(entry.id!);
-                    }
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 0,
+                        ),
+                        Text(
+                          entry.notes!,
+                          style: context.bodyMedium?.copyWith(
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ],
                     ),
-                    child: Icon(MdiIcons.delete),
-                  ),
-                )
+                    InkWell(
+                      onTap: () async {
+                        final bool confirm = await showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Confirm'),
+                              content: const Text(
+                                'Once you delete a transaction the balance '
+                                'in related accounts would be automatically '
+                                'readjusted',
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(context).pop(false),
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.of(context).pop(true),
+                                  child: const Text('Delete'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+
+                        if (confirm) {
+                          onDelete?.call(entry.id!);
+                        }
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 0,
+                        ),
+                        child: Icon(MdiIcons.delete),
+                      ),
+                    )
+                  ],
+                ),
               ],
             ),
-          ],
-        ),
+          ),
         ),
       ),
     );

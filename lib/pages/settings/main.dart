@@ -25,47 +25,50 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppAnnotatedRegionWidget(
       color: Colors.transparent,
-      child: Scaffold(
-        appBar: appBar(context, "settings"),
-        body: ListView(
-          padding: EdgeInsets.zero,
-          shrinkWrap: true,
-          children: [
-            SettingsGroup(
-              title: "Personalise",
-              options: [
-                CurrencySelectorWidget(onChange: () => _handleChange(context)),
-                const CapGainsSelectorWidget(),
-                const ThemeSelectorWidget(),
-                const DarkModeToggleWidget(),
-                const BackgroundImageSelectorWidget(),
-              ],
-            ),
-            SettingsGroup(
-              title: "Database",
-              options: [
-                const ToggleEncryptionWidget(),
-                const ExportDatabaseWidget(),
-                ImportDatabaseWidget(onImport: () => _handleChange(context)),
-                const ResetAppWidget(),
-              ],
-            ),
-            const SettingsGroup(
-              title: "Dev Info",
-              options: [
-                AboutWidget(),
-                CheckUpdatesWidget(),
-                VersionWidget(),
-              ],
-            ),
-            const SafeArea(
-              top: false,
-              child: Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text("Made with ♥ in Berlin"),
+      child: BackgroundWrapper(
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: appBar(context, "settings"),
+          body: ListView(
+            padding: EdgeInsets.zero,
+            shrinkWrap: true,
+            children: [
+              SettingsGroup(
+                title: "Personalise",
+                options: [
+                  CurrencySelectorWidget(onChange: () => _handleChange(context)),
+                  const CapGainsSelectorWidget(),
+                  const ThemeSelectorWidget(),
+                  const DarkModeToggleWidget(),
+                  const BackgroundImageSelectorWidget(),
+                ],
               ),
-            ),
-          ],
+              SettingsGroup(
+                title: "Database",
+                options: [
+                  const ToggleEncryptionWidget(),
+                  const ExportDatabaseWidget(),
+                  ImportDatabaseWidget(onImport: () => _handleChange(context)),
+                  const ResetAppWidget(),
+                ],
+              ),
+              const SettingsGroup(
+                title: "Dev Info",
+                options: [
+                  AboutWidget(),
+                  CheckUpdatesWidget(),
+                  VersionWidget(),
+                ],
+              ),
+              const SafeArea(
+                top: false,
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text("Made with ♥ in Berlin"),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

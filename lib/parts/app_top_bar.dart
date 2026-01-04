@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:finease/core/export.dart';
 import 'package:finease/parts/user_widget.dart';
 import 'package:flutter/material.dart';
@@ -36,17 +37,20 @@ PreferredSize appBar(
           child: ClipRRect(
             borderRadius: BorderRadius.circular(32),
             clipBehavior: Clip.antiAlias,
-            child: AppBar(
-              leading: _shouldShowBackButton(context)
-                  ? IconButton(
-                      icon: const Icon(Icons.arrow_back),
-                      onPressed: () => GoRouter.of(context).pop(),
-                    )
-                  : null,
-              automaticallyImplyLeading: true,
-              backgroundColor: context.secondaryContainer.withOpacity(0.5),
-              scrolledUnderElevation: 0,
-              title: Text(title, style: context.titleMedium),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+              child: AppBar(
+                leading: _shouldShowBackButton(context)
+                    ? IconButton(
+                        icon: const Icon(Icons.arrow_back),
+                        onPressed: () => GoRouter.of(context).pop(),
+                      )
+                    : null,
+                automaticallyImplyLeading: true,
+                backgroundColor: context.surface.withOpacity(0.25),
+                scrolledUnderElevation: 0,
+                title: Text(title, style: context.titleMedium),
+              ),
             ),
           ),
         ),
@@ -69,39 +73,42 @@ PreferredSize infoBar(
           child: ClipRRect(
             borderRadius: BorderRadius.circular(32),
             clipBehavior: Clip.antiAlias,
-            child: AppBar(
-              leading: _shouldShowBackButton(context)
-                  ? IconButton(
-                      icon: const Icon(Icons.arrow_back),
-                      onPressed: () => GoRouter.of(context).pop(),
-                    )
-                  : null,
-              automaticallyImplyLeading: true,
-              backgroundColor: context.secondaryContainer.withOpacity(0.5),
-              scrolledUnderElevation: 0,
-              title: Text(title, style: context.titleMedium),
-              actions: [
-                if (additionalActions != null) ...additionalActions,
-                IconButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                        title: const Text('Information'),
-                        content: Text(info),
-                        actions: [
-                          TextButton(
-                            child: const Text('OK'),
-                            onPressed: () => Navigator.of(context).pop(),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.info_outlined),
-                ),
-                const SizedBox(width: 8),
-              ],
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+              child: AppBar(
+                leading: _shouldShowBackButton(context)
+                    ? IconButton(
+                        icon: const Icon(Icons.arrow_back),
+                        onPressed: () => GoRouter.of(context).pop(),
+                      )
+                    : null,
+                automaticallyImplyLeading: true,
+                backgroundColor: context.surface.withOpacity(0.25),
+                scrolledUnderElevation: 0,
+                title: Text(title, style: context.titleMedium),
+                actions: [
+                  if (additionalActions != null) ...additionalActions,
+                  IconButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          title: const Text('Information'),
+                          content: Text(info),
+                          actions: [
+                            TextButton(
+                              child: const Text('OK'),
+                              onPressed: () => Navigator.of(context).pop(),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.info_outlined),
+                  ),
+                  const SizedBox(width: 8),
+                ],
+              ),
             ),
           ),
         ),
@@ -126,17 +133,20 @@ class TopBar extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(32),
           clipBehavior: Clip.antiAlias,
-          child: AppBar(
-            backgroundColor: context.secondaryContainer.withOpacity(0.5),
-            scrolledUnderElevation: 0,
-            title: Text(
-              title,
-              style: context.titleMedium,
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+            child: AppBar(
+              backgroundColor: context.surface.withOpacity(0.25),
+              scrolledUnderElevation: 0,
+              title: Text(
+                title,
+                style: context.titleMedium,
+              ),
+              actions: const [
+                AppUserWidget(),
+                SizedBox(width: 8),
+              ],
             ),
-            actions: const [
-              AppUserWidget(),
-              SizedBox(width: 8),
-            ],
           ),
         ),
       ),

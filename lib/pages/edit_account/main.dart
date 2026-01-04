@@ -84,26 +84,29 @@ class EditAccountScreenState extends State<EditAccountScreen> {
     if (_account == null) {
       return Container();
     }
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("edit account", style: context.titleMedium),
-      ),
-      body: EditAccountBody(
-        formState: _formState,
-        accountName: _accountName,
-        account: _account!,
-        accountCurrency: _accountCurrency,
-        onChangeLiquid: _accountLiquid,
-        onChangeHidden: _accountHidden,
-        onChangeAccountType: _accountType,
-        onDelete: _onDelete,
-      ),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: AppBigButton(
-            onPressed: _submitForm,
-            title: "Update",
+    return BackgroundWrapper(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          title: Text("edit account", style: context.titleMedium),
+        ),
+        body: EditAccountBody(
+          formState: _formState,
+          accountName: _accountName,
+          account: _account!,
+          accountCurrency: _accountCurrency,
+          onChangeLiquid: _accountLiquid,
+          onChangeHidden: _accountHidden,
+          onChangeAccountType: _accountType,
+          onDelete: _onDelete,
+        ),
+        bottomNavigationBar: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: AppBigButton(
+              onPressed: _submitForm,
+              title: "Update",
+            ),
           ),
         ),
       ),
