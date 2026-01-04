@@ -8,6 +8,7 @@ import 'package:finease/parts/card.dart';
 import 'package:finease/parts/export.dart';
 import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
@@ -161,6 +162,57 @@ class EntriesPageState extends State<EntriesPage> {
     return topExpenses.toList();
   }
 
+  String _formatTransactionsForExport(List<Entry> entriesToExport) {
+    if (entriesToExport.isEmpty) {
+      return 'No transactions to export.';
+    }
+
+    final buffer = StringBuffer();
+    final now = DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now());
+    
+    buffer.writeln('Transactions Export');
+    buffer.writeln('Exported: $now');
+    buffer.writeln('');
+    buffer.writeln('${'Date'.padRight(20)} ${'From'.padRight(25)} ${'To'.padRight(25)} Notes');
+    buffer.writeln('=' * 100);
+    
+    for (var entry in entriesToExport) {
+      final date = entry.date != null 
+          ? DateFormat('yyyy-MM-dd HH:mm').format(entry.date!)
+          : 'N/A';
+      final from = entry.debitAccount?.name ?? 'N/A';
+      final to = entry.creditAccount?.name ?? 'N/A';
+      final notes = entry.notes ?? '';
+      final symbol = SupportedCurrency[entry.debitAccount?.currency ?? ''] ?? '';
+      
+      buffer.writeln('${date.padRight(20)} ${from.padRight(25)} ${to.padRight(25)} $notes');
+      buffer.writeln('${''.padRight(20)} Amount: $symbol ${entry.amount}');
+      buffer.writeln('');
+    }
+    
+    buffer.writeln('=' * 100);
+    buffer.writeln('Total: ${entriesToExport.length} transactions');
+    
+    return buffer.toString();
+  }
+
+  Future<void> _exportToClipboard() async {
+    final entriesToExport = filteredEntries;
+    final exportText = _formatTransactionsForExport(entriesToExport);
+    
+    await Clipboard.setData(ClipboardData(text: exportText));
+    
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${entriesToExport.length} transactions copied to clipboard'),
+          duration: const Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> scaffoldStateKey =
@@ -188,6 +240,30 @@ class EntriesPageState extends State<EntriesPage> {
         context,
         "transactions",
         "Click to edit the transaction,\nand long press to duplicate the transaction.\nTap the delete icon to remove a transaction.\nUse the search field to find transactions.\n\nUse the + button at the bottom to add a new transaction.",
+        additionalActions: [
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert),
+            onSelected: (value) {
+              if (value == 'export') {
+                _exportToClipboard();
+              }
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem<String>(
+                value: 'export',
+                child: Row(
+                  children: [
+                    const Icon(Icons.copy),
+                    const SizedBox(width: 12),
+                    Text(_searchController.text.isNotEmpty 
+                        ? 'Copy Filtered (${filteredEntries.length})'
+                        : 'Copy All (${filteredEntries.length})'),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
       body: RefreshIndicator(
         onRefresh: loadEntries,

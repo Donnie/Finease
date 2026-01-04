@@ -38,8 +38,9 @@ PreferredSize appBar(
 PreferredSize infoBar(
   BuildContext context,
   String title,
-  String info,
-) =>
+  String info, {
+  List<Widget>? additionalActions,
+}) =>
     PreferredSize(
       preferredSize: const Size.fromHeight(toolbarHeight),
       child: SafeArea(
@@ -62,6 +63,7 @@ PreferredSize infoBar(
               scrolledUnderElevation: 0,
               title: Text(title, style: context.titleMedium),
               actions: [
+                if (additionalActions != null) ...additionalActions,
                 IconButton(
                   onPressed: () {
                     showDialog(
