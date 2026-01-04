@@ -54,7 +54,8 @@ class _ThemeColorPickerSheetState extends State<ThemeColorPickerSheet>
   void initState() {
     super.initState();
     final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
-    _tempColorTheme = themeProvider.lightColorTheme;
+    // Use the current theme based on dark mode state
+    _tempColorTheme = themeProvider.currentColorTheme;
     _tabController = TabController(length: _colorOptions.length, vsync: this);
   }
 
@@ -166,7 +167,9 @@ class _ThemeColorPickerSheetState extends State<ThemeColorPickerSheet>
                         );
                         themeProvider.resetToDefaultColors();
                         setState(() {
-                          _tempColorTheme = ColorThemeModel.defaultLight;
+                          _tempColorTheme = themeProvider.isDarkMode 
+                              ? ColorThemeModel.defaultDark 
+                              : ColorThemeModel.defaultLight;
                         });
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(

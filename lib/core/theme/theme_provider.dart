@@ -81,6 +81,11 @@ class ThemeProvider extends ChangeNotifier {
     
     try {
       _isDarkMode = value;
+      
+      // Reset to default colors when toggling
+      _lightColorTheme = ColorThemeModel.defaultLight;
+      _darkColorTheme = ColorThemeModel.defaultDark;
+      
       notifyListeners();
       
       await _settingService.setSetting(Setting.darkMode, value.toString());
@@ -95,19 +100,12 @@ class ThemeProvider extends ChangeNotifier {
 
   Future<void> updateColorTheme(ColorThemeModel colorTheme) async {
     try {
-      // Update immediately for real-time preview
-      _lightColorTheme = colorTheme;
-      
-      // Update dark theme surface and error colors appropriately
-      _darkColorTheme = ColorThemeModel(
-        primaryColor: colorTheme.primaryColor,
-        secondaryColor: colorTheme.secondaryColor,
-        tertiaryColor: colorTheme.tertiaryColor,
-        surfaceColor: const Color(0xFF1C1B1F),
-        errorColor: const Color(0xFFF2B8B5),
-        textColor: const Color(0xFFE6E1E5),
-        subtextColor: const Color(0xFFCAC4D0),
-      );
+      // Update the current theme based on dark mode state
+      if (_isDarkMode) {
+        _darkColorTheme = colorTheme;
+      } else {
+        _lightColorTheme = colorTheme;
+      }
       
       notifyListeners();
 
@@ -148,8 +146,11 @@ class ThemeProvider extends ChangeNotifier {
 
   Future<void> resetToDefaultColors() async {
     try {
-      _lightColorTheme = ColorThemeModel.defaultLight;
-      _darkColorTheme = ColorThemeModel.defaultDark;
+      if (_isDarkMode) {
+        _darkColorTheme = ColorThemeModel.defaultDark;
+      } else {
+        _lightColorTheme = ColorThemeModel.defaultLight;
+      }
       notifyListeners();
 
       // Clear from database
