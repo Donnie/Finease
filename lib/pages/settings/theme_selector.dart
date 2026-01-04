@@ -46,6 +46,8 @@ class _ThemeColorPickerSheetState extends State<ThemeColorPickerSheet>
     _ColorOption('tertiary', 'Tertiary', 'Additional accents', Icons.circle_outlined),
     _ColorOption('surface', 'Surface', 'Cards & backgrounds', Icons.crop_square),
     _ColorOption('error', 'Error', 'Warnings & errors', Icons.error_outline),
+    _ColorOption('text', 'Text', 'Main text color', Icons.text_fields),
+    _ColorOption('subtext', 'Subtext', 'Secondary text color', Icons.notes),
   ];
 
   @override
@@ -80,6 +82,12 @@ class _ThemeColorPickerSheetState extends State<ThemeColorPickerSheet>
         case 'error':
           _tempColorTheme = _tempColorTheme.copyWith(errorColor: color);
           break;
+        case 'text':
+          _tempColorTheme = _tempColorTheme.copyWith(textColor: color);
+          break;
+        case 'subtext':
+          _tempColorTheme = _tempColorTheme.copyWith(subtextColor: color);
+          break;
       }
     });
     
@@ -100,6 +108,10 @@ class _ThemeColorPickerSheetState extends State<ThemeColorPickerSheet>
         return _tempColorTheme.surfaceColor;
       case 'error':
         return _tempColorTheme.errorColor;
+      case 'text':
+        return _tempColorTheme.textColor;
+      case 'subtext':
+        return _tempColorTheme.subtextColor;
       default:
         return _tempColorTheme.primaryColor;
     }

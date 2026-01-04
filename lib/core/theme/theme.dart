@@ -116,10 +116,16 @@ AppBarTheme appBarThemeDark(ColorScheme colorScheme) {
   );
 }
 
-DialogTheme get dialogTheme {
+DialogTheme dialogTheme(ColorScheme colorScheme) {
   return DialogTheme(
-    titleTextStyle: const TextStyle(
+    titleTextStyle: TextStyle(
       fontWeight: FontWeight.bold,
+      fontSize: 20,
+      color: colorScheme.onSurface,
+    ),
+    contentTextStyle: TextStyle(
+      fontSize: 14,
+      color: colorScheme.onSurfaceVariant,
     ),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(24),

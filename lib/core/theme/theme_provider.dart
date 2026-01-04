@@ -34,15 +34,20 @@ class ThemeProvider extends ChangeNotifier {
         final lightTertiary = await _settingService.getSetting(Setting.themeTertiaryColor);
         final lightSurface = await _settingService.getSetting(Setting.themeSurfaceColor);
         final lightError = await _settingService.getSetting(Setting.themeErrorColor);
+        final lightText = await _settingService.getSetting(Setting.themeTextColor);
+        final lightSubtext = await _settingService.getSetting(Setting.themeSubtextColor);
         
         if (lightSecondary.isNotEmpty && lightTertiary.isNotEmpty && 
-            lightSurface.isNotEmpty && lightError.isNotEmpty) {
+            lightSurface.isNotEmpty && lightError.isNotEmpty &&
+            lightText.isNotEmpty && lightSubtext.isNotEmpty) {
           _lightColorTheme = ColorThemeModel(
             primaryColor: Color(int.parse(lightPrimary)),
             secondaryColor: Color(int.parse(lightSecondary)),
             tertiaryColor: Color(int.parse(lightTertiary)),
             surfaceColor: Color(int.parse(lightSurface)),
             errorColor: Color(int.parse(lightError)),
+            textColor: Color(int.parse(lightText)),
+            subtextColor: Color(int.parse(lightSubtext)),
           );
         }
       }
@@ -54,6 +59,8 @@ class ThemeProvider extends ChangeNotifier {
         tertiaryColor: _lightColorTheme.tertiaryColor,
         surfaceColor: _isDarkMode ? const Color(0xFF1C1B1F) : const Color(0xFFFFFBFE),
         errorColor: _isDarkMode ? const Color(0xFFF2B8B5) : _lightColorTheme.errorColor,
+        textColor: _isDarkMode ? const Color(0xFFE6E1E5) : _lightColorTheme.textColor,
+        subtextColor: _isDarkMode ? const Color(0xFFCAC4D0) : _lightColorTheme.subtextColor,
       );
     } catch (e) {
       // Handle any errors during loading
@@ -98,6 +105,8 @@ class ThemeProvider extends ChangeNotifier {
         tertiaryColor: colorTheme.tertiaryColor,
         surfaceColor: const Color(0xFF1C1B1F),
         errorColor: const Color(0xFFF2B8B5),
+        textColor: const Color(0xFFE6E1E5),
+        subtextColor: const Color(0xFFCAC4D0),
       );
       
       notifyListeners();
@@ -123,6 +132,14 @@ class ThemeProvider extends ChangeNotifier {
         Setting.themeErrorColor, 
         colorTheme.errorColor.value.toString(),
       );
+      await _settingService.setSetting(
+        Setting.themeTextColor, 
+        colorTheme.textColor.value.toString(),
+      );
+      await _settingService.setSetting(
+        Setting.themeSubtextColor, 
+        colorTheme.subtextColor.value.toString(),
+      );
     } catch (e) {
       // Revert on error
       await _loadSettings();
@@ -141,6 +158,8 @@ class ThemeProvider extends ChangeNotifier {
       await _settingService.deleteSetting(Setting.themeTertiaryColor);
       await _settingService.deleteSetting(Setting.themeSurfaceColor);
       await _settingService.deleteSetting(Setting.themeErrorColor);
+      await _settingService.deleteSetting(Setting.themeTextColor);
+      await _settingService.deleteSetting(Setting.themeSubtextColor);
     } catch (e) {
       await _loadSettings();
     }

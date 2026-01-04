@@ -50,10 +50,10 @@ class HomePageTabletState extends State<HomePageTablet> {
             color: context.primary,
           ),
           unselectedLabelTextStyle: context.bodyLarge?.copyWith(
-            color: context.onSurface.withOpacity(0.75),
+            color: context.onSurfaceVariant,
           ),
           unselectedIconTheme: IconThemeData(
-            color: context.onSurface.withOpacity(0.75),
+            color: context.onSurfaceVariant,
           ),
           labelType: NavigationRailLabelType.all,
           backgroundColor: context.surface,
@@ -75,11 +75,11 @@ class HomePageTabletState extends State<HomePageTablet> {
                 // Settings will handle its own refresh on pop
               },
               icon: Icon(MdiIcons.cog),
-              color: context.onSurface.withOpacity(0.75),
+              color: context.onSurfaceVariant,
             ),
             Text(
               "settings",
-              style: TextStyle(color: context.onSurface.withOpacity(0.75)),
+              style: TextStyle(color: context.onSurfaceVariant),
             ),
           ]),
         ),

@@ -28,9 +28,9 @@ class PasswordButton extends StatelessWidget {
           key: ValueKey(password),
           value: strength,
           minHeight: 2.0,
-          backgroundColor: Colors.grey[300],
+          backgroundColor: context.surfaceVariant,
           valueColor: AlwaysStoppedAnimation<Color>(
-            strong ? Colors.green : Colors.red,
+            strong ? context.tertiary : context.error,
           ),
         ),
         TextButton(

@@ -8,6 +8,8 @@ class ColorThemeModel {
   final Color tertiaryColor;
   final Color surfaceColor;
   final Color errorColor;
+  final Color textColor;
+  final Color subtextColor;
 
   const ColorThemeModel({
     required this.primaryColor,
@@ -15,6 +17,8 @@ class ColorThemeModel {
     required this.tertiaryColor,
     required this.surfaceColor,
     required this.errorColor,
+    required this.textColor,
+    required this.subtextColor,
   });
 
   // Default theme colors (brown-based)
@@ -24,6 +28,8 @@ class ColorThemeModel {
     tertiaryColor: Color(0xFFA1887F),
     surfaceColor: Color(0xFFFFFBFE),
     errorColor: Color(0xFFB3261E),
+    textColor: Color(0xFF1C1B1F),
+    subtextColor: Color(0xFF49454F),
   );
 
   static const ColorThemeModel defaultDark = ColorThemeModel(
@@ -32,6 +38,8 @@ class ColorThemeModel {
     tertiaryColor: Color(0xFFA1887F),
     surfaceColor: Color(0xFF1C1B1F),
     errorColor: Color(0xFFF2B8B5),
+    textColor: Color(0xFFE6E1E5),
+    subtextColor: Color(0xFFCAC4D0),
   );
 
   // Convert to JSON string for storage
@@ -42,6 +50,8 @@ class ColorThemeModel {
       'tertiary': tertiaryColor.value,
       'surface': surfaceColor.value,
       'error': errorColor.value,
+      'text': textColor.value,
+      'subtext': subtextColor.value,
     });
   }
 
@@ -55,6 +65,8 @@ class ColorThemeModel {
         tertiaryColor: Color(json['tertiary'] as int),
         surfaceColor: Color(json['surface'] as int),
         errorColor: Color(json['error'] as int),
+        textColor: Color(json['text'] as int),
+        subtextColor: Color(json['subtext'] as int),
       );
     } catch (e) {
       // Return default if parsing fails
@@ -72,6 +84,8 @@ class ColorThemeModel {
       tertiary: tertiaryColor,
       surface: surfaceColor,
       error: errorColor,
+      onSurface: textColor,
+      onSurfaceVariant: subtextColor,
     );
   }
 
@@ -81,6 +95,8 @@ class ColorThemeModel {
     Color? tertiaryColor,
     Color? surfaceColor,
     Color? errorColor,
+    Color? textColor,
+    Color? subtextColor,
   }) {
     return ColorThemeModel(
       primaryColor: primaryColor ?? this.primaryColor,
@@ -88,6 +104,8 @@ class ColorThemeModel {
       tertiaryColor: tertiaryColor ?? this.tertiaryColor,
       surfaceColor: surfaceColor ?? this.surfaceColor,
       errorColor: errorColor ?? this.errorColor,
+      textColor: textColor ?? this.textColor,
+      subtextColor: subtextColor ?? this.subtextColor,
     );
   }
 
@@ -99,7 +117,9 @@ class ColorThemeModel {
         other.secondaryColor == secondaryColor &&
         other.tertiaryColor == tertiaryColor &&
         other.surfaceColor == surfaceColor &&
-        other.errorColor == errorColor;
+        other.errorColor == errorColor &&
+        other.textColor == textColor &&
+        other.subtextColor == subtextColor;
   }
 
   @override
@@ -110,6 +130,8 @@ class ColorThemeModel {
       tertiaryColor,
       surfaceColor,
       errorColor,
+      textColor,
+      subtextColor,
     );
   }
 }

@@ -18,6 +18,8 @@ enum Setting {
   themeTertiaryColor,
   themeSurfaceColor,
   themeErrorColor,
+  themeTextColor,
+  themeSubtextColor,
 }
 
 typedef Settings = Map<Setting, String>;

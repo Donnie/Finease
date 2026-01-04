@@ -1,4 +1,5 @@
 import 'package:finease/core/export.dart';
+import 'package:finease/core/theme/custom_color.dart';
 import 'package:finease/db/accounts.dart';
 import 'package:finease/parts/card.dart';
 import 'package:finease/parts/pill_chip.dart';
@@ -23,19 +24,23 @@ class AccountItemWidget extends StatelessWidget {
         ? MdiIcons.arrowBottomLeft
         : MdiIcons.arrowTopRight;
 
+    final customColors = Theme.of(context).extension<CustomColors>();
     final color = (account.type == AccountType.asset ||
             account.type == AccountType.income)
-        ? Color(Colors.green.shade200.value)
-        : Color(Colors.red.shade200.value);
+        ? (customColors?.green ?? context.tertiary)
+        : (customColors?.red ?? context.error);
 
     final tileColor = account.liquid
-        ? Color(Colors.brown.shade900.value)
-        : Color(Colors.grey.shade800.value);
+        ? context.primaryContainer
+        : context.surfaceVariant;
 
     return ScreenTypeLayout.builder(
       mobile: (p0) => ListTile(
         splashColor: tileColor,
-        subtitleTextStyle: const TextStyle(fontSize: 12),
+        subtitleTextStyle: TextStyle(
+          fontSize: 12,
+          color: context.onSurfaceVariant,
+        ),
         onTap: onPress,
         leading: Icon(
           icon,
