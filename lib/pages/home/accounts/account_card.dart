@@ -61,10 +61,14 @@ class BankAccounts extends StatelessWidget {
                 onEdit();
               }
             },
-            onTap: () => context.pushNamed(
-              RoutesName.transactionsByAccount.name,
-              pathParameters: {RoutesName.transactionsByAccount.accountParam: a.id.toString()},
-            ),
+            onTap: () async {
+              await context.pushNamed(
+                RoutesName.transactionsByAccount.name,
+                pathParameters: {RoutesName.transactionsByAccount.accountParam: a.id.toString()},
+              );
+              // Refresh accounts when returning from transaction screen
+              onEdit();
+            },
           ),
         ),
         const Divider(),
@@ -92,10 +96,14 @@ class BankAccounts extends StatelessWidget {
                     pathParameters: {'id': a.id.toString()},
                     extra: onEdit,
                   ),
-                  onTap: () => context.pushNamed(
-                    RoutesName.transactionsByAccount.name,
-                    pathParameters: {RoutesName.transactionsByAccount.accountParam: a.id.toString()},
-                  ),
+                  onTap: () async {
+                    await context.pushNamed(
+                      RoutesName.transactionsByAccount.name,
+                      pathParameters: {RoutesName.transactionsByAccount.accountParam: a.id.toString()},
+                    );
+                    // Refresh accounts when returning from transaction screen
+                    onEdit();
+                  },
                 ),
               ),
             ],
@@ -120,10 +128,14 @@ class BankAccounts extends StatelessWidget {
                     pathParameters: {'id': a.id.toString()},
                     extra: onEdit,
                   ),
-                  onTap: () => context.pushNamed(
-                    RoutesName.transactionsByAccount.name,
-                    pathParameters: {RoutesName.transactionsByAccount.accountParam: a.id.toString()},
-                  ),
+                  onTap: () async {
+                    await context.pushNamed(
+                      RoutesName.transactionsByAccount.name,
+                      pathParameters: {RoutesName.transactionsByAccount.accountParam: a.id.toString()},
+                    );
+                    // Refresh accounts when returning from transaction screen
+                    onEdit();
+                  },
                 ),
               ),
             ],

@@ -452,9 +452,9 @@ class EntriesPageState extends State<EntriesPage> {
     }
   }
 
-  void entryOnDelete(int id) {
-    _entryService.deleteEntry(id);
-    loadEntries();
+  Future<void> entryOnDelete(int id) async {
+    await _entryService.deleteEntry(id);
+    await loadEntries();
   }
 
   @override
