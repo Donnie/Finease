@@ -1,6 +1,8 @@
 import 'dart:ui';
+import 'package:finease/core/glassmorphic_opacity_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:finease/core/export.dart';
+import 'package:provider/provider.dart';
 
 class AppFilledCard extends StatelessWidget {
   const AppFilledCard({
@@ -16,6 +18,8 @@ class AppFilledCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final opacity = context.watch<GlassmorphicOpacityProvider>().opacity;
+    
     return ClipRRect(
       borderRadius: shape != null 
           ? BorderRadius.zero 
@@ -24,7 +28,7 @@ class AppFilledCard extends StatelessWidget {
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Container(
           decoration: BoxDecoration(
-            color: (color ?? context.surface).withOpacity(0.25),
+            color: (color ?? context.surface).withOpacity(opacity),
             borderRadius: shape != null 
                 ? null 
                 : BorderRadius.circular(16),

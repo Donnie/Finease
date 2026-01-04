@@ -1,6 +1,6 @@
 import 'dart:ui';
-import 'package:finease/core/extensions/color_extension.dart';
-import 'package:finease/core/extensions/text_style_extension.dart';
+import 'package:finease/core/export.dart';
+import 'package:finease/core/glassmorphic_opacity_provider.dart';
 import 'package:finease/db/accounts.dart';
 import 'package:finease/db/currency.dart';
 import 'package:finease/db/entries.dart';
@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:provider/provider.dart';
 
 class EntriesListView extends StatelessWidget {
   final List<Entry> entries;
@@ -53,6 +54,7 @@ class EntryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final String symbol = SupportedCurrency[entry.debitAccount!.currency]!;
     final cardColor = entry.creditAccount?.type == AccountType.expense ? context.secondaryContainer : context.tertiaryContainer;
+    final opacity = context.watch<GlassmorphicOpacityProvider>().opacity;
 
     return InkWell(
       onTap: () async {
@@ -79,7 +81,7 @@ class EntryCard extends StatelessWidget {
           filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
           child: Container(
             decoration: BoxDecoration(
-              color: cardColor.withOpacity(0.25),
+              color: cardColor.withOpacity(opacity),
               borderRadius: BorderRadius.circular(16.0),
               border: Border.all(
                 color: context.onSurface.withOpacity(0.1),

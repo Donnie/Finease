@@ -1,12 +1,13 @@
 import 'dart:ui';
-import 'package:finease/core/extensions/color_extension.dart';
-import 'package:finease/core/extensions/text_style_extension.dart';
+import 'package:finease/core/export.dart';
+import 'package:finease/core/glassmorphic_opacity_provider.dart';
 import 'package:finease/db/accounts.dart';
 import 'package:finease/db/currency.dart';
 import 'package:finease/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:provider/provider.dart';
 
 class BankAccounts extends StatelessWidget {
   const BankAccounts({
@@ -182,6 +183,7 @@ class BankAccountCard extends StatelessWidget {
     final String symbol = SupportedCurrency[account.currency]!;
     final bool green =
         [AccountType.asset, AccountType.income].contains(account.type);
+    final opacity = context.watch<GlassmorphicOpacityProvider>().opacity;
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(10.0),
@@ -189,7 +191,7 @@ class BankAccountCard extends StatelessWidget {
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Container(
           decoration: BoxDecoration(
-            color: context.surface.withOpacity(0.25),
+            color: context.surface.withOpacity(opacity),
             borderRadius: BorderRadius.circular(10.0),
             border: Border.all(
               color: context.onSurface.withOpacity(0.1),
