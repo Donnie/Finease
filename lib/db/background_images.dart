@@ -20,7 +20,7 @@ class BackgroundImageService {
   Future<String> getSelectedBackground() async {
     final selected = await _settingService.getSetting(Setting.backgroundImage);
     if (selected.isEmpty) {
-      return defaultImages[0]; // Default to first image
+      return noneBackground; // Default to no background (matches onboarding default)
     }
     return selected;
   }

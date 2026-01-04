@@ -49,9 +49,23 @@ class _SetupAccountsPageState extends State<SetupAccountsPage> {
                 const Spacer(),
                 FloatingActionButton.extended(
                   heroTag: 'next',
-                  onPressed: () {
-                    _settingService.setSetting(Setting.accountSetup, "true");
-                    _settingService.setSetting(Setting.onboarded, "true");
+                  onPressed: () async {
+                    // Set default settings during onboarding
+                    await _settingService.setSetting(Setting.accountSetup, "true");
+                    await _settingService.setSetting(Setting.onboarded, "true");
+                    
+                    // Set default background image to none
+                    await _settingService.setSetting(Setting.backgroundImage, "none");
+                    
+                    // Set default glassmorphic blur to 18
+                    await _settingService.setSetting(Setting.glassmorphicBlur, "18.0");
+                    
+                    // Set default glassmorphic opacity to 50% (0.5)
+                    await _settingService.setSetting(Setting.glassmorphicOpacity, "0.5");
+                    
+                    // Set dark mode to disabled (false)
+                    await _settingService.setSetting(Setting.darkMode, "false");
+                    
                     context.go(RoutesName.home.path);
                   },
                   extendedPadding: const EdgeInsets.symmetric(horizontal: 24),

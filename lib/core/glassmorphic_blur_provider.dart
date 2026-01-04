@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 /// Provider for managing glassmorphic blur amount across the app
 class GlassmorphicBlurProvider extends ChangeNotifier {
   final SettingService _settingService = SettingService();
-  double _blurAmount = 10.0; // Default blur amount
+  double _blurAmount = 18.0; // Default blur amount (matches onboarding default)
   bool _isLoading = true;
 
   double get blurAmount => _blurAmount;
@@ -18,7 +18,7 @@ class GlassmorphicBlurProvider extends ChangeNotifier {
     try {
       final blurString = await _settingService.getSetting(Setting.glassmorphicBlur);
       if (blurString.isNotEmpty) {
-        _blurAmount = double.tryParse(blurString) ?? 10.0;
+        _blurAmount = double.tryParse(blurString) ?? 18.0;
       }
     } catch (e) {
       debugPrint('Error loading glassmorphic blur: $e');

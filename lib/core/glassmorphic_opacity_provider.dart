@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 /// Provider for managing glassmorphic opacity across the app
 class GlassmorphicOpacityProvider extends ChangeNotifier {
   final SettingService _settingService = SettingService();
-  double _opacity = 0.25; // Default opacity
+  double _opacity = 0.5; // Default opacity (50% - matches onboarding default)
   bool _isLoading = true;
 
   double get opacity => _opacity;
@@ -18,7 +18,7 @@ class GlassmorphicOpacityProvider extends ChangeNotifier {
     try {
       final opacityString = await _settingService.getSetting(Setting.glassmorphicOpacity);
       if (opacityString.isNotEmpty) {
-        _opacity = double.tryParse(opacityString) ?? 0.25;
+        _opacity = double.tryParse(opacityString) ?? 0.5;
       }
     } catch (e) {
       debugPrint('Error loading glassmorphic opacity: $e');
