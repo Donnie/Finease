@@ -35,14 +35,19 @@ class SettingsPage extends StatelessWidget {
             shrinkWrap: true,
             children: [
               SettingsGroup(
+                title: "Financial",
+                options: [
+                  const CapGainsSelectorWidget(),
+                  CurrencySelectorWidget(onChange: () => _handleChange(context)),
+                ],
+              ),
+              const SettingsGroup(
                 title: "Personalise",
                 options: [
-                  CurrencySelectorWidget(onChange: () => _handleChange(context)),
-                  const CapGainsSelectorWidget(),
-                  const ThemeSelectorWidget(),
-                  const DarkModeToggleWidget(),
-                  const BackgroundImageSelectorWidget(),
-                  const GlassmorphicOpacitySelectorWidget(),
+                  BackgroundImageSelectorWidget(),
+                  DarkModeToggleWidget(),
+                  GlassmorphicOpacitySelectorWidget(),
+                  ThemeSelectorWidget(),
                 ],
               ),
               SettingsGroup(
