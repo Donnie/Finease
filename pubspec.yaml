@@ -1,7 +1,7 @@
 name: finease
 description: "A full stack mobile app to keep track of financial transactions"
 publish_to: 'none'
-version: 1.2.8
+version: 1.2.9
 
 environment:
   sdk: '>=3.2.3 <4.0.0'
