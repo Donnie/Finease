@@ -22,6 +22,9 @@ class BankAccounts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final opacity = context.watch<GlassmorphicOpacityProvider>().opacity;
+    final blur = context.watch<GlassmorphicBlurProvider>().blurAmount;
+
     List<Account> mainAccounts = accounts
         .where((a) => [
               AccountType.asset,
@@ -42,14 +45,56 @@ class BankAccounts extends StatelessWidget {
 
     return ListView(
       children: [
-        const Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Text("Assets and Liabilities"),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8.0),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                decoration: BoxDecoration(
+                  gradient: RadialGradient(
+                    colors: [
+                      context.surface.withOpacity(opacity * 0.8),
+                      context.surface.withOpacity(opacity * 0.4),
+                      context.surface.withOpacity(0.0),
+                    ],
+                    stops: const [0.0, 0.7, 1.0],
+                    radius: 1.5,
+                  ),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: const Text("Assets and Liabilities"),
+              ),
+            ),
+          ),
         ),
         Visibility(
           visible: mainAccounts.isEmpty,
-          child: const Center(
-            child: Text('Accounts yet to be set up'),
+          child: Center(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                  decoration: BoxDecoration(
+                    gradient: RadialGradient(
+                      colors: [
+                        context.surface.withOpacity(opacity * 0.8),
+                        context.surface.withOpacity(opacity * 0.4),
+                        context.surface.withOpacity(0.0),
+                      ],
+                      stops: const [0.0, 0.7, 1.0],
+                      radius: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: const Text('Accounts yet to be set up'),
+                ),
+              ),
+            ),
           ),
         ),
         ...mainAccounts.map(
@@ -75,14 +120,56 @@ class BankAccounts extends StatelessWidget {
           ),
         ),
         const Divider(),
-        const Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Text("Incomes and Expenses"),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8.0),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                decoration: BoxDecoration(
+                  gradient: RadialGradient(
+                    colors: [
+                      context.surface.withOpacity(opacity * 0.8),
+                      context.surface.withOpacity(opacity * 0.4),
+                      context.surface.withOpacity(0.0),
+                    ],
+                    stops: const [0.0, 0.7, 1.0],
+                    radius: 1.5,
+                  ),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: const Text("Incomes and Expenses"),
+              ),
+            ),
+          ),
         ),
         Visibility(
           visible: extAccounts.isEmpty,
-          child: const Center(
-            child: Text('Accounts yet to be set up'),
+          child: Center(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                  decoration: BoxDecoration(
+                    gradient: RadialGradient(
+                      colors: [
+                        context.surface.withOpacity(opacity * 0.8),
+                        context.surface.withOpacity(opacity * 0.4),
+                        context.surface.withOpacity(0.0),
+                      ],
+                      stops: const [0.0, 0.7, 1.0],
+                      radius: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: const Text('Accounts yet to be set up'),
+                ),
+              ),
+            ),
           ),
         ),
         Padding(
@@ -113,9 +200,30 @@ class BankAccounts extends StatelessWidget {
           ),
         ),
         const Divider(),
-        const Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Text("Hidden Accounts"),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8.0),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                decoration: BoxDecoration(
+                  gradient: RadialGradient(
+                    colors: [
+                      context.surface.withOpacity(opacity * 0.8),
+                      context.surface.withOpacity(opacity * 0.4),
+                      context.surface.withOpacity(0.0),
+                    ],
+                    stops: const [0.0, 0.7, 1.0],
+                    radius: 1.5,
+                  ),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: const Text("Hidden Accounts"),
+              ),
+            ),
+          ),
         ),
         Padding(
           padding: const EdgeInsets.all(16.0),
