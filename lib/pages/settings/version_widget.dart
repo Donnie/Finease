@@ -26,7 +26,10 @@ class _VersionWidgetState extends State<VersionWidget> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(MdiIcons.numeric),
+      leading: Icon(
+        MdiIcons.numeric,
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+      ),
       title: const Text("Version"),
       subtitle: Text(packageInfo?.version ?? ""),
     );

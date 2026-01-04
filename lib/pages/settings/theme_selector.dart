@@ -11,7 +11,7 @@ class ThemeSelectorWidget extends StatelessWidget {
     return ListTile(
       leading: Icon(
         Icons.palette,
-        color: Theme.of(context).colorScheme.primary,
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
       ),
       title: const Text("Theme Colors"),
       subtitle: const Text("Customize app colors"),
@@ -153,8 +153,7 @@ class _ThemeColorPickerSheetState extends State<ThemeColorPickerSheet>
                     Expanded(
                       child: Text(
                         "Theme Colors",
-                        style: TextStyle(
-                          fontSize: 20,
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: textColor,
                         ),
@@ -337,8 +336,7 @@ class _CompactColorPicker extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 8.0),
           child: Text(
             description,
-            style: TextStyle(
-              fontSize: 13,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
             ),
             textAlign: TextAlign.center,

@@ -42,7 +42,7 @@ class DarkModeToggleWidget extends StatelessWidget {
           },
           secondary: Icon(
             themeProvider.isDarkMode ? Icons.dark_mode : Icons.light_mode,
-            color: Theme.of(context).colorScheme.primary,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
         );
       },

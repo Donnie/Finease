@@ -16,7 +16,10 @@ class _CheckUpdatesWidgetState extends State<CheckUpdatesWidget> {
   Widget build(BuildContext context) {
     return ListTile(
       title: const Text('Check Updates'),
-      leading: const Icon(Icons.system_update),
+      leading: Icon(
+        Icons.system_update,
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+      ),
       onTap: () => _checkForUpdates(context),
     );
   }
@@ -108,7 +111,7 @@ class _CheckUpdatesWidgetState extends State<CheckUpdatesWidget> {
                     },
                     child: Text(
                       'Download $tagToShow',
-                      style: TextStyle(
+                      style: context.bodyMedium?.copyWith(
                         decoration: TextDecoration.underline,
                         color: context.primary,
                       ),

@@ -62,7 +62,10 @@ class ExportDatabaseWidgetState extends State<ExportDatabaseWidget> {
   Widget build(BuildContext context) {
     return ListTile(
       title: const Text("Export DB"),
-      leading: Icon(MdiIcons.export),
+      leading: Icon(
+        MdiIcons.export,
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+      ),
       onTap: _exportDatabase,
     );
   }

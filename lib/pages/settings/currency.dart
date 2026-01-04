@@ -61,7 +61,9 @@ class CurrencySelectorWidgetState extends State<CurrencySelectorWidget> {
       subtitle: Text(currency ?? ''),
       leading: Text(
         symbol ?? '',
-        style: context.titleLarge,
+        style: context.titleLarge?.copyWith(
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        ),
       ),
       onTap: () => _showCurrencyPicker(context),
     );

@@ -44,9 +44,11 @@ class AccountSearchDelegate extends SearchDelegate<Account?> {
       child: Column(
         children: [
           ListTile(
-            title: const Text(
+            title: Text(
               'Unlink',
-              style: TextStyle(fontStyle: FontStyle.italic),
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                fontStyle: FontStyle.italic,
+              ),
             ),
             onTap: context.pop,
           ),

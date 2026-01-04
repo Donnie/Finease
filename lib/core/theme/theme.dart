@@ -118,15 +118,13 @@ AppBarTheme appBarThemeDark(ColorScheme colorScheme) {
   );
 }
 
-DialogTheme dialogTheme(ColorScheme colorScheme) {
+DialogTheme dialogTheme(ColorScheme colorScheme, TextTheme? textTheme) {
   return DialogTheme(
-    titleTextStyle: TextStyle(
+    titleTextStyle: textTheme?.titleLarge?.copyWith(
       fontWeight: FontWeight.bold,
-      fontSize: 20,
       color: colorScheme.onSurface,
     ),
-    contentTextStyle: TextStyle(
-      fontSize: 14,
+    contentTextStyle: textTheme?.bodyMedium?.copyWith(
       color: colorScheme.onSurfaceVariant,
     ),
     shape: RoundedRectangleBorder(
@@ -135,12 +133,12 @@ DialogTheme dialogTheme(ColorScheme colorScheme) {
   );
 }
 
-TimePickerThemeData get timePickerTheme {
+TimePickerThemeData timePickerTheme(TextTheme? textTheme) {
   return TimePickerThemeData(
-    helpTextStyle: const TextStyle(
+    helpTextStyle: textTheme?.bodyLarge?.copyWith(
       fontWeight: FontWeight.bold,
     ),
-    hourMinuteTextStyle: const TextStyle(
+    hourMinuteTextStyle: textTheme?.headlineMedium?.copyWith(
       fontWeight: FontWeight.bold,
     ),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),

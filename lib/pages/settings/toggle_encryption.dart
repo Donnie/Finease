@@ -125,7 +125,10 @@ class ToggleEncryptionWidgetState extends State<ToggleEncryptionWidget> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: const Icon(Icons.enhanced_encryption),
+      leading: Icon(
+        Icons.enhanced_encryption,
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+      ),
       key: ValueKey(_password.text),
       title: const Text('Enable Encryption'),
       trailing: Switch(

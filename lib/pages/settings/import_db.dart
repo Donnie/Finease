@@ -116,7 +116,10 @@ class ImportDatabaseWidgetState extends State<ImportDatabaseWidget> {
   Widget build(BuildContext context) {
     return ListTile(
       title: const Text("Import DB"),
-      leading: Icon(MdiIcons.import),
+      leading: Icon(
+        MdiIcons.import,
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+      ),
       onTap: _onImportTap,
     );
   }

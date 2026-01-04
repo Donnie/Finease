@@ -20,7 +20,10 @@ class _ResetAppWidgetState extends State<ResetAppWidget> {
   Widget build(BuildContext context) {
     return ListTile(
       title: const Text("Reset App"),
-      leading: const Icon(Icons.delete_forever),
+      leading: Icon(
+        Icons.delete_forever,
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+      ),
       onTap: () async {
         await showDialog(
           context: context,

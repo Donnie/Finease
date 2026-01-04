@@ -23,8 +23,8 @@ ThemeData appTheme(
   ).copyWith(
     textTheme: customTextTheme,
     colorScheme: colorScheme,
-    dialogTheme: dialogTheme(colorScheme),
-    timePickerTheme: timePickerTheme,
+    dialogTheme: dialogTheme(colorScheme, customTextTheme),
+    timePickerTheme: timePickerTheme(customTextTheme),
     appBarTheme: appBarTheme(systemUiOverlayStyle),
     scaffoldBackgroundColor: colorScheme.surface,
     navigationBarTheme: navigationBarThemeData(
@@ -50,7 +50,9 @@ ThemeData appTheme(
     // Ensure ListTile uses custom text colors
     listTileTheme: ListTileThemeData(
       textColor: colorScheme.onSurface,
-      subtitleTextStyle: TextStyle(color: colorScheme.onSurfaceVariant),
+      subtitleTextStyle: customTextTheme.bodyMedium?.copyWith(
+        color: colorScheme.onSurfaceVariant,
+      ),
     ),
   );
 }
