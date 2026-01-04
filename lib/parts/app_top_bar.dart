@@ -1,8 +1,26 @@
 import 'package:finease/core/export.dart';
 import 'package:finease/parts/user_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 const double toolbarHeight = kToolbarHeight + 8;
+
+// Root routes that should never show a back button
+const List<String> _rootRoutes = [
+  '/home',
+  '/accounts',
+  '/months',
+  '/transactions',
+];
+
+bool _shouldShowBackButton(BuildContext context) {
+  if (!GoRouter.of(context).canPop()) {
+    return false;
+  }
+  
+  final location = GoRouterState.of(context).uri.path;
+  return !_rootRoutes.contains(location);
+}
 
 PreferredSize appBar(
   BuildContext context,
@@ -19,10 +37,10 @@ PreferredSize appBar(
             borderRadius: BorderRadius.circular(32),
             clipBehavior: Clip.antiAlias,
             child: AppBar(
-              leading: Navigator.of(context).canPop()
+              leading: _shouldShowBackButton(context)
                   ? IconButton(
                       icon: const Icon(Icons.arrow_back),
-                      onPressed: () => Navigator.of(context).pop(),
+                      onPressed: () => GoRouter.of(context).pop(),
                     )
                   : null,
               automaticallyImplyLeading: true,
@@ -52,10 +70,10 @@ PreferredSize infoBar(
             borderRadius: BorderRadius.circular(32),
             clipBehavior: Clip.antiAlias,
             child: AppBar(
-              leading: Navigator.of(context).canPop()
+              leading: _shouldShowBackButton(context)
                   ? IconButton(
                       icon: const Icon(Icons.arrow_back),
-                      onPressed: () => Navigator.of(context).pop(),
+                      onPressed: () => GoRouter.of(context).pop(),
                     )
                   : null,
               automaticallyImplyLeading: true,

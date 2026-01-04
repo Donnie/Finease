@@ -27,22 +27,22 @@ class DarkModeToggleWidget extends StatelessWidget {
           subtitle: Text(themeProvider.isDarkMode ? "Enabled" : "Disabled"),
           value: themeProvider.isDarkMode,
           onChanged: (value) async {
-            // Show a snackbar to indicate the change
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  value
-                      ? "Switching to dark mode..."
-                      : "Switching to light mode...",
-                ),
-                duration: const Duration(seconds: 1),
-              ),
-            );
-
             // Toggle the theme
-            await themeProvider.toggleDarkMode(value).then((value) {
-              Navigator.pop(context); // Close the settings page
-            });
+            await themeProvider.toggleDarkMode(value);
+
+            // Show a snackbar to indicate the change
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    value
+                        ? "Dark mode enabled"
+                        : "Light mode enabled",
+                  ),
+                  duration: const Duration(seconds: 1),
+                ),
+              );
+            }
 
             // Call the onChange callback
             onChange();
