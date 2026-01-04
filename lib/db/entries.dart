@@ -114,11 +114,33 @@ class EntryService {
 
     List<String> conditions = [];
     List<dynamic> whereArguments = [];
-    // If account id is provided, add it to the where clause
+
+    // If account id is provided, use SQL query to filter forex pairs
     if (accountId != null) {
-      conditions.add('debit_account_id = ? OR credit_account_id = ?');
-      whereArguments.add(accountId);
-      whereArguments.add(accountId);
+      // only include forex entries that have a pair involving the account
+      conditions.add('''
+        (debit_account_id = ? OR credit_account_id = ?)
+        OR
+        (
+          (debit_account_id IN (SELECT id FROM Accounts WHERE name = 'Forex' AND hidden = 1)
+           OR credit_account_id IN (SELECT id FROM Accounts WHERE name = 'Forex' AND hidden = 1))
+          AND
+          EXISTS (
+            SELECT 1 FROM Entries e2
+            WHERE e2.id != Entries.id
+            AND ABS(CAST(strftime('%s', e2.date) AS INTEGER) - CAST(strftime('%s', Entries.date) AS INTEGER)) <= 1
+            AND (e2.debit_account_id = ? OR e2.credit_account_id = ?)
+            AND (
+              e2.debit_account_id IN (SELECT id FROM Accounts WHERE name = 'Forex' AND hidden = 1)
+              OR e2.credit_account_id IN (SELECT id FROM Accounts WHERE name = 'Forex' AND hidden = 1)
+            )
+          )
+        )
+      ''');
+      whereArguments.add(accountId); // Direct debit match
+      whereArguments.add(accountId); // Direct credit match
+      whereArguments.add(accountId); // Paired entry debit match
+      whereArguments.add(accountId); // Paired entry credit match
     }
 
     // If startDate is provided, add it to the where clause
@@ -138,7 +160,7 @@ class EntryService {
       whereClause += conditions.join(' AND ');
     }
 
-    // Fetch all entries according to the provided start and end dates
+    // Fetch all entries according to the provided filters
     final List<Map<String, dynamic>> entriesData = await dbClient.query(
       'Entries',
       where: whereClause.isEmpty ? null : whereClause,
@@ -193,6 +215,7 @@ class EntryService {
         if (pairedEntry != null) {
           // Merge the two entries
           final mergedEntry = _mergeForexEntries(entry, pairedEntry);
+
           mergedEntries.add(mergedEntry);
           processedIds.add(entry.id!);
           processedIds.add(pairedEntry.id!);
