@@ -277,14 +277,14 @@ class EntriesPageState extends State<EntriesPage> {
         : entriesWithBalance.where((row) {
             final fromAccount = row['debit_account_name'] as String? ?? '';
             final toAccount = row['credit_account_name'] as String? ?? '';
-            final notes = row['notes'] as String? ?? '';
+            final userNotes = row['user_notes'] as String? ?? '';
             final dateStr = row['date'] != null
                 ? DateFormat('yyyy-MM-dd HH:mm').format(DateTime.parse(row['date'] as String))
                 : '';
             
             return fromAccount.toLowerCase().contains(searchQuery) ||
                 toAccount.toLowerCase().contains(searchQuery) ||
-                notes.toLowerCase().contains(searchQuery) ||
+                userNotes.toLowerCase().contains(searchQuery) ||
                 dateStr.toLowerCase().contains(searchQuery);
           }).toList();
     
@@ -319,9 +319,25 @@ class EntriesPageState extends State<EntriesPage> {
           : 'N/A';
       final from = row['debit_account_name'] as String? ?? 'N/A';
       final to = row['credit_account_name'] as String? ?? 'N/A';
-      final notes = row['notes'] as String? ?? '';
+      final userNotes = row['user_notes'] as String? ?? '';
       final amount = (row['amount'] as int) / 100.0;
       final balance = (row['running_balance'] as int) / 100.0;
+      final isForex = (row['is_forex'] as int) == 1;
+      
+      // Format notes like _mergeForexEntries: "user_notes (CreditCurrencySymbol+CreditAmount)"
+      String notes;
+      if (isForex) {
+        final creditAmount = (row['credit_amount'] as int) / 100.0;
+        final creditCurrency = row['credit_currency'] as String;
+        final creditSymbol = SupportedCurrency[creditCurrency] ?? creditCurrency;
+        final creditInfo = '$creditSymbol$creditAmount';
+        
+        notes = (userNotes.isNotEmpty) 
+            ? '$userNotes ($creditInfo)'
+            : creditInfo;
+      } else {
+        notes = userNotes;
+      }
       
       final amountStr = '$symbol $amount';
       final balanceStr = '$symbol $balance';

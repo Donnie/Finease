@@ -542,7 +542,10 @@ class EntryService {
           e1.debit_account_id,
           e2.credit_account_id,
           e1.date,
-          e2.notes,
+          e2.notes AS user_notes,
+          e2.amount AS credit_amount,
+          ac.currency AS credit_currency,
+          1 AS is_forex,
           -- Use debit amount if account is debit, credit amount if account is credit
           CASE 
             WHEN e1.debit_account_id = ? THEN e1.amount
@@ -551,8 +554,7 @@ class EntryService {
           END AS amount,
           ad.name AS debit_account_name,
           ad.currency AS debit_currency,
-          ac.name AS credit_account_name,
-          ac.currency AS credit_currency
+          ac.name AS credit_account_name
         FROM ForexPairs f
         JOIN entries e1 ON f.debit_entry_id = e1.id
         JOIN entries e2 ON f.credit_entry_id = e2.id
@@ -565,12 +567,14 @@ class EntryService {
           e.debit_account_id,
           e.credit_account_id,
           e.date,
-          e.notes,
+          e.notes AS user_notes,
+          0 AS credit_amount,
+          '' AS credit_currency,
+          0 AS is_forex,
           e.amount,
           ad.name AS debit_account_name,
           ad.currency AS debit_currency,
-          ac.name AS credit_account_name,
-          ac.currency AS credit_currency
+          ac.name AS credit_account_name
         FROM entries e
         JOIN accounts ad ON e.debit_account_id = ad.id
         JOIN accounts ac ON e.credit_account_id = ac.id
@@ -604,7 +608,9 @@ class EntryService {
         credit_account_name,
         credit_currency,
         amount,
-        notes,
+        user_notes,
+        credit_amount,
+        is_forex,
         balance_change,
         SUM(balance_change) OVER (ORDER BY date ASC, id ASC) AS running_balance
       FROM FilteredEntries
