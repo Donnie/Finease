@@ -108,8 +108,9 @@ class MonthService {
               )
             END
           ) FILTER (
-            WHERE ad.type IN ('asset', 'liability') AND ac.type IN ('income', 'expense')
-          ), 0) AS expense,
+            WHERE ad.type IN ('asset', 'liability')
+              AND ac.type IN ('income', 'expense')
+          ), 0) AS gross_expense,
           COALESCE(SUM(
             CASE
               WHEN e.currency = ? THEN e.amount
@@ -154,10 +155,10 @@ class MonthService {
         SELECT
           startDate as date,
           (gross_income - capital_gains_in) as income,
-          expense,
+          (gross_expense - capital_gains_out) as expense,
           (capital_gains_in - capital_gains_out) as capital_gains,
-          (gross_income - expense) as effect,
-          SUM(gross_income - expense) OVER (ORDER BY startDate ASC) as networth,
+          (gross_income - gross_expense) as effect,
+          SUM(gross_income - gross_expense) OVER (ORDER BY startDate ASC) as networth,
           currency
         FROM MonthlyTotals
       )
