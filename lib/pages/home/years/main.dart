@@ -4,42 +4,35 @@ import 'package:finease/pages/export.dart';
 import 'package:finease/parts/export.dart';
 import 'package:flutter/material.dart';
 
-class MonthsPage extends StatefulWidget {
-  const MonthsPage({
+class YearsPage extends StatefulWidget {
+  const YearsPage({
     super.key,
-    this.year,
   });
 
-  final int? year;
-
   @override
-  MonthsPageState createState() => MonthsPageState();
+  YearsPageState createState() => YearsPageState();
 }
 
-class MonthsPageState extends State<MonthsPage> {
+class YearsPageState extends State<YearsPage> {
   final GlobalKey<ScaffoldState> _scaffoldStateKey = GlobalKey<ScaffoldState>();
   final MonthService _monthService = MonthService();
-  List<Month> months = [];
+  List<Month> years = [];
   double networth = 0;
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    loadMonths();
+    loadYears();
   }
 
-  Future<void> loadMonths() async {
+  Future<void> loadYears() async {
     networth = await AccountService().getTotalBalance();
-    List<Month> monthsList = await _monthService.getAllMonthsInsights();
-    if (widget.year != null) {
-      monthsList =
-          monthsList.where((month) => month.date?.year == widget.year).toList();
-    }
-    monthsList.sort((a, b) => b.date!.compareTo(a.date!));
+    List<Month> yearsList = await _monthService.getAllYearsInsights();
+    yearsList.sort((a, b) => b.date!.compareTo(a.date!));
 
     setState(() {
-      months = monthsList;
+      years = yearsList;
       isLoading = false;
     });
   }
@@ -52,21 +45,20 @@ class MonthsPageState extends State<MonthsPage> {
         backgroundColor: Colors.transparent,
         appBar: infoBar(
           context,
-          widget.year?.toString() ?? "months",
-          "Click on a month to see transactions for that month.",
+          "years",
+          "Click on a year to see months for that year.",
         ),
         body: RefreshIndicator(
-          onRefresh: loadMonths,
-          child: MonthCards(
+          onRefresh: loadYears,
+          child: YearCards(
             isLoading: isLoading,
-            months: months,
+            years: years,
             networth: networth,
-            onChange: loadMonths,
-            showUnrealised: widget.year == null,
+            onChange: loadYears,
           ),
         ),
         drawer: AppDrawer(
-          onRefresh: loadMonths,
+          onRefresh: loadYears,
           scaffoldKey: _scaffoldStateKey,
           destinations: destinations,
         ),

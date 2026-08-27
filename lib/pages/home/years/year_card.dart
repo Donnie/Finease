@@ -8,20 +8,18 @@ import 'package:finease/parts/export.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class MonthCards extends StatelessWidget {
-  final List<Month> months;
+class YearCards extends StatelessWidget {
+  final List<Month> years;
   final bool isLoading;
   final double networth;
   final Future<void> Function() onChange;
-  final bool showUnrealised;
 
-  const MonthCards({
+  const YearCards({
     super.key,
-    required this.months,
+    required this.years,
     this.isLoading = false,
     required this.networth,
     required this.onChange,
-    this.showUnrealised = true,
   });
 
   Future<void> _showConfirmationDialog(
@@ -69,7 +67,7 @@ class MonthCards extends StatelessWidget {
       );
     }
 
-    if (months.isEmpty) {
+    if (years.isEmpty) {
       return Center(
         child: ClipRRect(
           borderRadius: BorderRadius.circular(8.0),
@@ -96,17 +94,16 @@ class MonthCards extends StatelessWidget {
       );
     }
 
-    String currency = SupportedCurrency[months[0].currency!]!;
-    double unrealised = (networth - (months[0].networth ?? 0));
-    bool shouldShowUnrealised =
-        showUnrealised && unrealised.round().abs() > 0;
+    String currency = SupportedCurrency[years[0].currency!]!;
+    double unrealised = (networth - (years[0].networth ?? 0));
+    bool showUnrealised = unrealised.round().abs() > 0;
     String gains = (unrealised > 0) ? "gains" : "losses";
 
     return SingleChildScrollView(
       child: Column(
         children: [
           Visibility(
-            visible: shouldShowUnrealised,
+            visible: showUnrealised,
             child: Center(
               child: UnrealisedAlert(
                 gains: gains,
@@ -119,9 +116,9 @@ class MonthCards extends StatelessWidget {
           ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: months.length,
-            itemBuilder: (context, index) => MonthCard(
-              month: months[index],
+            itemCount: years.length,
+            itemBuilder: (context, index) => YearCard(
+              year: years[index],
             ),
           ),
         ],

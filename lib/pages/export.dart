@@ -18,6 +18,8 @@ export "home/frame/mobile.dart";
 export "home/frame/tablet.dart";
 export "home/months/main.dart";
 export "home/months/month_card.dart";
+export "home/years/main.dart";
+export "home/years/year_card.dart";
 export "home/summary/main.dart";
 export "home/summary/widgets.dart";
 export "intro/intro_big.dart";

@@ -73,6 +73,9 @@ class MonthCard extends StatelessWidget {
     String effect = '$currency${month.effect!.toStringAsFixed(2)}';
     String income = '$currency${month.income!.toStringAsFixed(2)}';
     String expense = '$currency${month.expense!.toStringAsFixed(2)}';
+    String capitalGains =
+        '$currency${(month.capitalGains ?? 0).toStringAsFixed(2)}';
+    String netSavings = '$currency${month.netSavings.toStringAsFixed(2)}';
 
     return InkWell(
       onTap: () {
@@ -124,6 +127,140 @@ class MonthCard extends StatelessWidget {
                     child: MonthWidget(
                       title: "Effect",
                       content: effect,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Row(
+                children: [
+                  Expanded(
+                    child: MonthWidget(
+                      title: "Capital Gains",
+                      content: capitalGains,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: MonthWidget(
+                      title: "Net Savings",
+                      content: netSavings,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Row(
+                children: [
+                  Expanded(
+                    child: MonthWidget(
+                      title: "Income",
+                      content: income,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: MonthWidget(
+                      title: "Expense",
+                      content: expense,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class YearCard extends StatelessWidget {
+  const YearCard({
+    super.key,
+    required this.year,
+  });
+
+  final Month year;
+
+  @override
+  Widget build(BuildContext context) {
+    String currency = SupportedCurrency[year.currency!]!;
+    String networth = '$currency${year.networth!.toStringAsFixed(2)}';
+    String effect = '$currency${year.effect!.toStringAsFixed(2)}';
+    String income = '$currency${year.income!.toStringAsFixed(2)}';
+    String expense = '$currency${year.expense!.toStringAsFixed(2)}';
+    String capitalGains =
+        '$currency${(year.capitalGains ?? 0).toStringAsFixed(2)}';
+    String netSavings = '$currency${year.netSavings.toStringAsFixed(2)}';
+
+    return InkWell(
+      onTap: () {
+        context.pushNamed(
+          RoutesName.monthsByYear.name,
+          queryParameters: {
+            'year': year.date!.year.toString(),
+          },
+        );
+      },
+      child: AppCard(
+        elevation: 4,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Flex(
+                direction: Axis.horizontal,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Text(
+                    year.date!.year.toString(),
+                    style: context.titleSmall,
+                  )
+                ],
+              ),
+              const SizedBox(height: 4),
+              LinearProgressIndicator(
+                value: year.factor,
+                minHeight: 2.0,
+                backgroundColor: context.surfaceVariant,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  year.good ? context.tertiary : context.error,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: MonthWidget(
+                      title: "Net Worth",
+                      content: networth,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: MonthWidget(
+                      title: "Effect",
+                      content: effect,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Row(
+                children: [
+                  Expanded(
+                    child: MonthWidget(
+                      title: "Capital Gains",
+                      content: capitalGains,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: MonthWidget(
+                      title: "Net Savings",
+                      content: netSavings,
                     ),
                   ),
                 ],

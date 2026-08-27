@@ -12,6 +12,9 @@ class MonthService {
   Future<List<Month>> getAllMonthsInsights() async {
     String prefCurrency =
         await SettingService().getSetting(Setting.prefCurrency);
+    String capGainsSetting =
+        await SettingService().getSetting(Setting.capitalGains);
+    int capitalGainsAccountId = int.tryParse(capGainsSetting) ?? 0;
 
     // Determine if conversion is needed
     bool needsConversion = await currencyBoxService.isRequired();
@@ -90,8 +93,9 @@ class MonthService {
               )
             END
           ) FILTER (
-            WHERE ac.type IN ('asset', 'liability') AND ad.type IN ('income', 'expense')
-          ), 0) AS income,
+            WHERE ac.type IN ('asset', 'liability')
+              AND ad.type IN ('income', 'expense')
+          ), 0) AS gross_income,
           COALESCE(SUM(
             CASE
               WHEN e.currency = ? THEN e.amount
@@ -104,8 +108,37 @@ class MonthService {
               )
             END
           ) FILTER (
-            WHERE ad.type IN ('asset', 'liability') AND ac.type IN ('income', 'expense')
-          ), 0) AS expense,
+            WHERE ad.type IN ('asset', 'liability')
+              AND ac.type IN ('income', 'expense')
+          ), 0) AS gross_expense,
+          COALESCE(SUM(
+            CASE
+              WHEN e.currency = ? THEN e.amount
+              ELSE e.amount / (
+                SELECT cr.rate FROM rates cr
+                WHERE cr.currency = e.currency
+              ) * (
+                SELECT cr.rate FROM rates cr
+                WHERE cr.currency = ?
+              )
+            END
+          ) FILTER (
+            WHERE ad.id = ? AND ac.type IN ('asset', 'liability')
+          ), 0) AS capital_gains_in,
+          COALESCE(SUM(
+            CASE
+              WHEN e.currency = ? THEN e.amount
+              ELSE e.amount / (
+                SELECT cr.rate FROM rates cr
+                WHERE cr.currency = e.currency
+              ) * (
+                SELECT cr.rate FROM rates cr
+                WHERE cr.currency = ?
+              )
+            END
+          ) FILTER (
+            WHERE ac.id = ? AND ad.type IN ('asset', 'liability')
+          ), 0) AS capital_gains_out,
           ? AS currency
         FROM (
           SELECT
@@ -121,10 +154,11 @@ class MonthService {
       CumulativeTotals AS (
         SELECT
           startDate as date,
-          income,
-          expense,
-          (income - expense) as effect,
-          SUM(income - expense) OVER (ORDER BY startDate ASC) as networth,
+          (gross_income - capital_gains_in) as income,
+          (gross_expense - capital_gains_out) as expense,
+          (capital_gains_in - capital_gains_out) as capital_gains,
+          (gross_income - gross_expense) as effect,
+          SUM(gross_income - gross_expense) OVER (ORDER BY startDate ASC) as networth,
           currency
         FROM MonthlyTotals
       )
@@ -133,6 +167,7 @@ class MonthService {
         effect,
         expense,
         income,
+        capital_gains,
         networth,
         currency
       FROM CumulativeTotals;
@@ -145,7 +180,13 @@ class MonthService {
         prefCurrency,
         prefCurrency,
         prefCurrency,
-        prefCurrency
+        prefCurrency,
+        prefCurrency,
+        capitalGainsAccountId,
+        prefCurrency,
+        prefCurrency,
+        capitalGainsAccountId,
+        prefCurrency,
       ],
     );
 
@@ -155,6 +196,40 @@ class MonthService {
       return [];
     }
   }
+
+  Future<List<Month>> getAllYearsInsights() async {
+    final months = await getAllMonthsInsights();
+    if (months.isEmpty) {
+      return [];
+    }
+
+    final Map<int, List<Month>> byYear = {};
+    for (final month in months) {
+      if (month.date == null) {
+        continue;
+      }
+      byYear.putIfAbsent(month.date!.year, () => []).add(month);
+    }
+
+    return byYear.entries.map((entry) {
+      final yearMonths = List<Month>.from(entry.value)
+        ..sort((a, b) => a.date!.compareTo(b.date!));
+      final last = yearMonths.last;
+      return Month(
+        date: DateTime(entry.key),
+        income:
+            yearMonths.fold<num>(0, (sum, month) => sum + (month.income ?? 0)),
+        expense:
+            yearMonths.fold<num>(0, (sum, month) => sum + (month.expense ?? 0)),
+        capitalGains: yearMonths.fold<num>(
+            0, (sum, month) => sum + (month.capitalGains ?? 0)),
+        effect:
+            yearMonths.fold<num>(0, (sum, month) => sum + (month.effect ?? 0)),
+        networth: last.networth,
+        currency: last.currency,
+      );
+    }).toList();
+  }
 }
 
 class Month {
@@ -162,6 +237,7 @@ class Month {
   num? effect;
   num? expense;
   num? income;
+  num? capitalGains;
   num? networth;
   String? currency;
 
@@ -170,6 +246,7 @@ class Month {
     this.effect,
     this.expense,
     this.income,
+    this.capitalGains,
     this.networth,
     this.currency,
   });
@@ -180,10 +257,14 @@ class Month {
       effect: json['effect'] / 100,
       expense: json['expense'] / 100,
       income: json['income'] / 100,
+      capitalGains: (json['capital_gains'] ?? 0) / 100,
       networth: json['networth'] / 100,
       currency: json['currency'],
     );
   }
+
+  /// Savings from income excluding capital gains.
+  num get netSavings => (effect ?? 0) - (capitalGains ?? 0);
 
   // Calculate the factor based on the relationship between income and expense
   double get factor {
