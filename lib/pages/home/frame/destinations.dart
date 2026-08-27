@@ -23,6 +23,11 @@ List<Destination> destinations = [
     icon: Icon(MdiIcons.calendarOutline),
     selectedIcon: Icon(MdiIcons.calendar),
   ),
+  Destination(
+    routeName: RoutesName.years,
+    icon: Icon(MdiIcons.calendarRangeOutline),
+    selectedIcon: Icon(MdiIcons.calendarRange),
+  ),
 ];
 
 class Destination {

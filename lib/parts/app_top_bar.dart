@@ -14,6 +14,7 @@ const List<String> _rootRoutes = [
   '/home',
   '/accounts',
   '/months',
+  '/years',
   '/transactions',
 ];
 

@@ -155,6 +155,37 @@ class MonthService {
       return [];
     }
   }
+
+  Future<List<Month>> getAllYearsInsights() async {
+    final months = await getAllMonthsInsights();
+    if (months.isEmpty) {
+      return [];
+    }
+
+    final Map<int, List<Month>> byYear = {};
+    for (final month in months) {
+      if (month.date == null) {
+        continue;
+      }
+      byYear.putIfAbsent(month.date!.year, () => []).add(month);
+    }
+
+    return byYear.entries.map((entry) {
+      final yearMonths = List<Month>.from(entry.value)
+        ..sort((a, b) => a.date!.compareTo(b.date!));
+      final last = yearMonths.last;
+      return Month(
+        date: DateTime(entry.key),
+        income: yearMonths.fold<num>(0, (sum, month) => sum + (month.income ?? 0)),
+        expense:
+            yearMonths.fold<num>(0, (sum, month) => sum + (month.expense ?? 0)),
+        effect:
+            yearMonths.fold<num>(0, (sum, month) => sum + (month.effect ?? 0)),
+        networth: last.networth,
+        currency: last.currency,
+      );
+    }).toList();
+  }
 }
 
 class Month {

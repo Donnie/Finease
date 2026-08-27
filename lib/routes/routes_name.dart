@@ -9,6 +9,7 @@ enum RoutesName {
   home,
   intro,
   months,
+  years,
   settings,
   setupAccounts,
   transactions,

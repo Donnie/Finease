@@ -46,6 +46,13 @@ final GoRouter goRouter = GoRouter(
       },
     ),
     GoRoute(
+      name: RoutesName.years.name,
+      path: RoutesName.years.path,
+      builder: (BuildContext context, GoRouterState state) {
+        return const YearsPage();
+      },
+    ),
+    GoRoute(
       name: RoutesName.transactions.name,
       path: RoutesName.transactions.path,
       builder: (BuildContext context, GoRouterState state) {
