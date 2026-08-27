@@ -235,24 +235,6 @@ class YearCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: MonthWidget(
-                      title: "Income",
-                      content: income,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: MonthWidget(
-                      title: "Expense",
-                      content: expense,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 6),
-              Row(
-                children: [
-                  Expanded(
-                    child: MonthWidget(
                       title: "Capital Gains",
                       content: capitalGains,
                     ),
@@ -262,6 +244,24 @@ class YearCard extends StatelessWidget {
                     child: MonthWidget(
                       title: "Net Savings",
                       content: netSavings,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Row(
+                children: [
+                  Expanded(
+                    child: MonthWidget(
+                      title: "Income",
+                      content: income,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: MonthWidget(
+                      title: "Expense",
+                      content: expense,
                     ),
                   ),
                 ],
