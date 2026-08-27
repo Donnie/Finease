@@ -46,7 +46,7 @@ class YearsPageState extends State<YearsPage> {
         appBar: infoBar(
           context,
           "years",
-          "Click on a year to see transactions for that year.",
+          "Click on a year to see months for that year.",
         ),
         body: RefreshIndicator(
           onRefresh: loadYears,

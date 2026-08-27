@@ -13,6 +13,7 @@ class MonthCards extends StatelessWidget {
   final bool isLoading;
   final double networth;
   final Future<void> Function() onChange;
+  final bool showUnrealised;
 
   const MonthCards({
     super.key,
@@ -20,6 +21,7 @@ class MonthCards extends StatelessWidget {
     this.isLoading = false,
     required this.networth,
     required this.onChange,
+    this.showUnrealised = true,
   });
 
   Future<void> _showConfirmationDialog(
@@ -96,14 +98,15 @@ class MonthCards extends StatelessWidget {
 
     String currency = SupportedCurrency[months[0].currency!]!;
     double unrealised = (networth - (months[0].networth ?? 0));
-    bool showUnrealised = unrealised.round().abs() > 0;
+    bool shouldShowUnrealised =
+        showUnrealised && unrealised.round().abs() > 0;
     String gains = (unrealised > 0) ? "gains" : "losses";
 
     return SingleChildScrollView(
       child: Column(
         children: [
           Visibility(
-            visible: showUnrealised,
+            visible: shouldShowUnrealised,
             child: Center(
               child: UnrealisedAlert(
                 gains: gains,

@@ -46,6 +46,17 @@ final GoRouter goRouter = GoRouter(
       },
     ),
     GoRoute(
+      name: RoutesName.monthsByYear.name,
+      path: RoutesName.monthsByYear.path,
+      builder: (BuildContext context, GoRouterState state) {
+        final String? yearStr = state.uri.queryParameters['year'];
+        if (yearStr == null) {
+          return const MonthsPage();
+        }
+        return MonthsPage(year: int.parse(yearStr));
+      },
+    ),
+    GoRoute(
       name: RoutesName.years.name,
       path: RoutesName.years.path,
       builder: (BuildContext context, GoRouterState state) {

@@ -185,9 +185,6 @@ class YearCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    DateTime startDate = DateTime(year.date!.year);
-    DateTime endDate = DateTime(year.date!.year + 1, 1, 1)
-        .subtract(const Duration(seconds: 1));
     String currency = SupportedCurrency[year.currency!]!;
     String networth = '$currency${year.networth!.toStringAsFixed(2)}';
     String effect = '$currency${year.effect!.toStringAsFixed(2)}';
@@ -200,10 +197,9 @@ class YearCard extends StatelessWidget {
     return InkWell(
       onTap: () {
         context.pushNamed(
-          RoutesName.transactionsByDate.name,
+          RoutesName.monthsByYear.name,
           queryParameters: {
-            'startDate': startDate.toIso8601String(),
-            'endDate': endDate.toIso8601String(),
+            'year': year.date!.year.toString(),
           },
         );
       },

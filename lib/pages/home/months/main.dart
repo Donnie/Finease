@@ -7,7 +7,10 @@ import 'package:flutter/material.dart';
 class MonthsPage extends StatefulWidget {
   const MonthsPage({
     super.key,
+    this.year,
   });
+
+  final int? year;
 
   @override
   MonthsPageState createState() => MonthsPageState();
@@ -29,6 +32,10 @@ class MonthsPageState extends State<MonthsPage> {
   Future<void> loadMonths() async {
     networth = await AccountService().getTotalBalance();
     List<Month> monthsList = await _monthService.getAllMonthsInsights();
+    if (widget.year != null) {
+      monthsList =
+          monthsList.where((month) => month.date?.year == widget.year).toList();
+    }
     monthsList.sort((a, b) => b.date!.compareTo(a.date!));
 
     setState(() {
@@ -45,7 +52,7 @@ class MonthsPageState extends State<MonthsPage> {
         backgroundColor: Colors.transparent,
         appBar: infoBar(
           context,
-          "months",
+          widget.year?.toString() ?? "months",
           "Click on a month to see transactions for that month.",
         ),
         body: RefreshIndicator(
@@ -55,6 +62,7 @@ class MonthsPageState extends State<MonthsPage> {
             months: months,
             networth: networth,
             onChange: loadMonths,
+            showUnrealised: widget.year == null,
           ),
         ),
         drawer: AppDrawer(
