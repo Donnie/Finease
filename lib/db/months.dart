@@ -93,8 +93,9 @@ class MonthService {
               )
             END
           ) FILTER (
-            WHERE ac.type IN ('asset', 'liability') AND ad.type IN ('income', 'expense')
-          ), 0) AS income,
+            WHERE ac.type IN ('asset', 'liability')
+              AND ad.type IN ('income', 'expense')
+          ), 0) AS gross_income,
           COALESCE(SUM(
             CASE
               WHEN e.currency = ? THEN e.amount
@@ -122,7 +123,8 @@ class MonthService {
             END
           ) FILTER (
             WHERE ad.id = ? AND ac.type IN ('asset', 'liability')
-          ), 0) - COALESCE(SUM(
+          ), 0) AS capital_gains_in,
+          COALESCE(SUM(
             CASE
               WHEN e.currency = ? THEN e.amount
               ELSE e.amount / (
@@ -135,7 +137,7 @@ class MonthService {
             END
           ) FILTER (
             WHERE ac.id = ? AND ad.type IN ('asset', 'liability')
-          ), 0) AS capital_gains,
+          ), 0) AS capital_gains_out,
           ? AS currency
         FROM (
           SELECT
@@ -151,11 +153,11 @@ class MonthService {
       CumulativeTotals AS (
         SELECT
           startDate as date,
-          income,
+          (gross_income - capital_gains_in) as income,
           expense,
-          capital_gains,
-          (income - expense) as effect,
-          SUM(income - expense) OVER (ORDER BY startDate ASC) as networth,
+          (capital_gains_in - capital_gains_out) as capital_gains,
+          (gross_income - expense) as effect,
+          SUM(gross_income - expense) OVER (ORDER BY startDate ASC) as networth,
           currency
         FROM MonthlyTotals
       )
@@ -212,19 +214,16 @@ class MonthService {
       final yearMonths = List<Month>.from(entry.value)
         ..sort((a, b) => a.date!.compareTo(b.date!));
       final last = yearMonths.last;
-      final income =
-          yearMonths.fold<num>(0, (sum, month) => sum + (month.income ?? 0));
-      final expense =
-          yearMonths.fold<num>(0, (sum, month) => sum + (month.expense ?? 0));
-      final capitalGains = yearMonths.fold<num>(
-          0, (sum, month) => sum + (month.capitalGains ?? 0));
-      final effect = income - expense;
       return Month(
         date: DateTime(entry.key),
-        income: income,
-        expense: expense,
-        capitalGains: capitalGains,
-        effect: effect,
+        income:
+            yearMonths.fold<num>(0, (sum, month) => sum + (month.income ?? 0)),
+        expense:
+            yearMonths.fold<num>(0, (sum, month) => sum + (month.expense ?? 0)),
+        capitalGains: yearMonths.fold<num>(
+            0, (sum, month) => sum + (month.capitalGains ?? 0)),
+        effect:
+            yearMonths.fold<num>(0, (sum, month) => sum + (month.effect ?? 0)),
         networth: last.networth,
         currency: last.currency,
       );
