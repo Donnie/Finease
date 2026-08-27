@@ -172,6 +172,9 @@ class YearCard extends StatelessWidget {
     String effect = '$currency${year.effect!.toStringAsFixed(2)}';
     String income = '$currency${year.income!.toStringAsFixed(2)}';
     String expense = '$currency${year.expense!.toStringAsFixed(2)}';
+    String capitalGains =
+        '$currency${(year.capitalGains ?? 0).toStringAsFixed(2)}';
+    String netSavings = '$currency${year.netSavings.toStringAsFixed(2)}';
 
     return InkWell(
       onTap: () {
@@ -241,6 +244,24 @@ class YearCard extends StatelessWidget {
                     child: MonthWidget(
                       title: "Expense",
                       content: expense,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Row(
+                children: [
+                  Expanded(
+                    child: MonthWidget(
+                      title: "Capital Gains",
+                      content: capitalGains,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: MonthWidget(
+                      title: "Net Savings",
+                      content: netSavings,
                     ),
                   ),
                 ],
