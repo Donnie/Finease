@@ -1,24 +1,22 @@
-
-
 ## Finease - Expense Tracker
 
+> [!WARNING]
+> ### ⚠️ Project Status: Archived & No Longer Maintained
+> Finease is no longer actively maintained and this repository has been archived.
+> 
+> A new cloud-native project **Financy** has taken its place. Please check out the new project at **[github.com/FinancyOrg](https://github.com/FinancyOrg)**.
 
+---
 
-![](https://img.shields.io/badge/Platform-Flutter%203.29.2-blue) [](https://github.com/Donnie/Finease/releases/tag/v1.2.10)![](https://img.shields.io/badge/Version-1.2.10-orange)[ ](https://github.com/Donnie/Finease/releases/tag/v1.2.10)![](https://github.com/Donnie/Finease/actions/workflows/android_release.yml/badge.svg)[
+![](https://img.shields.io/badge/Status-Archived-inactive) ![](https://img.shields.io/badge/Platform-Flutter%203.29.2-blue) [](https://github.com/Donnie/Finease/releases/tag/v1.2.10)![](https://img.shields.io/badge/Version-1.2.10-orange)
 
 ### Screenshots
 
-
-
 #### Mobile
-
 
 | ![](images/photo1704048355.jpeg) | ![](images/photo1704048321.jpeg) | ![](images/photo1704048271.jpeg) |
 | -------------------------------- | -------------------------------- | -------------------------------- |
 | Mobile                           | Tablet                           | Desktop                          |
-
-
-
 
 ### Privacy-first budgeting.
 
@@ -33,8 +31,6 @@ Cultivate discipline, enjoy ease of use, and control your financial data.
  *needs internet only if you have multi currency accounts, to look up exchange rates from ECB.*
 
 ### Technical Details
-
-
 
 #### Automated Release Process
 
@@ -58,4 +54,3 @@ flutter run -d macos
 ```
 
 > Made with ♥ in Berlin
-
